@@ -13,6 +13,13 @@
 
 ## Recently Completed
 
+- Reworked the Mini Program visual system into a vertical editorial poster for
+  Lei: an original violin and Wannan landscape hero, Hui-style white walls and
+  dark roofs, rice-paper texture, ink green, walnut, and restrained burgundy.
+  The profile, chart, and chat pages now share this palette and typography, and
+  `wechat-miniapp/design-preview/` provides a browser-reviewable mobile mock.
+- Added two Wannan/violin contrast quotes and retained random non-repeating
+  selection. The Mini Program now has fourteen welcome quotes.
 - Added a native WeChat Mini Program under `wechat-miniapp/` with the personalized
   Lei welcome, randomized contrast quotes, a 2002-08-19 female default profile,
   local birthplace matching, true-solar-time correction, twelve-palace summaries,
@@ -34,7 +41,8 @@
   Lei flow.
 - Added twelve playful contrast quotes to the Lei welcome screen. A quote is
   chosen on every page load and the previous quote is excluded from the next
-  draw so consecutive opens always differ.
+  draw so consecutive opens always differ. The later Wannan visual pass expanded
+  this set to fourteen.
 - Prepared a CloudBase static-hosting release path and a dependency-free Node.js
   HTTP function that listens on port 9000, streams Tencent TokenHub Responses API
   events, and keeps the model key on the server.
@@ -127,6 +135,15 @@ Reverified on 2026-11-01 after the shared AI and rate-limit change:
 - ESLint passed.
 - Vitest passed 32/32 tests, including signed quota tamper and rollover coverage.
 - TypeScript and the Vite production build completed successfully.
+
+Reverified on 2026-11-01 after the Mini Program Wannan poster redesign:
+
+- The deterministic Mini Program domain tests passed 4/4.
+- Every Mini Program JavaScript file passed `node --check`.
+- All WXML and WXSS compiled with the official WCC/WCSC binaries bundled with
+  WeChat DevTools 2.02.2609240.
+- The browser design preview rendered at a phone-width 9:16 composition with the
+  title, quote panel, CTA, violin, Wannan landscape, and Hui architecture visible.
 
 Live CloudBase verification on 2026-11-01:
 

@@ -46,6 +46,8 @@ app/src/knowledge/ - Static Zi Wei Dou Shu knowledge modules.
 app/api/ - Vercel server functions for shared AI access and signed quota state.
 cloudbase/functions/ziwei-ai/ - CloudBase HTTP function for the public shared AI route.
 wechat-miniapp/miniprogram/ - Native WXML/WXSS/JS pages and OPENID cloud-function client.
+wechat-miniapp/miniprogram/assets/ - Project-bound Mini Program poster imagery.
+wechat-miniapp/design-preview/ - Browser-reviewable mock of the Mini Program visual direction.
 wechat-miniapp/cloudfunctions/ziwei-mini/ - Mini Program profile, chart, chat, and quota backend.
 app/tests/ - Tests outside source tree, currently including workflow validation.
 </directory>
@@ -66,6 +68,8 @@ app/tests/ - Tests outside source tree, currently including workflow validation.
 - `app/api/rate-limit.ts` - signed daily quota cookie helpers.
 - `cloudbase/functions/ziwei-ai/index.js` - deployable CloudBase TokenHub proxy.
 - `wechat-miniapp/miniprogram/pages/` - personalized home, birth profile, chart, and chat pages.
+- `wechat-miniapp/miniprogram/assets/wannan-violin-poster.jpg` - original 9:16 hero artwork combining violin, Wannan scenery, and Hui architecture.
+- `wechat-miniapp/design-preview/index.html` - static phone-width visual review of the poster-style home screen.
 - `wechat-miniapp/cloudfunctions/ziwei-mini/index.js` - OPENID-scoped persistence and CloudBase AI calls.
 - `wechat-miniapp/cloudfunctions/ziwei-mini/domain.js` - deterministic profile validation, true solar time, and chart context.
 - `app/src/knowledge-db/retrieval/retrieve.ts` - guidance retrieval.

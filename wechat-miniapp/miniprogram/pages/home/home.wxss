@@ -2,125 +2,174 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
+  min-height: 100vh;
+  padding: 0;
   overflow: hidden;
+  background: #e8dac9;
 }
 
-.hero-card {
-  position: relative;
+.poster-bg,
+.poster-wash {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.poster-wash {
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(255, 248, 238, .16) 0%, rgba(255, 246, 234, 0) 42%),
+    linear-gradient(180deg, rgba(36, 35, 31, 0) 46%, rgba(30, 28, 25, .38) 73%, rgba(30, 26, 23, .72) 100%);
+}
+
+.poster-copy {
+  position: absolute;
   z-index: 2;
-  padding: 54rpx 38rpx 40rpx;
-  border: 1rpx solid rgba(190, 110, 159, 0.18);
-  border-radius: 44rpx;
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: 0 30rpx 80rpx rgba(121, 61, 102, 0.13);
-  text-align: center;
+  top: 54rpx;
+  left: 42rpx;
+  right: 42rpx;
 }
 
-.kicker,
-.quote-label,
-.signature,
-.intro,
+.poster-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 18rpx;
+  border-bottom: 1rpx solid rgba(74, 69, 61, .28);
+  color: #585a52;
+  font-size: 18rpx;
+  font-weight: 600;
+  letter-spacing: 3rpx;
+}
+
 .title,
-.quote {
+.poster-subtitle,
+.quote,
+.intro {
   display: block;
 }
 
-.kicker {
-  color: #bb6693;
-  font-size: 22rpx;
+.title {
+  margin-top: 34rpx;
+  color: #483b36;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 58rpx;
   font-weight: 700;
   letter-spacing: 5rpx;
 }
 
-.violin-stage {
+.poster-subtitle {
+  margin-top: 12rpx;
+  color: #74675e;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 25rpx;
+  letter-spacing: 6rpx;
+}
+
+.seal {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 210rpx;
-}
-
-.violin {
-  font-size: 128rpx;
-  transform: rotate(-12deg);
-  filter: drop-shadow(0 18rpx 18rpx rgba(123, 63, 93, 0.2));
-}
-
-.spark {
-  color: #d79a45;
-  font-size: 34rpx;
-}
-
-.spark.left { margin-right: 22rpx; }
-.spark.right { margin-left: 18rpx; }
-
-.title {
-  color: #543450;
+  width: 76rpx;
+  height: 76rpx;
+  margin-top: 28rpx;
+  border: 3rpx solid rgba(128, 45, 50, .76);
+  color: #812e34;
   font-family: serif;
-  font-size: 54rpx;
+  font-size: 20rpx;
+  font-weight: 700;
+  letter-spacing: 1rpx;
+  transform: rotate(-4deg);
+}
+
+.bottom-sheet {
+  position: relative;
+  z-index: 3;
+  margin: 0 24rpx calc(24rpx + env(safe-area-inset-bottom));
+  padding: 28rpx 28rpx 24rpx;
+  border: 1rpx solid rgba(255, 248, 238, .6);
+  border-radius: 12rpx;
+  background: rgba(247, 239, 228, .93);
+  box-shadow: 0 24rpx 70rpx rgba(24, 20, 18, .24);
+}
+
+.quote-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #7e3036;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 24rpx;
   font-weight: 700;
   letter-spacing: 3rpx;
 }
 
-.quote-label {
-  margin-top: 28rpx;
-  color: #bf729b;
-  font-size: 22rpx;
-  letter-spacing: 4rpx;
+.quote-place {
+  color: #7b786f;
+  font-family: sans-serif;
+  font-size: 17rpx;
+  font-weight: 500;
+  letter-spacing: 2rpx;
 }
 
 .quote {
-  min-height: 96rpx;
-  margin-top: 14rpx;
-  color: #6f526c;
-  font-size: 30rpx;
+  min-height: 82rpx;
+  margin-top: 18rpx;
+  color: #474943;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 28rpx;
   line-height: 1.65;
 }
 
 .start-button {
-  margin-top: 34rpx;
+  margin-top: 24rpx;
+  border-radius: 8rpx;
+  letter-spacing: 4rpx;
 }
 
 .profile-pill {
   display: flex;
   justify-content: space-between;
-  margin-top: 28rpx;
-  padding: 18rpx 22rpx;
-  border-radius: 20rpx;
-  color: #8b617d;
-  background: #fff3f8;
-  font-size: 23rpx;
+  margin-top: 22rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid rgba(72, 75, 68, .15);
+  color: #676b63;
+  font-size: 22rpx;
 }
 
 .intro {
-  margin-top: 24rpx;
-  color: #9b8698;
-  font-size: 24rpx;
-}
-
-.signature {
-  margin-top: 34rpx;
-  color: #c4a0b4;
-  font-size: 20rpx;
-  letter-spacing: 3rpx;
+  margin-top: 20rpx;
+  color: #77776f;
+  font-size: 23rpx;
+  line-height: 1.6;
 }
 
 .shortcut-row {
-  position: relative;
-  z-index: 2;
   display: flex;
-  gap: 18rpx;
-  margin-top: 24rpx;
+  gap: 14rpx;
+  margin-top: 18rpx;
 }
 
-.shortcut { flex: 1; }
-
-.floating-note {
-  position: absolute;
-  z-index: 1;
-  color: rgba(187, 102, 147, 0.2);
-  font-size: 68rpx;
+.shortcut {
+  flex: 1;
+  min-height: 76rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
 }
 
-.note-one { top: 90rpx; left: 20rpx; transform: rotate(-15deg); }
-.note-two { right: 14rpx; bottom: 180rpx; transform: rotate(12deg); }
+.sheet-signature {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 22rpx;
+  color: #989085;
+  font-size: 17rpx;
+  letter-spacing: 2rpx;
+}
+
+.error-card {
+  position: relative;
+  z-index: 4;
+  margin: 0 24rpx 24rpx;
+}

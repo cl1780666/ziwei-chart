@@ -1,8 +1,8 @@
 <view class="chat-page">
   <view class="chat-header">
     <view>
-      <text class="chat-title">星图先生</text>
-      <text class="chat-subtitle">结合当前命盘回答 · 今日剩余 {{remaining}} 次</text>
+      <text class="chat-title">弦外问星</text>
+      <text class="chat-subtitle">一弦一答 · 今日余 {{remaining}} 问</text>
     </view>
     <button class="clear-button" bindtap="clearConversation">清空</button>
   </view>
@@ -10,10 +10,10 @@
   <scroll-view class="message-scroll" scroll-y enhanced show-scrollbar="{{false}}" scroll-into-view="{{scrollTarget}}">
     <view id="chat-top"></view>
     <view class="welcome-bubble">
-      <text class="avatar">✦</text>
+      <text class="avatar">弦</text>
       <view>
-        <text class="bubble-name">星图先生</text>
-        <text class="bubble-copy">命盘已经备好。想聊感情、事业或最近的运势，都可以直接问。</text>
+        <text class="bubble-name">星图先生 · 皖南</text>
+        <text class="bubble-copy">命盘已经展开。想聊感情、事业或最近的运势，就像坐在水边一样，慢慢问。</text>
       </view>
     </view>
 

@@ -6,10 +6,10 @@
     "pages/chat/chat"
   ],
   "window": {
-    "navigationBarBackgroundColor": "#fff7fb",
+    "navigationBarBackgroundColor": "#f4eadc",
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "For Lei · 0819",
-    "backgroundColor": "#fff7fb",
+    "navigationBarTitleText": "弦上星河 · 0819",
+    "backgroundColor": "#f4eadc",
     "backgroundTextStyle": "light"
   },
   "lazyCodeLoading": "requiredComponents",

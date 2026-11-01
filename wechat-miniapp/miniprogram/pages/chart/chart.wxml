@@ -3,8 +3,9 @@
 
   <block wx:elif="{{chart}}">
     <view class="card chart-hero">
-      <text class="chart-kicker">FOR LEI · 0819</text>
-      <text class="chart-title">蕾蕾的紫微命盘</text>
+      <view class="chart-ribbon"><text>皖南 · 弦上星河</text><text>FOR LEI 0819</text></view>
+      <text class="chart-kicker">一弦一星河</text>
+      <text class="chart-title">蕾蕾的弦上星盘</text>
       <text class="chart-date">{{profile.year}}年{{profile.month}}月{{profile.day}}日 · {{profile.gender === 'female' ? '女命' : '男命'}}</text>
       <view class="tag-row">
         <text class="tag">{{chart.fiveElementsClass}}</text>
@@ -23,7 +24,7 @@
       <view class="summary-item"><text>身宫</text><text class="summary-strong">{{chart.bodyPalaceBranch || '—'}}</text></view>
     </view>
 
-    <text class="section-title palace-heading">十二宫</text>
+    <view class="palace-heading"><text class="section-title">十二宫</text><text class="heading-note">徽墨落纸 · 星曜成章</text></view>
     <view class="palace-list">
       <view wx:for="{{chart.palaces}}" wx:key="name" class="card palace-card">
         <view class="palace-head">
@@ -38,7 +39,7 @@
       </view>
     </view>
 
-    <button class="primary-button chat-button" bindtap="openChat">问问星图先生 ✦</button>
+    <button class="primary-button chat-button" bindtap="openChat">弦外问星</button>
     <button class="secondary-button edit-button" bindtap="editProfile">修改出生资料</button>
   </block>
 

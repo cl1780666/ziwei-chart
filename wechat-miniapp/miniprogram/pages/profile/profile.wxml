@@ -1,9 +1,16 @@
-<view class="page-shell">
+<view class="page-shell profile-page">
+  <view class="profile-masthead">
+    <text class="mast-kicker">皖南 · 弦上星河</text>
+    <text class="mast-title">生辰入谱</text>
+    <text class="mast-copy">一纸徽墨，十二宫便有了来处。</text>
+    <view class="mast-rule"><text>弦</text></view>
+  </view>
+
   <view class="card form-card">
     <view class="form-heading">
       <text class="eyebrow">FOR LEI · 0819</text>
-      <text class="section-title">告诉星盘你的出生信息</text>
-      <text class="muted subtitle">保存后只有你自己的微信身份可以读取。</text>
+      <text class="section-title">写下你的出生信息</text>
+      <text class="muted subtitle">信息只与你的微信身份相连。</text>
     </view>
 
     <view class="field">
@@ -24,11 +31,11 @@
       <text class="field-label">性别</text>
       <radio-group class="gender-row" bindchange="onGenderChange">
         <label class="gender-option {{gender === 'female' ? 'selected' : ''}}">
-          <radio value="female" checked="{{gender === 'female'}}" color="#cf6da4" />
+          <radio value="female" checked="{{gender === 'female'}}" color="#7f3036" />
           <text>女</text>
         </label>
         <label class="gender-option {{gender === 'male' ? 'selected' : ''}}">
-          <radio value="male" checked="{{gender === 'male'}}" color="#8d72d0" />
+          <radio value="male" checked="{{gender === 'male'}}" color="#526158" />
           <text>男</text>
         </label>
       </radio-group>
@@ -45,11 +52,11 @@
         <text class="field-label">真太阳时校正</text>
         <text class="field-hint block">根据出生地自动处理</text>
       </view>
-      <switch checked="{{trueSolarEnabled}}" color="#cf6da4" bindchange="onTrueSolarChange" />
+      <switch checked="{{trueSolarEnabled}}" color="#7f3036" bindchange="onTrueSolarChange" />
     </view>
 
     <button class="primary-button save-button" loading="{{saving}}" disabled="{{saving}}" bindtap="save">
-      {{saving ? '正在排盘…' : '保存并查看命盘'}}
+      {{saving ? '正在排盘…' : '落笔·查看命盘'}}
     </button>
   </view>
 

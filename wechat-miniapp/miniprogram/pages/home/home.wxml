@@ -1,32 +1,43 @@
 <view class="page-shell home-page">
-  <view class="floating-note note-one">♪</view>
-  <view class="floating-note note-two">♫</view>
-  <view class="hero-card">
-    <text class="kicker">FOR LEI · 0819</text>
-    <view class="violin-stage">
-      <text class="spark left">✦</text>
-      <text class="violin">🎻</text>
-      <text class="spark right">✧</text>
+  <image class="poster-bg" src="/assets/wannan-violin-poster.jpg" mode="aspectFill" />
+  <view class="poster-wash"></view>
+
+  <view class="poster-copy">
+    <view class="poster-meta">
+      <text>皖南 · 弦上星河</text>
+      <text>FOR LEI 0819</text>
     </view>
     <text class="title">欢迎蕾蕾大王</text>
-    <text class="quote-label">今日反差语录</text>
+    <text class="poster-subtitle">山水入弦，星辰有信</text>
+    <view class="seal">0819</view>
+  </view>
+
+  <view class="bottom-sheet">
+    <view class="quote-heading">
+      <text>今日一签</text>
+      <text class="quote-place">WANNAN · ANHUI</text>
+    </view>
     <text class="quote">“{{quote}}”</text>
 
     <button class="primary-button start-button" bindtap="start">
-      {{hasProfile ? '开始聊一聊 ✦' : '开始测一测 ✦'}}
+      {{hasProfile ? '开始聊一聊' : '开始测一测'}}
     </button>
 
     <view wx:if="{{hasProfile}}" class="profile-pill">
       <text>{{profileLabel}}</text>
-      <text>今日还可问 {{remaining}} 次</text>
+      <text>今日余 {{remaining}} 问</text>
     </view>
-    <text wx:else class="intro">先保存出生资料，之后每次打开都能继续问。</text>
-    <text class="signature">LEI LEI · 0819 ♪</text>
+    <text wx:else class="intro">将生辰落于纸上，慢慢展开十二宫。</text>
+
+    <view wx:if="{{hasProfile}}" class="shortcut-row">
+      <button class="secondary-button shortcut" bindtap="openChart">查看命盘</button>
+      <button class="secondary-button shortcut" bindtap="openProfile">修改资料</button>
+    </view>
+    <view class="sheet-signature">
+      <text>白墙黛瓦 · 一弦一星河</text>
+      <text>蕾 · 八一九</text>
+    </view>
   </view>
 
-  <view wx:if="{{hasProfile}}" class="shortcut-row">
-    <button class="secondary-button shortcut" bindtap="openChart">查看命盘</button>
-    <button class="secondary-button shortcut" bindtap="openProfile">修改资料</button>
-  </view>
   <view wx:if="{{error}}" class="error-card">{{error}}</view>
 </view>

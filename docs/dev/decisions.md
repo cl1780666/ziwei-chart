@@ -107,5 +107,22 @@ Consequence: Mini Program identity and quota changes belong in `ziwei-mini`; do
 not reuse the website cookie as Mini Program identity. A real AppID must be linked
 to the environment before deployment or device testing.
 
+## D009 - The Mini Program Uses a Wannan Editorial Poster Visual System
+
+The personalized Mini Program uses an original vertical poster that combines an
+antique violin, Wannan mountains and water, and Hui-style white walls and dark
+roofs. Supporting pages use rice-paper ivory, ink green, walnut, and restrained
+burgundy with Song-style display typography. The direction should stay romantic,
+quiet, and editorial rather than returning to generic pink gradients or floating
+music-note decoration.
+
+The production image lives in `miniprogram/assets`; the browser mock under
+`design-preview/` mirrors the home composition for review before a real AppID is
+available.
+
+Consequence: future Mini Program visual changes should preserve poster hierarchy,
+legibility over the hero art, and a package-conscious compressed asset. Keep
+functional copy and controls in WXML instead of baking text into the image.
+
 [PROTOCOL]: Add a new decision when a choice affects future implementation,
 deployment, product behavior, or contributor workflow.
