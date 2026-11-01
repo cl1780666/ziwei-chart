@@ -22,10 +22,11 @@
 - Renamed the home quote feature to `蕾言蕾语` and made it randomly rotate every
   seven seconds without an immediate repeat. The compact translucent sheet
   clamps each quote to two lines so the artwork remains the primary visual.
-- Expanded `蕾言蕾语` from fourteen to one hundred unique short lines. The set
+- Expanded `蕾言蕾语` from fourteen to five hundred unique short lines. The set
   mixes playful relationship reversals, self-aware confidence, current short-
   video phrasing, and Wannan/violin references while avoiding explicit or
-  insulting material.
+  insulting material. A JSON mirror keeps the browser design preview on the same
+  five-hundred-line pool as the native Mini Program.
 - Expanded the original artwork into a nine-image Wannan and violin series. The
   profile page now uses an autumn tree masthead and courtyard scene, the chart
   page uses a quiet river-at-night scene, and the chat page uses a restrained

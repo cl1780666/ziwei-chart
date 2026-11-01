@@ -71,13 +71,10 @@
       '白墙黛瓦很安静，姐不一定',
       '小提琴有四根弦，姐的耐心看缘分'
     ]
-    fetch('../miniprogram/utils/quotes.js')
-      .then(response => response.text())
-      .then(source => {
-        const block = source.match(/const QUOTES = \[([\s\S]*?)\]\n\nconst LAST_QUOTE_KEY/)
-        if (!block) return
-        const loaded = Array.from(block[1].matchAll(/'([^']*)'/g), match => match[1])
-        if (loaded.length === 100) quotes = loaded
+    fetch('../miniprogram/utils/quotes-data.json')
+      .then(response => response.json())
+      .then(loaded => {
+        if (Array.isArray(loaded) && loaded.length === 500) quotes = loaded
       })
       .catch(() => {})
     let current = 0
