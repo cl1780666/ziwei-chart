@@ -19,7 +19,7 @@
 - Added an automatic five-scene home background rotation. The scenes crossfade
   every 6.5 seconds with a restrained slow push, require no visible controls,
   and stop their timers while the home page is hidden.
-- Renamed the home quote feature to `蕾言蕾语` and made it rotate every three
+- Renamed the home quote feature to `蕾言蕾语` and made it rotate every five
   seconds with a short fade. The compact translucent sheet clamps each quote to
   two lines so the artwork remains the primary visual.
 - Expanded the original artwork into a five-image Wannan and violin series. The
