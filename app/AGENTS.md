@@ -52,6 +52,12 @@ npm run test -- sync-zwknows
 `src/components/OpenSourceLinks.tsx`: GitHub repository and license links for
 open source attribution in the app shell.
 
+`src/components/WelcomeLeiLei.tsx`: Personalized `For Lei · 0819` entrance with
+romantic copy and motion-safe decorative elements.
+
+`src/components/icons/ViolinIcon.tsx`: Code-native violin illustration reused by
+the welcome screen and application shell.
+
 `src/lib/`: Business helpers for date handling, astrology support, true solar
 time, birthplace data, LLM wiring, and scoring.
 

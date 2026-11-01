@@ -41,6 +41,8 @@ app/tests/ - Tests outside source tree, currently including workflow validation.
 ## Important Files
 
 - `app/src/components/BirthForm.tsx` - birth input, birthplace matching entry, and true solar time options.
+- `app/src/components/WelcomeLeiLei.tsx` - personalized romantic entrance shown on page load.
+- `app/src/components/icons/ViolinIcon.tsx` - reusable inline violin artwork for the welcome and shell.
 - `app/src/components/OpenSourceLinks.tsx` - GitHub repository and license links for open source attribution.
 - `app/src/lib/true-solar-time.ts` - true solar time calculation and birthplace matching helpers.
 - `app/src/lib/birthplace-data.json` - local city/region coordinate dataset.

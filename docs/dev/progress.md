@@ -13,6 +13,15 @@
 
 ## Recently Completed
 
+- Personalized the public experience for Lei with a full-screen
+  "欢迎蕾蕾大王" entrance, a playful pink-violet theme, an original inline
+  violin illustration, floating musical notes, and concise `For Lei · 0819`
+  branding.
+- Added an opt-in, persistent background-music control for the official Spotify
+  embed of `If I Ain't Got You` by Alicia Keys. Playback starts only after a
+  visitor clicks the control and continues while the SPA stays open.
+- Adjusted navigation breakpoints so the personalized header remains readable on
+  tablet-width screens and uses the bottom navigation until desktop width.
 - Added a server-managed OpenAI path for visitors who do not provide a personal
   model key. The API key stays in Vercel environment variables and never enters
   the browser bundle.

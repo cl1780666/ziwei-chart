@@ -12,9 +12,12 @@ import { SettingsPanel } from '@/components/SettingsPanel'
 import { YearlyFortune } from '@/components/fortune'
 import { LifeKLine } from '@/components/kline'
 import { KLineIcon } from '@/components/icons/KLineIcon'
+import { ViolinIcon } from '@/components/icons/ViolinIcon'
 import { MatchAnalysis } from '@/components/match'
 import { GitHubLinkButton, OpenSourceFooterLinks } from '@/components/OpenSourceLinks'
 import { ShareCard } from '@/components/share'
+import { WelcomeLeiLei } from '@/components/WelcomeLeiLei'
+import { BackgroundMusic } from '@/components/BackgroundMusic'
 import { useChartStore } from '@/stores'
 
 type TabType = 'chart' | 'fortune' | 'kline' | 'match' | 'share'
@@ -31,6 +34,7 @@ export default function App() {
   const { chart } = useChartStore()
   const [showSettings, setShowSettings] = useState(false)
   const [activeTab, setActiveTab] = useState<TabType>('chart')
+  const [showWelcome, setShowWelcome] = useState(true)
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -38,6 +42,12 @@ export default function App() {
       <div className="aurora-bg" />
       {/* 星点背景 */}
       <div className="star-bg" />
+      {/* 献给蕾蕾的小提琴与音符装饰 */}
+      <div className="lei-page-decor" aria-hidden="true">
+        <span className="lei-page-note lei-page-note-left">♪</span>
+        <ViolinIcon className="lei-page-violin" />
+        <span className="lei-page-note lei-page-note-right">♫</span>
+      </div>
 
       {/* 头部 - 毛玻璃导航 */}
       <header
@@ -50,7 +60,7 @@ export default function App() {
       >
         <div className="max-w-[1600px] mx-auto flex items-center justify-between">
           {/* Logo + 导航 */}
-          <div className="flex items-center gap-10">
+          <div className="flex items-center gap-6">
             {/* Logo */}
             <div className="flex items-center gap-3">
               {/* Logo 图标 */}
@@ -63,7 +73,7 @@ export default function App() {
                   shadow-[0_0_20px_rgba(124,58,237,0.2)]
                 "
               >
-                <span className="text-lg text-gold">☆</span>
+                <ViolinIcon className="h-7 w-7 text-rose-200" />
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-star/10 to-transparent animate-pulse" />
               </div>
               {/* Logo 文字 */}
@@ -77,16 +87,16 @@ export default function App() {
                   "
                   style={{ fontFamily: 'var(--font-serif)' }}
                 >
-                  紫微知道
+                  蕾蕾的星盘
                 </h1>
                 <p className="text-text-muted text-xs hidden sm:block">
-                  AI 命理工具
+                  For Lei · 0819 ♪
                 </p>
               </div>
             </div>
 
             {/* 桌面端导航 */}
-            <nav className="hidden md:flex items-center gap-1">
+            <nav className="hidden lg:flex items-center gap-1">
               {TABS.map((tab) => (
                 <button
                   key={tab.key}
@@ -176,7 +186,7 @@ export default function App() {
       {/* 移动端底部导航 */}
       <nav
         className="
-          md:hidden fixed bottom-0 left-0 right-0 z-40
+          lg:hidden fixed bottom-0 left-0 right-0 z-40
           px-4 py-3
           bg-night/90 backdrop-blur-xl
           border-t border-white/[0.06]
@@ -208,7 +218,7 @@ export default function App() {
       </nav>
 
       {/* 主内容 */}
-      <main className="flex-1 px-4 lg:px-12 py-8 pb-24 md:pb-8">
+      <main className="flex-1 px-4 lg:px-12 py-8 pb-24 lg:pb-8">
         <div className="max-w-[1600px] mx-auto">
           {/* 命盘解读标签 */}
           {activeTab === 'chart' && (
@@ -320,17 +330,21 @@ export default function App() {
       {/* 底部 - 仅桌面端显示 */}
       <footer
         className="
-          hidden md:block
+          hidden lg:block
           py-6 text-center text-text-muted text-sm
           border-t border-white/[0.04]
         "
       >
         <p className="flex items-center justify-center gap-2">
-          <span className="text-gold/60">☆</span>
-          紫微知道 · 开源命理工具 · <OpenSourceFooterLinks />
-          <span className="text-star/60">☆</span>
+          <span className="text-rose-200/70">♪</span>
+          蕾蕾的星盘 · For Lei 0819 · <OpenSourceFooterLinks />
+          <span className="text-star-light/70">♡</span>
         </p>
       </footer>
+
+      {showWelcome && <WelcomeLeiLei onEnter={() => setShowWelcome(false)} />}
+
+      <BackgroundMusic />
 
       <Analytics />
     </div>
