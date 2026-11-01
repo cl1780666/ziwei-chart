@@ -3,6 +3,7 @@
 
   <block wx:elif="{{chart}}">
     <view class="card chart-hero">
+      <image class="chart-scene" src="/assets/wannan-night.jpg" mode="aspectFill" />
       <view class="chart-ribbon"><text>皖南 · 弦上星河</text><text>FOR LEI 0819</text></view>
       <text class="chart-kicker">一弦一星河</text>
       <text class="chart-title">蕾蕾的弦上星盘</text>

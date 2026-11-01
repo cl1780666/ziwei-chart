@@ -1,15 +1,14 @@
 <view class="page-shell home-page">
-  <image class="poster-bg" src="/assets/wannan-violin-poster.jpg" mode="aspectFill" />
+  <image class="poster-bg poster-bg-base" src="{{heroImages[visibleHeroIndex]}}" mode="aspectFill" />
+  <image class="poster-bg poster-bg-incoming {{incomingVisible ? 'is-visible' : ''}}" src="{{heroImages[incomingHeroIndex]}}" mode="aspectFill" />
   <view class="poster-wash"></view>
 
   <view class="poster-copy">
     <view class="poster-meta">
       <text>皖南 · 弦上星河</text>
-      <text>FOR LEI 0819</text>
     </view>
     <text class="title">欢迎蕾蕾大王</text>
     <text class="poster-subtitle">山水入弦，星辰有信</text>
-    <view class="seal">0819</view>
   </view>
 
   <view class="bottom-sheet">
@@ -24,7 +23,7 @@
     </button>
 
     <view wx:if="{{hasProfile}}" class="profile-pill">
-      <text>{{profileLabel}}</text>
+      <text>资料已保存</text>
       <text>今日余 {{remaining}} 问</text>
     </view>
     <text wx:else class="intro">将生辰落于纸上，慢慢展开十二宫。</text>
@@ -35,7 +34,6 @@
     </view>
     <view class="sheet-signature">
       <text>白墙黛瓦 · 一弦一星河</text>
-      <text>蕾 · 八一九</text>
     </view>
   </view>
 

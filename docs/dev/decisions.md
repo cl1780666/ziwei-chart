@@ -109,20 +109,24 @@ to the environment before deployment or device testing.
 
 ## D009 - The Mini Program Uses a Wannan Editorial Poster Visual System
 
-The personalized Mini Program uses an original vertical poster that combines an
-antique violin, Wannan mountains and water, and Hui-style white walls and dark
-roofs. Supporting pages use rice-paper ivory, ink green, walnut, and restrained
-burgundy with Song-style display typography. The direction should stay romantic,
-quiet, and editorial rather than returning to generic pink gradients or floating
-music-note decoration.
+The personalized Mini Program uses an original five-image poster series that
+combines antique violins, Wannan mountains and water, Hui-style white walls and
+dark roofs, a quiet courtyard, and an autumn tree. Supporting pages use
+rice-paper ivory, ink green, walnut, and restrained burgundy with Song-style
+display typography. The direction should stay romantic, quiet, and editorial
+rather than returning to generic pink gradients or floating music-note
+decoration.
 
 The production image lives in `miniprogram/assets`; the browser mock under
 `design-preview/` mirrors the home composition for review before a real AppID is
 available.
 
 Consequence: future Mini Program visual changes should preserve poster hierarchy,
-legibility over the hero art, and a package-conscious compressed asset. Keep
-functional copy and controls in WXML instead of baking text into the image.
+legibility over the artwork, and package-conscious compressed assets. Keep the
+home screen simple and avoid using `0819` as decorative branding there. Keep
+the automatic background rotation slow and control-free, and stop its timers
+when the page is hidden. Keep functional copy and controls in WXML instead of
+baking text into the image.
 
 [PROTOCOL]: Add a new decision when a choice affects future implementation,
 deployment, product behavior, or contributor workflow.

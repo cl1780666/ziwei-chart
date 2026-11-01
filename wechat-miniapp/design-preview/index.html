@@ -3,18 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>弦上星河 · 0819</title>
+  <title>弦上星河</title>
   <style>
     * { box-sizing: border-box; }
     html, body { margin: 0; min-height: 100%; background: #211e1b; }
     body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
-    .poster { position: relative; width: min(100vw, 430px); min-height: 100svh; margin: auto; overflow: hidden; background: #e8dac9 url("../miniprogram/assets/wannan-violin-poster.jpg") center/cover no-repeat; }
-    .poster::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,248,238,.12), transparent 42%, rgba(30,28,25,.38) 73%, rgba(30,26,23,.76)); }
+    .poster { position: relative; width: min(100vw, 430px); min-height: 100svh; margin: auto; overflow: hidden; background: #e8dac9; }
+    .bg { position: absolute; inset: -3%; background-position: center; background-size: cover; animation: drift 14s ease-in-out infinite alternate; }
+    .bg-base { background-image: url("../miniprogram/assets/wannan-violin-poster.jpg"); }
+    .bg-incoming { opacity: 0; transition: opacity 1.8s ease; }
+    .bg-incoming.visible { opacity: 1; }
+    .wash { position: absolute; z-index: 1; inset: 0; background: linear-gradient(180deg, rgba(255,248,238,.72), rgba(255,246,234,.12) 42%, transparent 55%, rgba(30,28,25,.38) 73%, rgba(30,26,23,.76)); }
+    @keyframes drift { from { transform: scale(1.02) translate(-.4%, 0); } to { transform: scale(1.07) translate(.8%, -.6%); } }
     .copy { position: absolute; z-index: 1; top: 28px; left: 24px; right: 24px; color: #483b36; }
-    .meta { display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(74,69,61,.28); color: #585a52; font-size: 10px; font-weight: 700; letter-spacing: 2px; }
+    .meta { display: flex; padding-bottom: 10px; border-bottom: 1px solid rgba(74,69,61,.28); color: #585a52; font-size: 10px; font-weight: 700; letter-spacing: 2px; }
     h1 { margin: 20px 0 0; font-family: "Songti SC", "STSong", serif; font-size: 34px; letter-spacing: 4px; }
     .sub { margin: 7px 0 0; color: #74675e; font-family: "Songti SC", serif; font-size: 14px; letter-spacing: 4px; }
-    .seal { display: grid; place-items: center; width: 44px; height: 44px; margin-top: 16px; border: 2px solid #812e34; color: #812e34; font-family: serif; font-size: 11px; font-weight: 700; transform: rotate(-4deg); }
     .sheet { position: absolute; z-index: 2; left: 14px; right: 14px; bottom: max(14px, env(safe-area-inset-bottom)); padding: 18px 18px 15px; border: 1px solid rgba(255,248,238,.6); border-radius: 7px; background: rgba(247,239,228,.94); box-shadow: 0 14px 40px rgba(24,20,18,.28); }
     .sheet-head { display: flex; justify-content: space-between; color: #7e3036; font-family: "Songti SC", serif; font-size: 14px; font-weight: 700; letter-spacing: 2px; }
     .place { color: #7b786f; font-family: sans-serif; font-size: 9px; letter-spacing: 1.5px; }
@@ -26,19 +30,43 @@
 </head>
 <body>
   <main class="poster">
+    <div class="bg bg-base"></div>
+    <div class="bg bg-incoming"></div>
+    <div class="wash"></div>
     <section class="copy">
-      <div class="meta"><span>皖南 · 弦上星河</span><span>FOR LEI 0819</span></div>
+      <div class="meta"><span>皖南 · 弦上星河</span></div>
       <h1>欢迎蕾蕾大王</h1>
       <p class="sub">山水入弦，星辰有信</p>
-      <div class="seal">0819</div>
     </section>
     <section class="sheet">
       <div class="sheet-head"><span>今日一签</span><span class="place">WANNAN · ANHUI</span></div>
       <p class="quote">“皖南的路会拐弯，姐的心情也会。”</p>
       <button class="start">开始测一测</button>
-      <div class="hint"><span>2002年8月19日 · 女</span><span>今日余 5 问</span></div>
-      <div class="signature"><span>白墙黛瓦 · 一弦一星河</span><span>蕾 · 八一九</span></div>
+      <div class="hint"><span>资料已保存</span><span>今日余 5 问</span></div>
+      <div class="signature"><span>白墙黛瓦 · 一弦一星河</span></div>
     </section>
   </main>
+  <script>
+    const backgrounds = [
+      '../miniprogram/assets/wannan-violin-poster.jpg',
+      '../miniprogram/assets/wannan-autumn-tree.jpg',
+      '../miniprogram/assets/wannan-courtyard.jpg',
+      '../miniprogram/assets/wannan-night.jpg',
+      '../miniprogram/assets/violin-rain-window.jpg'
+    ]
+    const base = document.querySelector('.bg-base')
+    const incoming = document.querySelector('.bg-incoming')
+    let current = 0
+    setInterval(() => {
+      const next = (current + 1) % backgrounds.length
+      incoming.style.backgroundImage = `url("${backgrounds[next]}")`
+      incoming.classList.add('visible')
+      setTimeout(() => {
+        base.style.backgroundImage = `url("${backgrounds[next]}")`
+        incoming.classList.remove('visible')
+        current = next
+      }, 1800)
+    }, 6500)
+  </script>
 </body>
 </html>

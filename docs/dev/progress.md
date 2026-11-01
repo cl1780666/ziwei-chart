@@ -13,6 +13,17 @@
 
 ## Recently Completed
 
+- Simplified the Mini Program home poster by removing the `0819` seal, date,
+  signature, and navigation branding. The entrance now keeps only the Lei
+  welcome, a daily quote, one primary action, and compact saved-state metadata.
+- Added an automatic five-scene home background rotation. The scenes crossfade
+  every 6.5 seconds with a restrained slow push, require no visible controls,
+  and stop their timers while the home page is hidden.
+- Expanded the original artwork into a five-image Wannan and violin series. The
+  profile page now uses an autumn tree masthead and courtyard scene, the chart
+  page uses a quiet river-at-night scene, and the chat page uses a restrained
+  violin-by-the-rain-window banner. All assets are compressed for the Mini
+  Program package and contain no baked-in interface copy.
 - Reworked the Mini Program visual system into a vertical editorial poster for
   Lei: an original violin and Wannan landscape hero, Hui-style white walls and
   dark roofs, rice-paper texture, ink green, walnut, and restrained burgundy.
@@ -144,6 +155,13 @@ Reverified on 2026-11-01 after the Mini Program Wannan poster redesign:
   WeChat DevTools 2.02.2609240.
 - The browser design preview rendered at a phone-width 9:16 composition with the
   title, quote panel, CTA, violin, Wannan landscape, and Hui architecture visible.
+
+Reverified on 2026-11-01 after the simplified home and expanded artwork pass:
+
+- The home browser mock contains no `0819`, birth-date, or seal element.
+- The Mini Program artwork package contains five compressed JPEG assets totaling
+  about 1.5 MB, with the autumn tree, courtyard, night-river, and rain-window
+  scenes assigned to the profile, chart, and chat pages.
 
 Live CloudBase verification on 2026-11-01:
 

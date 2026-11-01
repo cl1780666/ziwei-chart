@@ -7,6 +7,12 @@
     <button class="clear-button" bindtap="clearConversation">清空</button>
   </view>
 
+  <view class="chat-scene">
+    <image src="/assets/violin-rain-window.jpg" mode="aspectFill" />
+    <view class="chat-scene-shade"></view>
+    <text>雨落皖南 · 弦外慢聊</text>
+  </view>
+
   <scroll-view class="message-scroll" scroll-y enhanced show-scrollbar="{{false}}" scroll-into-view="{{scrollTarget}}">
     <view id="chat-top"></view>
     <view class="welcome-bubble">
