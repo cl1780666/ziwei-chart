@@ -1,0 +1,57 @@
+<view class="page-shell">
+  <view class="card form-card">
+    <view class="form-heading">
+      <text class="eyebrow">FOR LEI · 0819</text>
+      <text class="section-title">告诉星盘你的出生信息</text>
+      <text class="muted subtitle">保存后只有你自己的微信身份可以读取。</text>
+    </view>
+
+    <view class="field">
+      <text class="field-label">出生日期</text>
+      <picker mode="date" value="{{date}}" start="1920-01-01" end="2035-12-31" bindchange="onDateChange">
+        <view class="picker-value">{{date}} <text>›</text></view>
+      </picker>
+    </view>
+
+    <view class="field">
+      <text class="field-label">出生时辰</text>
+      <picker range="{{shichenOptions}}" value="{{shichenIndex}}" bindchange="onShichenChange">
+        <view class="picker-value">{{shichenOptions[shichenIndex]}} <text>›</text></view>
+      </picker>
+    </view>
+
+    <view class="field">
+      <text class="field-label">性别</text>
+      <radio-group class="gender-row" bindchange="onGenderChange">
+        <label class="gender-option {{gender === 'female' ? 'selected' : ''}}">
+          <radio value="female" checked="{{gender === 'female'}}" color="#cf6da4" />
+          <text>女</text>
+        </label>
+        <label class="gender-option {{gender === 'male' ? 'selected' : ''}}">
+          <radio value="male" checked="{{gender === 'male'}}" color="#8d72d0" />
+          <text>男</text>
+        </label>
+      </radio-group>
+    </view>
+
+    <view class="field">
+      <text class="field-label">出生地（可选）</text>
+      <input class="text-input" value="{{birthplace}}" placeholder="如：北京、成都、乌鲁木齐" bindinput="onBirthplaceInput" />
+      <text class="field-hint">输入城市或区县后，会自动匹配经度并校正真太阳时。</text>
+    </view>
+
+    <view class="switch-row">
+      <view>
+        <text class="field-label">真太阳时校正</text>
+        <text class="field-hint block">根据出生地自动处理</text>
+      </view>
+      <switch checked="{{trueSolarEnabled}}" color="#cf6da4" bindchange="onTrueSolarChange" />
+    </view>
+
+    <button class="primary-button save-button" loading="{{saving}}" disabled="{{saving}}" bindtap="save">
+      {{saving ? '正在排盘…' : '保存并查看命盘'}}
+    </button>
+  </view>
+
+  <view wx:if="{{error}}" class="error-card">{{error}}</view>
+</view>

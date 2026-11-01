@@ -11,6 +11,7 @@ Read these files before changing code:
 3. `docs/dev/project-map.md` - architecture, module ownership, data flow.
 4. `docs/dev/decisions.md` - decisions that must not be rediscovered.
 5. `app/AGENTS.md` - app-specific boundaries before touching `app/`.
+6. `wechat-miniapp/AGENTS.md` - Mini Program boundaries before touching `wechat-miniapp/`.
 
 If the task touches deployment, also read `docs/dev/workflow.md`.
 
@@ -35,6 +36,7 @@ docs/ - User-facing docs, licenses, plans, and development memory.
 99-* / - Source and reference collection.
 .github/workflows/ - CI and repository synchronization automation.
 cloudbase/ - CloudBase HTTP function source and release notes.
+wechat-miniapp/ - Native WeChat Mini Program, OPENID cloud function, and setup guide.
 </directory>
 
 <config>
@@ -99,6 +101,11 @@ static hosting serves the Vite build, while the `/api/chat` HTTP gateway route
 targets `cloudbase/functions/ziwei-ai`. The HTTP function calls Tencent TokenHub
 with server-only credentials. The previous Vercel mirror workflow remains in the
 repository during the cutover and is not the CloudBase release path.
+
+The companion WeChat Mini Program lives under `wechat-miniapp/`. It uses a
+separate event-triggered cloud function, trusted WeChat OPENID identity, the
+CloudBase database, and CloudBase AI. Keep it isolated from the website's
+cookie-based quota path.
 
 [PROTOCOL]: Update this file when the top-level architecture, commands, deployment
 model, or documentation contract changes.

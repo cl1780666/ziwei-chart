@@ -129,6 +129,15 @@ npm run dev
 
 ## 部署
 
+### 微信小程序
+
+`wechat-miniapp/` 提供原生微信小程序入口，包含出生资料、真太阳时校正、
+十二宫摘要、命盘多轮问答和按微信用户计算的每日额度。它通过云函数取得
+可信 OPENID，资料和聊天不会交给小程序前端自行判定身份。
+
+完整的 AppID、CloudBase 关联和云函数部署步骤见
+[`wechat-miniapp/README.md`](wechat-miniapp/README.md)。
+
 ### Tencent CloudBase
 
 将 Vite 构建产物上传到静态网站托管，并把 `/api/chat` 路由到
@@ -166,6 +175,7 @@ app/
 │   ├── knowledge/      # 静态紫微知识
 │   └── stores/         # 状态管理
 └── package.json
+wechat-miniapp/           # 原生微信小程序与 OPENID 云函数
 ```
 
 ## 开源协议与致谢

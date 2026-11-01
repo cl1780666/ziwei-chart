@@ -25,6 +25,15 @@ Primary runtime flow:
 8. Visitors without a personal key send grounded prompts to `/api/chat`, which
    enforces quota checks before streaming Tencent TokenHub output.
 
+The companion Mini Program has a separate runtime flow:
+
+1. WeChat Cloud Development supplies a trusted OPENID to `ziwei-mini`.
+2. The user saves a birth profile; the cloud function matches birthplace data,
+   applies true solar time, generates a chart with iztro, and stores a compact
+   serializable summary.
+3. Chat requests load that summary and recent history by OPENID, enforce a
+   Shanghai-day quota, call CloudBase AI, and persist the successful exchange.
+
 ## App Module Map
 
 <directory>
@@ -36,6 +45,8 @@ app/src/knowledge-db/ - Structured guidance database and retrieval pipeline.
 app/src/knowledge/ - Static Zi Wei Dou Shu knowledge modules.
 app/api/ - Vercel server functions for shared AI access and signed quota state.
 cloudbase/functions/ziwei-ai/ - CloudBase HTTP function for the public shared AI route.
+wechat-miniapp/miniprogram/ - Native WXML/WXSS/JS pages and OPENID cloud-function client.
+wechat-miniapp/cloudfunctions/ziwei-mini/ - Mini Program profile, chart, chat, and quota backend.
 app/tests/ - Tests outside source tree, currently including workflow validation.
 </directory>
 
@@ -54,6 +65,9 @@ app/tests/ - Tests outside source tree, currently including workflow validation.
 - `app/api/chat.ts` - Vercel-compatible TokenHub proxy, validation, and stream forwarding.
 - `app/api/rate-limit.ts` - signed daily quota cookie helpers.
 - `cloudbase/functions/ziwei-ai/index.js` - deployable CloudBase TokenHub proxy.
+- `wechat-miniapp/miniprogram/pages/` - personalized home, birth profile, chart, and chat pages.
+- `wechat-miniapp/cloudfunctions/ziwei-mini/index.js` - OPENID-scoped persistence and CloudBase AI calls.
+- `wechat-miniapp/cloudfunctions/ziwei-mini/domain.js` - deterministic profile validation, true solar time, and chart context.
 - `app/src/knowledge-db/retrieval/retrieve.ts` - guidance retrieval.
 - `.github/workflows/sync-zwknows.yml` - deployment mirror synchronization.
 
@@ -70,6 +84,9 @@ app/tests/ - Tests outside source tree, currently including workflow validation.
 - `app/src/knowledge-db/` owns retrieval data and prompt-grounding context.
 - `app/api/` and `cloudbase/functions/ziwei-ai/` own server-only credentials,
   request validation, and shared limits for their deployment targets.
+- `wechat-miniapp/cloudfunctions/ziwei-mini/` owns Mini Program identity, durable
+  per-user state, quota enforcement, and model calls; Mini Program pages must not
+  accept OPENID from user-controlled request data.
 - Workflow tests under `app/tests/` protect repository automation contracts.
 
 [PROTOCOL]: Update this file when module ownership, data flow, important files, or

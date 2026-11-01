@@ -108,6 +108,38 @@ The gateway domain is
 The shared model is limited to the claimed `deepseek-v4-flash-202605` free-trial
 resource; keep TokenHub pay-as-you-go disabled.
 
+## WeChat Mini Program Release
+
+Import `wechat-miniapp/` into WeChat DevTools after replacing `touristappid` in
+`project.config.json` with the registered Mini Program AppID. Associate that
+public-platform account with the existing Tencent Cloud account, then import or
+convert the environment `supposed-bovid-d4gcywfkh2af1db6e` in the DevTools cloud
+environment manager.
+
+Deploy `wechat-miniapp/cloudfunctions/ziwei-mini` as an event-triggered function
+with cloud-side dependency installation. It expects `wx-server-sdk` 4.0.2 and
+`iztro` 2.5.8. Optional environment values are:
+
+```text
+MINI_AI_DAILY_LIMIT=5
+MINI_AI_MODEL=deepseek-v4.1-flash
+```
+
+Enable the selected model in CloudBase AI and confirm eligible Growth Plan or
+resource-point capacity. Keep the `ziwei_mini_users` collection inaccessible to
+direct client reads and writes; all access goes through the OPENID-aware cloud
+function.
+
+Local deterministic checks can run with any Node runtime that resolves the app's
+installed `iztro` dependency:
+
+```powershell
+NODE_PATH=app/node_modules node --test wechat-miniapp/cloudfunctions/ziwei-mini/domain.test.js
+```
+
+Before review submission, verify profile persistence, twelve-palace rendering,
+two-turn context, quota decrement, and cross-account isolation on real devices.
+
 ## Legacy GitHub Sync to Vercel Repository
 
 Source repo: `ziweiknows/ziwei-chart`

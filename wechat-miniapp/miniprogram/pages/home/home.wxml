@@ -1,0 +1,32 @@
+<view class="page-shell home-page">
+  <view class="floating-note note-one">♪</view>
+  <view class="floating-note note-two">♫</view>
+  <view class="hero-card">
+    <text class="kicker">FOR LEI · 0819</text>
+    <view class="violin-stage">
+      <text class="spark left">✦</text>
+      <text class="violin">🎻</text>
+      <text class="spark right">✧</text>
+    </view>
+    <text class="title">欢迎蕾蕾大王</text>
+    <text class="quote-label">今日反差语录</text>
+    <text class="quote">“{{quote}}”</text>
+
+    <button class="primary-button start-button" bindtap="start">
+      {{hasProfile ? '开始聊一聊 ✦' : '开始测一测 ✦'}}
+    </button>
+
+    <view wx:if="{{hasProfile}}" class="profile-pill">
+      <text>{{profileLabel}}</text>
+      <text>今日还可问 {{remaining}} 次</text>
+    </view>
+    <text wx:else class="intro">先保存出生资料，之后每次打开都能继续问。</text>
+    <text class="signature">LEI LEI · 0819 ♪</text>
+  </view>
+
+  <view wx:if="{{hasProfile}}" class="shortcut-row">
+    <button class="secondary-button shortcut" bindtap="openChart">查看命盘</button>
+    <button class="secondary-button shortcut" bindtap="openProfile">修改资料</button>
+  </view>
+  <view wx:if="{{error}}" class="error-card">{{error}}</view>
+</view>

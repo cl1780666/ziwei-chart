@@ -4,7 +4,7 @@
 
 ## Current State
 
-- Branch: `main`
+- Branch: `codex/wechat-miniapp`
 - Source repository: `ziweiknows/ziwei-chart`
 - Deployment mirror: `ruijayfeng/zwknows`
 - Public hosting migration target: Tencent CloudBase
@@ -13,6 +13,19 @@
 
 ## Recently Completed
 
+- Added a native WeChat Mini Program under `wechat-miniapp/` with the personalized
+  Lei welcome, randomized contrast quotes, a 2002-08-19 female default profile,
+  local birthplace matching, true-solar-time correction, twelve-palace summaries,
+  and chart-grounded multi-turn chat.
+- Added the event-triggered `ziwei-mini` cloud function. It uses trusted WeChat
+  OPENID identity, stores each user's profile, compact chat history, and five-use
+  daily quota in CloudBase, and calls the mainland `deepseek-v4.1-flash` model
+  through CloudBase AI without shipping a provider key to the client.
+- Added focused Node tests for profile validation, true-solar-time correction,
+  chart serialization, and Shanghai-day quota rollover. All four tests pass.
+  Every Mini Program JavaScript and JSON file passes syntax parsing, and all WXML
+  and WXSS files pass the official compilers bundled with WeChat DevTools
+  2.02.2609240.
 - Added chart-grounded multi-turn chat below the natal interpretation. Visitors
   can ask a specific question directly or continue after the full report; recent
   exchanges remain available while the current chart is open, and each shared
@@ -137,6 +150,13 @@ Live CloudBase verification on 2026-11-01:
 
 ## Open Risks
 
+- The Mini Program cannot be previewed or deployed until a real Mini Program
+  AppID is registered, associated with the CloudBase environment, and imported
+  into WeChat DevTools. The repository currently uses `touristappid` only as an
+  import placeholder.
+- The existing environment was created from the Tencent Cloud side. Its account
+  must be associated with the WeChat public-platform account before the Mini
+  Program can use OPENID cloud calls and the event function.
 - `CLAUDE.md` currently reads as mojibake in this environment and should not be
   treated as the primary agent entry point.
 - The birthplace matching experience depends on the quality and coverage of the
@@ -154,6 +174,9 @@ Live CloudBase verification on 2026-11-01:
 
 ## Next Useful Work
 
+- Associate the Mini Program AppID with the CloudBase environment, deploy
+  `ziwei-mini` with cloud-side dependency installation, and run a two-account
+  device test before submitting the Mini Program for review.
 - Bind a custom domain when one is available so visitors no longer see the
   CloudBase test-domain warning.
 - Consider replacing or migrating the garbled `CLAUDE.md` once the new docs have

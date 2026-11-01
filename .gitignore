@@ -37,6 +37,7 @@ coverage/
 *.tgz
 .eslintcache
 .worktrees/
+wechat-miniapp/project.private.config.json
 
 # Local copies of licensed background music (the website streams the originals)
 app/public/audio/*.mp3

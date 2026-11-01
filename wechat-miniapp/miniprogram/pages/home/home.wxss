@@ -1,0 +1,126 @@
+.home-page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-card {
+  position: relative;
+  z-index: 2;
+  padding: 54rpx 38rpx 40rpx;
+  border: 1rpx solid rgba(190, 110, 159, 0.18);
+  border-radius: 44rpx;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 30rpx 80rpx rgba(121, 61, 102, 0.13);
+  text-align: center;
+}
+
+.kicker,
+.quote-label,
+.signature,
+.intro,
+.title,
+.quote {
+  display: block;
+}
+
+.kicker {
+  color: #bb6693;
+  font-size: 22rpx;
+  font-weight: 700;
+  letter-spacing: 5rpx;
+}
+
+.violin-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 210rpx;
+}
+
+.violin {
+  font-size: 128rpx;
+  transform: rotate(-12deg);
+  filter: drop-shadow(0 18rpx 18rpx rgba(123, 63, 93, 0.2));
+}
+
+.spark {
+  color: #d79a45;
+  font-size: 34rpx;
+}
+
+.spark.left { margin-right: 22rpx; }
+.spark.right { margin-left: 18rpx; }
+
+.title {
+  color: #543450;
+  font-family: serif;
+  font-size: 54rpx;
+  font-weight: 700;
+  letter-spacing: 3rpx;
+}
+
+.quote-label {
+  margin-top: 28rpx;
+  color: #bf729b;
+  font-size: 22rpx;
+  letter-spacing: 4rpx;
+}
+
+.quote {
+  min-height: 96rpx;
+  margin-top: 14rpx;
+  color: #6f526c;
+  font-size: 30rpx;
+  line-height: 1.65;
+}
+
+.start-button {
+  margin-top: 34rpx;
+}
+
+.profile-pill {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 28rpx;
+  padding: 18rpx 22rpx;
+  border-radius: 20rpx;
+  color: #8b617d;
+  background: #fff3f8;
+  font-size: 23rpx;
+}
+
+.intro {
+  margin-top: 24rpx;
+  color: #9b8698;
+  font-size: 24rpx;
+}
+
+.signature {
+  margin-top: 34rpx;
+  color: #c4a0b4;
+  font-size: 20rpx;
+  letter-spacing: 3rpx;
+}
+
+.shortcut-row {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 18rpx;
+  margin-top: 24rpx;
+}
+
+.shortcut { flex: 1; }
+
+.floating-note {
+  position: absolute;
+  z-index: 1;
+  color: rgba(187, 102, 147, 0.2);
+  font-size: 68rpx;
+}
+
+.note-one { top: 90rpx; left: 20rpx; transform: rotate(-15deg); }
+.note-two { right: 14rpx; bottom: 180rpx; transform: rotate(12deg); }

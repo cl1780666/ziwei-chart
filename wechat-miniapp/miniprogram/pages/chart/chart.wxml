@@ -1,0 +1,46 @@
+<view class="page-shell">
+  <view wx:if="{{loading}}" class="loading-card">正在展开星盘…</view>
+
+  <block wx:elif="{{chart}}">
+    <view class="card chart-hero">
+      <text class="chart-kicker">FOR LEI · 0819</text>
+      <text class="chart-title">蕾蕾的紫微命盘</text>
+      <text class="chart-date">{{profile.year}}年{{profile.month}}月{{profile.day}}日 · {{profile.gender === 'female' ? '女命' : '男命'}}</text>
+      <view class="tag-row">
+        <text class="tag">{{chart.fiveElementsClass}}</text>
+        <text class="tag">{{chart.zodiac}}</text>
+        <text class="tag">{{chart.sign}}</text>
+      </view>
+      <view wx:if="{{chart.timeCorrection.applied}}" class="correction-note">
+        已按 {{chart.timeCorrection.locationName}} 校正 {{chart.timeCorrection.correctionMinutes}} 分钟，采用 {{chart.timeCorrection.correctedShichen}}
+      </view>
+    </view>
+
+    <view class="summary-grid">
+      <view class="summary-item"><text>命主</text><text class="summary-strong">{{chart.soul || '—'}}</text></view>
+      <view class="summary-item"><text>身主</text><text class="summary-strong">{{chart.body || '—'}}</text></view>
+      <view class="summary-item"><text>命宫</text><text class="summary-strong">{{chart.soulPalaceBranch || '—'}}</text></view>
+      <view class="summary-item"><text>身宫</text><text class="summary-strong">{{chart.bodyPalaceBranch || '—'}}</text></view>
+    </view>
+
+    <text class="section-title palace-heading">十二宫</text>
+    <view class="palace-list">
+      <view wx:for="{{chart.palaces}}" wx:key="name" class="card palace-card">
+        <view class="palace-head">
+          <view>
+            <text class="palace-name">{{item.name}}</text>
+            <text wx:if="{{item.isBodyPalace}}" class="body-mark">身宫</text>
+          </view>
+          <text class="palace-meta">{{item.stemBranch}} · {{item.decadalRange || '—'}}</text>
+        </view>
+        <text class="star-line">主星：{{item.majorStarsText}}</text>
+        <text wx:if="{{item.minorStarsText}}" class="star-line minor">辅星：{{item.minorStarsText}}</text>
+      </view>
+    </view>
+
+    <button class="primary-button chat-button" bindtap="openChat">问问星图先生 ✦</button>
+    <button class="secondary-button edit-button" bindtap="editProfile">修改出生资料</button>
+  </block>
+
+  <view wx:if="{{error}}" class="error-card">{{error}}</view>
+</view>

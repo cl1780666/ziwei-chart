@@ -1,0 +1,53 @@
+.form-card { padding: 38rpx 32rpx; }
+
+.form-heading { margin-bottom: 34rpx; }
+.form-heading text { display: block; }
+.eyebrow { margin-bottom: 12rpx; color: #bf729b; font-size: 21rpx; letter-spacing: 4rpx; }
+.subtitle { font-size: 24rpx; line-height: 1.6; }
+
+.field { margin-top: 28rpx; }
+.field-label { color: #67465f; font-size: 26rpx; font-weight: 600; }
+.field-hint { margin-top: 10rpx; color: #a08c9e; font-size: 22rpx; line-height: 1.5; }
+.block { display: block; }
+
+.picker-value,
+.text-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 88rpx;
+  margin-top: 12rpx;
+  padding: 0 24rpx;
+  border: 1rpx solid rgba(161, 105, 139, 0.18);
+  border-radius: 20rpx;
+  background: #fff8fb;
+  color: #5e455b;
+  font-size: 27rpx;
+}
+
+.picker-value { display: flex; align-items: center; justify-content: space-between; }
+.text-input { line-height: 88rpx; }
+
+.gender-row { display: flex; gap: 18rpx; margin-top: 12rpx; }
+.gender-option {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 84rpx;
+  border: 1rpx solid rgba(161, 105, 139, 0.15);
+  border-radius: 20rpx;
+  background: #fff9fc;
+}
+.gender-option.selected { border-color: rgba(207, 109, 164, 0.45); background: #fff0f7; }
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 30rpx;
+  padding: 24rpx;
+  border-radius: 22rpx;
+  background: #fff8fb;
+}
+
+.save-button { margin-top: 38rpx; }

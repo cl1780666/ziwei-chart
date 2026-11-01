@@ -1,0 +1,13 @@
+{
+  "desc": "For Lei · 0819 页面索引",
+  "rules": [
+    {
+      "action": "allow",
+      "page": "pages/home/home"
+    },
+    {
+      "action": "disallow",
+      "page": "*"
+    }
+  ]
+}

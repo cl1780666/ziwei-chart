@@ -91,5 +91,21 @@ TokenHub free-trial exhaustion returns a friendly unavailable message. It does
 not affect deterministic chart, matching, fortune, or K-line features, and no
 postpaid service is required by this design.
 
+## D008 - The WeChat Mini Program Uses OPENID and an Event Cloud Function
+
+The native Mini Program uses `wx.cloud.callFunction` to call the event-triggered
+`ziwei-mini` backend. The cloud function obtains OPENID from WeChat runtime
+context instead of accepting a user identifier from the client. Profiles, compact
+chat history, and daily quota live in the `ziwei_mini_users` CloudBase collection.
+
+The Mini Program calls `deepseek-v4.1-flash` through `wx-server-sdk` CloudBase AI,
+which keeps provider credentials out of the client and can consume eligible Mini
+Program Growth Plan quota. The website continues to use its existing TokenHub
+HTTP function and signed browser cookie allowance.
+
+Consequence: Mini Program identity and quota changes belong in `ziwei-mini`; do
+not reuse the website cookie as Mini Program identity. A real AppID must be linked
+to the environment before deployment or device testing.
+
 [PROTOCOL]: Add a new decision when a choice affects future implementation,
 deployment, product behavior, or contributor workflow.

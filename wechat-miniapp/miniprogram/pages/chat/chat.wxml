@@ -1,0 +1,41 @@
+<view class="chat-page">
+  <view class="chat-header">
+    <view>
+      <text class="chat-title">星图先生</text>
+      <text class="chat-subtitle">结合当前命盘回答 · 今日剩余 {{remaining}} 次</text>
+    </view>
+    <button class="clear-button" bindtap="clearConversation">清空</button>
+  </view>
+
+  <scroll-view class="message-scroll" scroll-y enhanced show-scrollbar="{{false}}" scroll-into-view="{{scrollTarget}}">
+    <view id="chat-top"></view>
+    <view class="welcome-bubble">
+      <text class="avatar">✦</text>
+      <view>
+        <text class="bubble-name">星图先生</text>
+        <text class="bubble-copy">命盘已经备好。想聊感情、事业或最近的运势，都可以直接问。</text>
+      </view>
+    </view>
+
+    <view wx:if="{{messages.length === 0}}" class="quick-list">
+      <button wx:for="{{quickQuestions}}" wx:key="*this" class="quick-button" data-question="{{item}}" bindtap="askQuick">{{item}}</button>
+    </view>
+
+    <view wx:for="{{messages}}" wx:key="index" class="message-row {{item.role}}">
+      <view class="message-bubble">
+        <text selectable>{{item.content}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{sending}}" class="message-row assistant">
+      <view class="message-bubble thinking"><text>正在看盘</text><text class="dots">···</text></view>
+    </view>
+    <view wx:if="{{error}}" class="error-card chat-error">{{error}}</view>
+    <view id="chat-bottom" class="chat-bottom"></view>
+  </scroll-view>
+
+  <view class="composer">
+    <textarea class="question-input" value="{{question}}" placeholder="问一个具体的问题…" maxlength="500" auto-height bindinput="onInput" />
+    <button class="send-button" disabled="{{sending || !question}}" bindtap="send">发送</button>
+  </view>
+</view>
