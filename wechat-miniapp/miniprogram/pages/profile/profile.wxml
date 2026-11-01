@@ -20,7 +20,7 @@
     <view class="form-heading">
       <text class="eyebrow">FOR LEI · 0819</text>
       <text class="section-title">写下你的出生信息</text>
-      <text class="muted subtitle">信息只与你的微信身份相连。</text>
+      <text class="muted subtitle">资料与聊天只保存在这部手机，换手机不会同步。清缓存或卸载后会丢失。</text>
     </view>
 
     <view class="field">
@@ -68,6 +68,7 @@
     <button class="primary-button save-button" loading="{{saving}}" disabled="{{saving}}" bindtap="save">
       {{saving ? '正在排盘…' : '落笔·查看命盘'}}
     </button>
+    <text class="field-hint block">排盘时会临时发送出生资料；问答时会临时发送资料和最近对话，云端不保存这些内容。</text>
   </view>
 
   <view wx:if="{{error}}" class="error-card">{{error}}</view>

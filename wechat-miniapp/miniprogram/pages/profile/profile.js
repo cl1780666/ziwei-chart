@@ -73,7 +73,7 @@ Page({
         birthplace: this.data.birthplace.trim(),
         trueSolarEnabled: this.data.trueSolarEnabled,
       })
-      wx.showToast({ title: '命盘已保存', icon: 'success' })
+      wx.showToast({ title: '命盘已存本机', icon: 'success' })
       setTimeout(() => wx.redirectTo({ url: '/pages/chart/chart' }), 500)
     } catch (error) {
       this.setData({ error: error.message })

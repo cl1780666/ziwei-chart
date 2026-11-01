@@ -91,21 +91,37 @@ TokenHub free-trial exhaustion returns a friendly unavailable message. It does
 not affect deterministic chart, matching, fortune, or K-line features, and no
 postpaid service is required by this design.
 
-## D008 - The WeChat Mini Program Uses OPENID and an Event Cloud Function
+## D008 - The Mini Program Uses HTTP WeChat Login and Trusted CloudBase UID
 
-The native Mini Program uses `wx.cloud.callFunction` to call the event-triggered
-`ziwei-mini` backend. The cloud function obtains OPENID from WeChat runtime
-context instead of accepting a user identifier from the client. Profiles, compact
-chat history, and daily quota live in the `ziwei_mini_users` CloudBase collection.
+The paid PostgreSQL environment is not selectable in WeChat DevTools' native
+environment conversion. The native Mini Program therefore uses CloudBase JS SDK
+OpenID login with `useWxCloud: false`, then authenticated SDK `callFunction` to
+invoke the event-triggered `ziwei-mini` backend. The enabled identity source is
+the registered Mini Program AppID; the SDK exchanges the one-use `wx.login` code.
 
-The Mini Program calls `deepseek-v4.1-flash` through `wx-server-sdk` CloudBase AI,
-which keeps provider credentials out of the client and can consume eligible Mini
-Program Growth Plan quota. The website continues to use its existing TokenHub
-HTTP function and signed browser cookie allowance.
+The cloud function gets its trusted UID through the Node SDK's runtime
+`auth().getUserInfo()` and rejects missing or anonymous identities. It never
+accepts a user identifier from event data. Documents are keyed as `uid:<uid>`;
+only daily quota, request leases, and necessary timestamps remain in
+`ziwei_mini_users`.
+The PG environment provides document operations through `pgdoc`, with client
+database access disabled. The existing per-user transactional reservation,
+refund, and account isolation rules remain in force. Birth profiles, charts,
+and chats use account-scoped local storage on each device. The same account on
+another phone must not receive any earlier device's personal records.
+
+The Mini Program's backend calls the fixed, owned website `/api/chat` endpoint
+to reuse the already configured TokenHub `deepseek-v4-flash-202605` free-trial
+resource. The server-only adapter forwards messages without user cookies or
+page-supplied URLs, reads the Responses SSE protocol, and times out after 80
+seconds. Its own durable UID quota is twenty questions per Shanghai day; the
+website retains its five-request browser allowance and four-per-minute IP burst
+guard. No separate CloudBase AI activation or new provider key is required.
 
 Consequence: Mini Program identity and quota changes belong in `ziwei-mini`; do
-not reuse the website cookie as Mini Program identity. A real AppID must be linked
-to the environment before deployment or device testing.
+not reuse the website cookie as Mini Program identity. Authorize and enable
+the Mini Program identity source before device testing. Keep all provider and
+management credentials out of the bundled client SDK and page code.
 
 ## D009 - The Mini Program Uses a Wannan Editorial Poster Visual System
 
@@ -128,6 +144,26 @@ home screen simple and avoid using `0819` as decorative branding there. Keep
 the automatic background rotation slow and control-free, and stop its timers
 when the page is hidden. Keep functional copy and controls in WXML instead of
 baking text into the image.
+
+## D010 - Personal Mini Program Content Stays on the Current Device
+
+The user explicitly rejected backend retention and cross-device synchronization,
+including two phones using the same WeChat account. Birth profiles, chart
+summaries, and chat history therefore belong only in that device's local storage.
+Clearing local data or reinstalling can lose these records; do not restore them
+from the cloud or add a cloud fallback.
+
+Chart calculation and AI requests still transiently send the needed profile,
+question, and bounded recent conversation to the server/model. The backend
+recalculates charts and validates history without retaining personal content.
+Only the authenticated account's quota persists in the cloud. Database field
+allowlisting strips old content while keeping its counter; releases must also
+check for unvisited legacy documents and clean them before completion.
+
+Application error logs use fixed codes and HTTP status only. Never log request
+or response text, provider error bodies, or arbitrary error messages that could
+echo a prompt. This application-level rule is not a claim about third-party
+provider data-retention terms.
 
 [PROTOCOL]: Add a new decision when a choice affects future implementation,
 deployment, product behavior, or contributor workflow.

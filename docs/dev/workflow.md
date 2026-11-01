@@ -112,33 +112,75 @@ resource; keep TokenHub pay-as-you-go disabled.
 
 Import `wechat-miniapp/` into WeChat DevTools with the registered Mini Program
 AppID `wx7284ee2afe7ed462`, which is already stored in `project.config.json`.
-Associate that public-platform account with the existing Tencent Cloud account,
-then import or convert the environment `supposed-bovid-d4gcywfkh2af1db6e` in the
-DevTools cloud environment manager.
+The paid environment `supposed-bovid-d4gcywfkh2af1db6e` is PostgreSQL and is not
+selectable in DevTools' native environment conversion. Authorize the Mini Program
+under that environment and enable the exact AppID identity source. The bundled
+CloudBase JS SDK 3.10.4 uses HTTP OpenID login and authenticated `callFunction`.
+Register `https://supposed-bovid-d4gcywfkh2af1db6e.api.tcloudbasegateway.com`
+as a request legal domain in the Mini Program backend. Never add an AppSecret,
+admin API key, or user identifier to client requests.
+
+The production Auth/Functions client bundle is checked into `miniprogram/vendor`
+so DevTools does not need to build npm. To rebuild from `wechat-miniapp/`, run
+`pnpm install --ignore-scripts` and `pnpm build:sdk`. The script preserves SDK
+licenses and enforces a 2 MiB maximum for the whole main package.
 
 Deploy `wechat-miniapp/cloudfunctions/ziwei-mini` as an event-triggered function
 with cloud-side dependency installation. It expects `wx-server-sdk` 4.0.2 and
-`iztro` 2.5.8. Optional environment values are:
+`iztro` 2.5.8, plus `@cloudbase/node-sdk` 3.17.2 for trusted runtime identity.
+Set the deployed execution timeout to 90 seconds in the cloud
+console. For CLI deployments, run `tcb functions:deploy ziwei-mini` from
+`wechat-miniapp/`; its `cloudbaserc.json` declares the event handler, Node.js
+20.19 runtime, dependency installation, and 90-second timeout. This execution
+timeout must remain below the two-minute pending-request lease used to recover
+abandoned requests. SDK request timeout alone does not configure execution time.
+Optional environment values are:
 
 ```text
-MINI_AI_DAILY_LIMIT=5
-MINI_AI_MODEL=deepseek-v4.1-flash
+MINI_AI_DAILY_LIMIT=20
 ```
 
-Enable the selected model in CloudBase AI and confirm eligible Growth Plan or
-resource-point capacity. Keep the `ziwei_mini_users` collection inaccessible to
-direct client reads and writes; all access goes through the OPENID-aware cloud
-function.
+The Mini Program backend reuses the existing website's TokenHub `/api/chat`
+service through a fixed server-only URL. Keep that service and its already
+configured free-trial resource available; no separate CloudBase AI activation
+or Mini Program model key is needed. The adapter omits cookies, rejects redirects,
+and aborts after 80 seconds. The website's existing four-per-minute IP burst
+guard also applies to cloud-function egress; upstream failures refund the Mini
+Program reservation. Its own default allowance is twenty questions per user
+per Shanghai day, while the website browser quota remains five.
+
+Enable `pgdoc` in the PG Document editor, create the
+`ziwei_mini_users` collection, and keep it inaccessible to direct client reads
+and writes. All access goes through the UID-aware cloud function, which rejects
+anonymous or missing authenticated runtime identity.
+
+This collection is quota-only: never store profiles, charts, questions, or
+answers. Each phone uses account-scoped local storage for its personal content,
+with no cloud import or cross-device synchronization. On upgrades from the old
+cloud-history version, deploy the quota-only function first, let old in-flight
+calls finish within their 90-second execution window, and remove legacy personal
+fields while preserving existing quota. The new store automatically allowlists
+any document it reads or writes; check the complete collection for unvisited
+legacy records as well. Recompile and regenerate the device preview afterward.
+
+Deploy the matching privacy-safe `ziwei-ai` proxy code in place, keeping its
+existing server environment configuration. Proxy logs must contain only fixed
+error codes and HTTP status, never provider error bodies or arbitrary exception
+messages that may echo private input. Run its local mock verification with
+`node --test cloudbase/functions/ziwei-ai/privacy.test.js`.
 
 Local deterministic checks can run with any Node runtime that resolves the app's
 installed `iztro` dependency:
 
 ```powershell
-NODE_PATH=app/node_modules node --test wechat-miniapp/cloudfunctions/ziwei-mini/domain.test.js
+NODE_PATH=app/node_modules node --test wechat-miniapp/cloudfunctions/ziwei-mini/*.test.js wechat-miniapp/tests/*.test.js
 ```
 
-Before review submission, verify profile persistence, twelve-palace rendering,
-two-turn context, quota decrement, and cross-account isolation on real devices.
+Before review submission, verify current-device profile/chat persistence,
+twelve-palace rendering, two-turn context, quota decrement, account isolation,
+and that the same account on a second phone sees no personal data. Inspect the
+quota collection after a successful conversation to confirm no personal fields
+were recreated.
 
 ## Legacy GitHub Sync to Vercel Repository
 

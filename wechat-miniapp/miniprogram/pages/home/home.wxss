@@ -172,12 +172,24 @@
 }
 
 .sheet-signature {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-top: 14rpx;
   color: #989085;
   font-size: 17rpx;
   letter-spacing: 2rpx;
 }
+
+.privacy-clear {
+  margin: 0;
+  padding: 5rpx 0 5rpx 16rpx;
+  color: #7b6c63;
+  background: transparent;
+  font-size: 19rpx;
+  line-height: 1.5;
+}
+.privacy-clear::after { border: 0; }
 
 .error-card {
   position: relative;

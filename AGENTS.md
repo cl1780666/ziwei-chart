@@ -36,7 +36,7 @@ docs/ - User-facing docs, licenses, plans, and development memory.
 99-* / - Source and reference collection.
 .github/workflows/ - CI and repository synchronization automation.
 cloudbase/ - CloudBase HTTP function source and release notes.
-wechat-miniapp/ - Native WeChat Mini Program, OPENID cloud function, and setup guide.
+wechat-miniapp/ - Native WeChat Mini Program, authenticated cloud function, and setup guide.
 </directory>
 
 <config>
@@ -103,9 +103,12 @@ with server-only credentials. The previous Vercel mirror workflow remains in the
 repository during the cutover and is not the CloudBase release path.
 
 The companion WeChat Mini Program lives under `wechat-miniapp/`. It uses a
-separate event-triggered cloud function, trusted WeChat OPENID identity, the
-CloudBase database, and CloudBase AI. Keep it isolated from the website's
-cookie-based quota path.
+separate event-triggered cloud function, trusted CloudBase runtime UID identity
+after HTTP WeChat OpenID login, a quota-only CloudBase database, and the existing
+shared TokenHub HTTP service. Birth profiles, chart summaries, and chat history
+belong only in the current device's local storage; do not add cloud content
+sync. Keep its per-user quota isolated from the website's cookie-based quota
+path.
 
 [PROTOCOL]: Update this file when the top-level architecture, commands, deployment
 model, or documentation contract changes.

@@ -13,6 +13,75 @@
 
 ## Recently Completed
 
+- Replaced Mini Program cloud content storage with device-local, account-scoped
+  profiles, chart summaries, and chats at the user's explicit request. Another
+  phone, including the same WeChat account, starts without personal records.
+  `getState` accepts only cloud quota; it never imports legacy personal content.
+  Local operations serialize profile changes, questions, and clears, report
+  storage failures, and discard responses after an account switch.
+- Converted `ziwei-mini` to quota-only persistence with field allowlisting that
+  strips legacy profile/chart/chat content while retaining counters. Chart and
+  AI processing use the current request's validated profile and bounded local
+  history transiently; answers return only to the requesting device. Daily
+  twenty-use reservations, refunds, and abandoned-request recovery remain.
+- Removed provider error bodies and arbitrary exception text from CloudBase
+  proxy logs. The Mini Program backend also logs only fixed error codes; neither
+  application path logs personal prompts or answers. The local-only privacy
+  behavior supersedes the cross-device persistence checks below. Applied the
+  same provider-body logging fix to the retained Vercel source path.
+- Deployed both privacy function updates in place on 2026-11-02, preserving the
+  existing environment and server keys. The one legacy document was scrubbed
+  with user confirmation; inspecting the complete collection showed only quota,
+  request state, and timestamps. Two fresh contextual answers reduced the
+  allowance 18 → 17 → 16 without recreating private fields. The current device
+  retained its new profile and both exchanges across recompilation.
+- Deployed the HTTP-authenticated `ziwei-mini` event function in the existing
+  paid Shanghai environment on 2026-11-02. Verified Node.js 20.19, `index.main`,
+  the 90-second execution timeout, online-installed dependencies, and the
+  twenty-use daily setting. Enabled the matching Mini Program identity source,
+  `pgdoc`, and the admin-only `ziwei_mini_users` collection, and saved the exact
+  API gateway request domain in the Mini Program whitelist.
+- Verified the registered Mini Program in WeChat DevTools against the live
+  backend: WeChat login, profile persistence, twelve-palace chart generation,
+  two successful contextual AI turns, quota decreasing 20 → 19 → 18, and the
+  saved profile, both chat exchanges, and remaining allowance surviving
+  recompilation. This is a
+  development build; two-account real-device checks and platform review remain.
+- Compiled and uploaded a development preview successfully. WeChat DevTools
+  reported a 1799 KB code package / 1.8 MB compiled size and generated the
+  phone-preview QR code. The user scanned it with the bound developer WeChat
+  account and confirmed the phone opens the app and shows “欢迎蕾蕾大王”.
+  Profile saving and chat on the phone, two-account device isolation, and public
+  release remain unverified.
+- Raised the Mini Program allowance to twenty questions per authenticated user
+  per Shanghai day and updated the home/chat initial count. The website retains
+  its existing five-use browser allowance.
+- Reused the website's already configured TokenHub free-trial model through a
+  fixed server-only `/api/chat` adapter. It sends only messages without cookies,
+  decodes Responses SSE without duplicating full-text done events, and refunds
+  Mini Program quota on provider errors, interrupted output, or an 80-second
+  timeout. CloudBase AI model activation and a new provider key are not required.
+- Adapted the Mini Program to reuse the paid PostgreSQL environment after
+  DevTools confirmed it cannot be selected for native environment conversion.
+  A bundled CloudBase JS SDK 3.10.4 exchanges WeChat login codes using ordinary
+  HTTPS and calls the existing event function with its authenticated session.
+  The backend uses trusted CloudBase runtime UID, rejects missing/anonymous
+  identities, and ignores client identity claims. The native database wrapper
+  and atomic per-user quota store remain in use. AI calls now use the fixed
+  existing TokenHub website route described above.
+- Added a reproducible Auth/Functions-only production client bundle with upstream
+  licenses and a build-time check that the complete Mini Program main package
+  stays below 2 MiB. No provider credential is included in the bundle.
+- Made the Mini Program's daily quota atomic before deployment. A short database
+  transaction reserves one request and a per-user in-flight lease before AI runs;
+  handled AI failures refund the reservation and abandoned requests recover after
+  two minutes. The privacy revision retains metadata-only quota transactions;
+  the client serializes local profile edits and conversation clears instead of
+  persisting conversation content on the server.
+- Added `wechat-miniapp/cloudbaserc.json` with documented event-function deployment
+  settings, cloud dependency installation, Node.js 20.19, and an explicit
+  90-second execution timeout. DevTools releases must also verify that timeout
+  in the deployed function settings.
 - Replaced the Mini Program's `touristappid` import placeholder with the
   registered AppID `wx7284ee2afe7ed462`. The project can now be imported under
   that application identity in WeChat DevTools.
@@ -133,6 +202,42 @@ completed successfully at `8922cc2d738334e5d7bb6ee6f43f105870728c8b`.
 
 ## Known Verification Baseline
 
+Reverified on 2026-11-02 after HTTP WeChat login integration:
+
+- Privacy revision: all 44 focused tests passed (24 backend, 16 client, 4 proxy).
+  Coverage includes fresh second-device storage for the same identity, account
+  changes, local persistence/failures, serialized clears, legacy cloud-field
+  removal, bounded transient prompts, safe error logs, quota races and refunds.
+  Official WXML/WXSS compilation and JS/JSON parsing passed. The updated main
+  package is 1,889,428 bytes, below 2 MiB. Live privacy checks passed for local
+  save/reopen, two-turn context, quota 18 → 17 → 16, and no personal content
+  reappearing in the entire cloud collection. Mobile separation is pending.
+- The retained Vercel path passed 8/8 focused privacy/quota tests, its Node
+  TypeScript check, and targeted ESLint. Its log fix is saved as source; the
+  active CloudBase proxy was deployed and used by the live Mini Program checks.
+- All twenty-two Mini Program tests passed, including trusted UID and anonymous
+  rejection, forged client identity isolation, shared/retryable frontend login,
+  and a smoke check of the actual production SDK bundle in an isolated Mini
+  Program runtime. The smoke check observed the expected `/auth/v1/provider/token`
+  HTTPS request and did not contact a live service.
+- The fixed TokenHub adapter tests also passed for split UTF-8 SSE, full-text
+  fallback without duplicate output, HTTP/provider errors, incomplete streams,
+  and an abort while streaming. The default per-user allowance is verified at 20.
+- Rebuilt the production SDK at 562,644 bytes; the complete Mini Program main
+  package, including upstream licenses, totals 1,882,308 bytes (below 2 MiB).
+- Live provider login, trusted function identity, PG document writes and
+  transactions, contextual AI output, and quota persistence passed in DevTools
+  against the deployed backend. Two-account real-device checks remain pending.
+
+Reverified on 2026-11-01 after atomic Mini Program quota reservations:
+
+- All nine Mini Program backend tests passed, including concurrent last-slot
+  requests, in-flight profile/history mutation protection, model-failure refunds,
+  independent users, abandoned-request recovery, stale responses, and day rollover.
+- Backend JavaScript and the deployment JSON parsed successfully; `git diff
+  --check` passed. The transaction conflict tests use a local optimistic database
+  harness; live CloudBase and two-account device verification remain required.
+
 Previously passed:
 
 ```powershell
@@ -200,12 +305,14 @@ Live CloudBase verification on 2026-11-01:
 
 ## Open Risks
 
-- The registered Mini Program AppID is configured, but it still must be associated
-  with the CloudBase environment and imported into WeChat DevTools before preview
-  or deployment.
-- The existing environment was created from the Tencent Cloud side. Its account
-  must be associated with the WeChat public-platform account before the Mini
-  Program can use OPENID cloud calls and the event function.
+- The registered Mini Program's HTTP OpenID identity source must stay enabled in
+  the paid environment. Native PG environment conversion is unavailable in
+  DevTools; do not retry it or create another paid environment to work around it.
+- `pgdoc`, client-deny collection permissions, event-function deployment, and
+  request-domain registration are configured. Verify account isolation on two
+  real WeChat accounts and same-account data separation on two phones before
+  publishing this Mini Program flow. Inspect the entire quota collection after
+  the privacy deployment to confirm no legacy personal content remains.
 - `CLAUDE.md` currently reads as mojibake in this environment and should not be
   treated as the primary agent entry point.
 - The birthplace matching experience depends on the quality and coverage of the
@@ -223,9 +330,8 @@ Live CloudBase verification on 2026-11-01:
 
 ## Next Useful Work
 
-- Associate the Mini Program AppID with the CloudBase environment, deploy
-  `ziwei-mini` with cloud-side dependency installation, and run a two-account
-  device test before submitting the Mini Program for review.
+- Run a two-account real-device check, then complete the Mini Program privacy
+  declaration, service category, and platform review before public release.
 - Bind a custom domain when one is available so visitors no longer see the
   CloudBase test-domain warning.
 - Consider replacing or migrating the garbled `CLAUDE.md` once the new docs have

@@ -12,19 +12,20 @@ Page({
     messages: [],
     question: '',
     quickQuestions: QUICK_QUESTIONS,
-    remaining: 5,
+    remaining: 20,
     loading: true,
     sending: false,
+    clearing: false,
     error: '',
     scrollTarget: 'chat-top',
   },
 
-  onLoad() {
+  onShow() {
     this.loadState()
   },
 
   async loadState() {
-    this.setData({ loading: true, error: '' })
+    this.setData({ loading: true, messages: [], error: '' })
     try {
       const state = await api.getState()
       if (!state.profile) {
@@ -78,6 +79,7 @@ Page({
       this.setData({
         messages: this.data.messages.slice(0, -1),
         error: error.message,
+        ...(error.quota ? { remaining: error.quota.remaining } : {}),
       })
     } finally {
       this.setData({ sending: false })
@@ -86,17 +88,23 @@ Page({
   },
 
   async clearConversation() {
+    if (this.data.clearing) return
     const answer = await wx.showModal({
-      title: '清空对话',
-      content: '命盘资料会保留，只清空聊天记录。',
+      title: '清空本机对话',
+      content: this.data.sending
+        ? '回答结束后将清空这部手机的聊天记录，命盘资料会保留。'
+        : '只清空这部手机的聊天记录，命盘资料会保留。',
     })
     if (!answer.confirm) return
 
+    this.setData({ clearing: true })
     try {
       await api.clearConversation()
       this.setData({ messages: [], error: '' })
     } catch (error) {
       this.setData({ error: error.message })
+    } finally {
+      this.setData({ clearing: false })
     }
   },
 

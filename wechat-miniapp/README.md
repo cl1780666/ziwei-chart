@@ -7,8 +7,9 @@
 - 本地出生地匹配与真太阳时校正；
 - 十二宫命盘摘要；
 - 依据当前命盘的多轮 AI 问答；
-- 使用微信 `OPENID` 隔离资料、对话和每日额度；
-- 每位用户每天默认 5 次 AI 提问。
+- 微信静默登录，使用服务端验证的 CloudBase 用户 ID 执行每日额度；
+- 出生资料、命盘和聊天只保存在当前手机，换手机（即使同一微信号）不同步；
+- 每位用户每天默认 20 次 AI 提问。
 
 小程序采用九张原创海报画面：首页轮播皖南四季、小提琴与山水，其中一张
 月夜画面加入成年女士长直发背影拉琴；资料页加入徽州庭院和秋天大树，
@@ -18,6 +19,19 @@
 `蕾言蕾语` 从五百句不重复的反差短句中随机抽取，每七秒淡入一条，并避免
 连续出现同一句；内容只保留反差渣女梗、富婆漂亮姐姐和抽象网络热梗，
 透明面板最多占两行。所有文案和按钮仍由 WXML 渲染，没有烘焙进背景图。
+
+## 资料与隐私
+
+出生资料、命盘和聊天记录只写入当前手机的小程序本地存储，并按已登录账号
+分区。后台不保存这些内容，也不把旧云端资料下载到新手机。换设备没有原记录；
+卸载、清理缓存或点击“清除本机数据”后，本机记录可能无法恢复。
+
+排盘时出生资料会临时发送到云函数计算；AI 问答还会临时发送当前问题和最近
+最多八条对话给腾讯 TokenHub 模型处理。应用不将这些正文写入数据库或错误
+日志。这不代表第三方模型服务提供了零保留承诺。
+
+云端只保留用于每天 20 次限制的用户编号、日期、次数、请求预留和必要时间戳。
+同一个微信账号换手机也共享这份额度，不能靠换设备重置次数。
 
 ## 视觉预览
 
@@ -36,7 +50,7 @@ WXML/WXSS/JS 为准。
 2. 确认当前登录账号能管理 AppID `wx7284ee2afe7ed462`。
 3. 在开发者工具中导入本目录；`project.config.json` 已写入该 AppID。
 
-## CloudBase 关联
+## CloudBase 登录与现有 PG 环境
 
 当前代码使用环境：
 
@@ -44,35 +58,89 @@ WXML/WXSS/JS 为准。
 supposed-bovid-d4gcywfkh2af1db6e
 ```
 
-需要先在腾讯云账号中心关联微信公众平台账号，再在微信开发者工具的云开发环境管理中选择“使用已有腾讯云环境”。小程序 AppID 未关联环境时，`wx.cloud.callFunction` 会提示环境无效。
+微信开发者工具的“使用已有腾讯云环境”当前不允许选择此 PostgreSQL 环境。
+本项目通过 CloudBase JS SDK 的普通 HTTPS 模式复用它：
+
+1. 在现有环境的登录授权中授权小程序，启用 ID 为
+   `wx7284ee2afe7ed462` 的微信小程序 OpenID 身份源。扫码授权即可创建对应
+   身份源；不要把 AppSecret、管理端 API Key 或其他密钥写进前端。
+2. 小程序调用 `app.auth.signInWithOpenId({ useWxCloud: false })`；SDK 内部
+   用 `wx.login` 获取一次性登录码，再向 CloudBase 换取会话。
+3. 登录后使用 `app.callFunction` 调用事件云函数；所有业务接口等待登录完成。
+4. 在小程序后台配置 request 合法域名：
+   `https://supposed-bovid-d4gcywfkh2af1db6e.api.tcloudbasegateway.com`。
+5. PG 环境需在 Document 编辑器启用 `pgdoc`，然后创建下面的文档集合。
+
+客户端已包含只打包 Auth 与 Functions 的生产 SDK，无需在开发者工具中
+再次“构建 npm”。修改 SDK 版本后，从本目录执行 `pnpm install --ignore-scripts`
+和 `pnpm build:sdk`；构建脚本同时保留上游许可证并检查主包小于 2 MiB。
+原生页面、插画和业务代码保持不变。接入依据
+[OpenID HTTP 登录](https://docs.cloudbase.net/api-reference/webv3/authentication#signinwithopenid)
+与 [pgdoc 兼容说明](https://docs.cloudbase.net/database/postgresql/pg-doc-usage)。
 
 ## 部署云函数
 
-在微信开发者工具中右键：
+通过 CloudBase 控制台或 CLI 部署 `cloudfunctions/ziwei-mini`，类型为
+**事件函数**，处理方法为 `index.main`，选择云端安装依赖。云函数会使用：
 
-```text
-cloudfunctions/ziwei-mini
-```
-
-选择“上传并部署：云端安装依赖”。云函数会使用：
-
-- `wx-server-sdk` 获取可信 `OPENID`、访问数据库和调用 CloudBase AI；
+- `@cloudbase/node-sdk` 从受信任调用上下文获取已认证用户 ID，并拒绝匿名调用；
+- `wx-server-sdk` 访问数据库；
 - `iztro` 生成紫微命盘；
-- `deepseek-v4.1-flash` 作为默认模型。
+- 服务端固定调用本站已配置的 `/api/chat`，复用腾讯 TokenHub 的
+  `deepseek-v4-flash-202605` 免费试用资源，不需要另开 CloudBase AI 模型或填新密钥。
+
+部署后在云函数配置中将执行超时时间设为 **90 秒**；代码里的 SDK 请求超时
+不会修改云函数自身的执行上限。若使用 CloudBase CLI，从本目录运行
+`tcb functions:deploy ziwei-mini`，会读取 `cloudbaserc.json` 中的事件函数、
+Node.js 20.19、云端依赖安装和 90 秒超时配置。配置字段依据
+[CloudBase 官方文档](https://docs.cloudbase.net/cli-v1/functions/configs)。
 
 可选环境变量：
 
 ```text
-MINI_AI_DAILY_LIMIT=5
-MINI_AI_MODEL=deepseek-v4.1-flash
+MINI_AI_DAILY_LIMIT=20
 ```
 
-数据库集合为 `ziwei_mini_users`。小程序前端不直接访问数据库，集合权限应保持为仅云函数可访问。
+部署时先创建数据库集合 `ziwei_mini_users`。小程序前端不直接访问数据库，
+集合权限应保持为仅云函数可访问。
+
+每日次数在数据库事务中预留，同一用户一次只执行一条 AI 问答，模型失败则
+退回预留次数。成功答案只返回给发起请求的手机，由该手机保存在本地；服务器
+不保存问题或回答。客户端将修改资料、提问、清空和清除本机数据串行执行，
+避免旧回答覆盖新资料。若云函数意外中断，预留会在两分钟后自动清理。
+
+云端文档读写均使用字段白名单，自动清除旧版本的 profile、chartSummary、
+messages 等个人内容，保留原额度。上线时还需检查现有集合，将未被访问的旧
+记录也清理为仅额度字段；不要重新导入个人数据备份。
+
+模型代理只从服务器访问固定的本站地址，不转发客户端 Cookie，也不接受页面
+指定 URL。它按网站现有 SSE 协议读取答案，完整文本事件只在没有增量文本时
+兜底，避免重复内容。80 秒请求超时、上游错误或中断均走失败退回次数流程。
+网站原有每来源 IP 每分钟 4 次的突发限制仍生效，小程序云函数共享出口时可能
+一起触发该限制，稍后再试即可；网站访客的每日 5 次配置保持原样。
+
+本地验证：
+
+```sh
+NODE_PATH=app/node_modules node --test wechat-miniapp/cloudfunctions/ziwei-mini/*.test.js wechat-miniapp/tests/*.test.js
+```
+
+以上测试命令从仓库根目录执行，包含命盘、并发额度、失败退款、身份伪造防护、
+设备与账号隔离、本机存储失败处理，以及客户端登录。代理日志隐私测试：
+`node --test cloudbase/functions/ziwei-ai/privacy.test.js`。
 
 ## 发布前检查
 
-1. 在 CloudBase AI+ 中确认 `deepseek-v4.1-flash` 可用，并确认成长计划或套餐额度。
+2026-11-02 的旧版已通过微信登录、十二宫、两轮问答及扣次检查，用户也确认
+手机能读取旧版云端聊天。这种跨设备同步已被用户明确取消；当前版本改为本机
+保存。新版已部署两个云函数并清理唯一旧云记录；两轮问答 18 → 17 → 16 后，
+检查整个集合仍只有额度和必要元数据。开发者工具重新编译后，本机资料和两轮
+聊天正常恢复。新版手机预览已上传（1805 KB）；手机数据分离确认仍待完成，
+不能用旧版跨设备同步结果当作新版隐私证据。
+
+1. 确认网站 `/api/chat` 正常，TokenHub 免费试用资源可用。
 2. 真机保存出生资料，检查十二宫是否出现。
 3. 连续提问两次，检查上下文是否延续、剩余次数是否减少。
-4. 在另一个微信账号打开，确认看不到前一个账号的资料和聊天。
+4. 在另一部手机用同一微信打开，确认没有原手机的出生资料、命盘和聊天；
+   再检查换账号不会读取原账号本机记录。后台集合不得出现个人正文。
 5. 在微信公众平台提交隐私保护指引、类目与版本审核。

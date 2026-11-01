@@ -242,7 +242,7 @@ async function handleChat(request, response) {
     })
   } catch (error) {
     if (error?.name !== 'AbortError') {
-      console.error('TokenHub connection error', error instanceof Error ? error.message : error)
+      console.error('TOKENHUB_CONNECTION_FAILED')
     }
     if (!response.headersSent) {
       sendJson(response, 502, { error: '暂时无法连接 AI 服务，请稍后再试' })
@@ -251,8 +251,9 @@ async function handleChat(request, response) {
   }
 
   if (!upstream.ok || !upstream.body) {
-    const details = await upstream.text().catch(() => '')
-    console.error('TokenHub API error', upstream.status, details.slice(0, 500))
+    // Provider errors may echo the submitted messages. Never read them into logs.
+    await upstream.body?.cancel().catch(() => {})
+    console.error('TOKENHUB_API_FAILED', upstream.status)
 
     const errorMessage = upstream.status === 402
       ? '共享 AI 的免费额度暂时用完了，请稍后再试'
@@ -283,7 +284,7 @@ async function handleChat(request, response) {
     }
   } catch (error) {
     if (error?.name !== 'AbortError') {
-      console.error('TokenHub stream error', error instanceof Error ? error.message : error)
+      console.error('TOKENHUB_STREAM_FAILED')
     }
   } finally {
     reader.releaseLock()

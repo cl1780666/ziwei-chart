@@ -17,8 +17,9 @@ Page({
   data: {
     quote: '',
     loading: true,
+    clearing: false,
     hasProfile: false,
-    remaining: 5,
+    remaining: 20,
     error: '',
     heroImages: HERO_IMAGES,
     visibleHeroIndex: 0,
@@ -99,7 +100,7 @@ Page({
   },
 
   async loadState() {
-    this.setData({ loading: true, error: '' })
+    this.setData({ loading: true, hasProfile: false, error: '' })
     try {
       const state = await api.getState()
       const profile = state.profile
@@ -131,5 +132,26 @@ Page({
   openChat() {
     if (!this.data.hasProfile) return this.openProfile()
     wx.navigateTo({ url: '/pages/chat/chat' })
+  },
+
+  async clearLocalData() {
+    if (this.data.clearing) return
+    const answer = await wx.showModal({
+      title: '清除本机数据',
+      content: '删除这部手机当前微信账号的出生资料、命盘和聊天记录，无法找回。今日已用额度不会重置。',
+      confirmText: '确认清除',
+      confirmColor: '#7f3036',
+    })
+    if (!answer.confirm) return
+    this.setData({ clearing: true, error: '' })
+    try {
+      await api.clearLocalData()
+      this.setData({ hasProfile: false })
+      wx.showToast({ title: '本机数据已清除', icon: 'success' })
+    } catch (error) {
+      this.setData({ error: error.message })
+    } finally {
+      this.setData({ clearing: false })
+    }
   },
 })

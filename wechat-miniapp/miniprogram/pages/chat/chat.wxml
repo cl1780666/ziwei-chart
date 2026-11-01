@@ -4,7 +4,7 @@
       <text class="chat-title">弦外问星</text>
       <text class="chat-subtitle">一弦一答 · 今日余 {{remaining}} 问</text>
     </view>
-    <button class="clear-button" bindtap="clearConversation">清空</button>
+    <button class="clear-button" bindtap="clearConversation" loading="{{clearing}}" disabled="{{clearing}}">清空本机对话</button>
   </view>
 
   <view class="chat-scene">
@@ -15,6 +15,7 @@
 
   <scroll-view class="message-scroll" scroll-y enhanced show-scrollbar="{{false}}" scroll-into-view="{{scrollTarget}}">
     <view id="chat-top"></view>
+    <text class="privacy-note">聊天仅存本机；问答内容临时发送至云端，不保存正文。</text>
     <view class="welcome-bubble">
       <text class="avatar">弦</text>
       <view>

@@ -18,12 +18,12 @@
     </view>
     <text class="quote {{quoteVisible ? 'is-visible' : 'is-hidden'}}">“{{quote}}”</text>
 
-    <button class="primary-button start-button" bindtap="start">
+    <button class="primary-button start-button" bindtap="start" disabled="{{loading || clearing}}">
       {{hasProfile ? '开始聊一聊' : '开始测一测'}}
     </button>
 
     <view wx:if="{{hasProfile}}" class="profile-pill">
-      <text>资料已保存</text>
+      <text>资料已存本机</text>
       <text>今日余 {{remaining}} 问</text>
     </view>
     <text wx:else class="intro">将生辰落于纸上，慢慢展开十二宫。</text>
@@ -33,7 +33,8 @@
       <button class="secondary-button shortcut" bindtap="openProfile">修改资料</button>
     </view>
     <view class="sheet-signature">
-      <text>白墙黛瓦 · 一弦一星河</text>
+      <text>资料与聊天仅存本机</text>
+      <button class="privacy-clear" bindtap="clearLocalData" loading="{{clearing}}" disabled="{{loading || clearing}}">清除本机数据</button>
     </view>
   </view>
 

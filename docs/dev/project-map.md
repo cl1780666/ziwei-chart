@@ -27,12 +27,21 @@ Primary runtime flow:
 
 The companion Mini Program has a separate runtime flow:
 
-1. WeChat Cloud Development supplies a trusted OPENID to `ziwei-mini`.
-2. The user saves a birth profile; the cloud function matches birthplace data,
-   applies true solar time, generates a chart with iztro, and stores a compact
-   serializable summary.
-3. Chat requests load that summary and recent history by OPENID, enforce a
-   Shanghai-day quota, call CloudBase AI, and persist the successful exchange.
+1. The bundled CloudBase JS SDK exchanges `wx.login` codes through HTTP OpenID
+   login and calls the event function with its authenticated session. The backend
+   obtains a trusted CloudBase runtime UID and rejects anonymous callers.
+2. The cloud function transiently validates a birth profile, matches birthplace
+   data, applies true solar time, and generates a chart with iztro. Only the
+   requesting device stores the profile and chart summary, in local storage
+   scoped to its authenticated account.
+3. Chat requests supply that device's profile and bounded recent history. The
+   server recalculates the chart, reserves the UID's Shanghai-day quota of twenty
+   questions, calls the existing TokenHub proxy, and returns the answer to that
+   device. The device alone appends its local history.
+4. Cloud documents contain only quota counters, request leases, and necessary
+   timestamps. Field allowlisting strips legacy personal content. No device
+   imports cloud profiles or chats; the same account on another phone starts
+   without personal records while sharing the account's remaining quota.
 
 ## App Module Map
 
@@ -45,7 +54,7 @@ app/src/knowledge-db/ - Structured guidance database and retrieval pipeline.
 app/src/knowledge/ - Static Zi Wei Dou Shu knowledge modules.
 app/api/ - Vercel server functions for shared AI access and signed quota state.
 cloudbase/functions/ziwei-ai/ - CloudBase HTTP function for the public shared AI route.
-wechat-miniapp/miniprogram/ - Native WXML/WXSS/JS pages and OPENID cloud-function client.
+wechat-miniapp/miniprogram/ - Native WXML/WXSS/JS pages and authenticated cloud-function client.
 wechat-miniapp/miniprogram/assets/ - Project-bound Mini Program poster imagery.
 wechat-miniapp/design-preview/ - Browser-reviewable mock of the Mini Program visual direction.
 wechat-miniapp/cloudfunctions/ziwei-mini/ - Mini Program profile, chart, chat, and quota backend.
@@ -72,7 +81,15 @@ app/tests/ - Tests outside source tree, currently including workflow validation.
   the home violin landscape, four seasons, Hui courtyard, two night rivers, and
   quiet violin-by-the-rain-window artwork used across the four Mini Program pages.
 - `wechat-miniapp/design-preview/index.html` - static phone-width visual review of the poster-style home screen.
-- `wechat-miniapp/cloudfunctions/ziwei-mini/index.js` - OPENID-scoped persistence and CloudBase AI calls.
+- `wechat-miniapp/miniprogram/utils/cloudbase.js` - shared HTTP WeChat login and session initialization.
+- `wechat-miniapp/miniprogram/utils/device-store.js` - current-device, account-scoped profile/chart/chat persistence.
+- `wechat-miniapp/miniprogram/vendor/cloudbase.js` - self-contained production Auth/Functions SDK bundle.
+- `wechat-miniapp/build-client-sdk.mjs` - reproducible SDK bundle and main-package size verification.
+- `wechat-miniapp/cloudfunctions/ziwei-mini/index.js` - transient chart/AI processing and trusted UID quota enforcement.
+- `wechat-miniapp/cloudfunctions/ziwei-mini/ai.js` - fixed owned TokenHub proxy endpoint, SSE decoding, and request timeout.
+- `wechat-miniapp/cloudfunctions/ziwei-mini/identity.js` - trusted SDK runtime UID validation; no client identity fallback.
+- `wechat-miniapp/cloudfunctions/ziwei-mini/user-store.js` - quota-only transactions and legacy personal-field removal.
+- `wechat-miniapp/cloudbaserc.json` - event-function CLI deployment and explicit execution timeout.
 - `wechat-miniapp/cloudfunctions/ziwei-mini/domain.js` - deterministic profile validation, true solar time, and chart context.
 - `app/src/knowledge-db/retrieval/retrieve.ts` - guidance retrieval.
 - `.github/workflows/sync-zwknows.yml` - deployment mirror synchronization.
@@ -91,8 +108,8 @@ app/tests/ - Tests outside source tree, currently including workflow validation.
 - `app/api/` and `cloudbase/functions/ziwei-ai/` own server-only credentials,
   request validation, and shared limits for their deployment targets.
 - `wechat-miniapp/cloudfunctions/ziwei-mini/` owns Mini Program identity, durable
-  per-user state, quota enforcement, and model calls; Mini Program pages must not
-  accept OPENID from user-controlled request data.
+  per-user quota only, transient chart processing, and model calls; pages must not
+  accept UID, OPENID, or another identity from user-controlled request data.
 - Workflow tests under `app/tests/` protect repository automation contracts.
 
 [PROTOCOL]: Update this file when module ownership, data flow, important files, or
