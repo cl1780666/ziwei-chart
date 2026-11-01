@@ -13,6 +13,9 @@
 
 ## Recently Completed
 
+- Replaced the Mini Program's `touristappid` import placeholder with the
+  registered AppID `wx7284ee2afe7ed462`. The project can now be imported under
+  that application identity in WeChat DevTools.
 - Simplified the Mini Program home poster by removing the `0819` seal, date,
   signature, and navigation branding. The entrance now keeps only the Lei
   welcome, a daily quote, one primary action, and compact saved-state metadata.
@@ -197,10 +200,9 @@ Live CloudBase verification on 2026-11-01:
 
 ## Open Risks
 
-- The Mini Program cannot be previewed or deployed until a real Mini Program
-  AppID is registered, associated with the CloudBase environment, and imported
-  into WeChat DevTools. The repository currently uses `touristappid` only as an
-  import placeholder.
+- The registered Mini Program AppID is configured, but it still must be associated
+  with the CloudBase environment and imported into WeChat DevTools before preview
+  or deployment.
 - The existing environment was created from the Tencent Cloud side. Its account
   must be associated with the WeChat public-platform account before the Mini
   Program can use OPENID cloud calls and the event function.

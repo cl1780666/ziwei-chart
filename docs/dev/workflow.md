@@ -110,11 +110,11 @@ resource; keep TokenHub pay-as-you-go disabled.
 
 ## WeChat Mini Program Release
 
-Import `wechat-miniapp/` into WeChat DevTools after replacing `touristappid` in
-`project.config.json` with the registered Mini Program AppID. Associate that
-public-platform account with the existing Tencent Cloud account, then import or
-convert the environment `supposed-bovid-d4gcywfkh2af1db6e` in the DevTools cloud
-environment manager.
+Import `wechat-miniapp/` into WeChat DevTools with the registered Mini Program
+AppID `wx7284ee2afe7ed462`, which is already stored in `project.config.json`.
+Associate that public-platform account with the existing Tencent Cloud account,
+then import or convert the environment `supposed-bovid-d4gcywfkh2af1db6e` in the
+DevTools cloud environment manager.
 
 Deploy `wechat-miniapp/cloudfunctions/ziwei-mini` as an event-triggered function
 with cloud-side dependency installation. It expects `wx-server-sdk` 4.0.2 and

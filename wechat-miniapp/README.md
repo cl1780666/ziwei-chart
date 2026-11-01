@@ -33,9 +33,8 @@ WXML/WXSS/JS 为准。
 ## 本地导入
 
 1. 安装微信开发者工具。
-2. 注册小程序并取得 AppID。
-3. 将 `project.config.json` 的 `appid` 从 `touristappid` 改为真实 AppID。
-4. 在开发者工具中导入本目录。
+2. 确认当前登录账号能管理 AppID `wx7284ee2afe7ed462`。
+3. 在开发者工具中导入本目录；`project.config.json` 已写入该 AppID。
 
 ## CloudBase 关联
 

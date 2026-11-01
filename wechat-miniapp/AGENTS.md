@@ -32,10 +32,10 @@ WeChat accounts that profiles and chats remain isolated.
 
 ## Deployment
 
-`project.config.json` keeps `touristappid` as an import placeholder. A real AppID,
-public-platform account association, and CloudBase environment import are required
-before preview or deployment. Deploy `cloudfunctions/ziwei-mini` with cloud-side
-dependency installation.
+`project.config.json` contains the registered Mini Program AppID
+`wx7284ee2afe7ed462`. Public-platform account association and CloudBase environment
+import are still required before preview or deployment. Deploy
+`cloudfunctions/ziwei-mini` with cloud-side dependency installation.
 
 [PROTOCOL]: Update this file when Mini Program identity, storage, deployment, or
 testing boundaries change.
