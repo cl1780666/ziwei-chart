@@ -39,7 +39,7 @@ export function WelcomeLeiLei({ onEnter }: WelcomeLeiLeiProps) {
         </p>
 
         <button type="button" className="lei-enter-button" onClick={onEnter}>
-          <span>打开蕾蕾的星盘</span>
+          <span>开始测一测</span>
           <span aria-hidden="true">✦</span>
         </button>
 

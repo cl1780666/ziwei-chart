@@ -3,7 +3,7 @@
    高级玻璃态设计 + 精致导航交互
    ============================================================ */
 
-import { useState, type ReactNode } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import { BirthForm } from '@/components/BirthForm'
 import { ChartDisplay } from '@/components/chart'
@@ -17,7 +17,10 @@ import { MatchAnalysis } from '@/components/match'
 import { GitHubLinkButton, OpenSourceFooterLinks } from '@/components/OpenSourceLinks'
 import { ShareCard } from '@/components/share'
 import { WelcomeLeiLei } from '@/components/WelcomeLeiLei'
-import { BackgroundMusic } from '@/components/BackgroundMusic'
+import {
+  BackgroundMusic,
+  type BackgroundMusicHandle,
+} from '@/components/BackgroundMusic'
 import { useChartStore } from '@/stores'
 
 type TabType = 'chart' | 'fortune' | 'kline' | 'match' | 'share'
@@ -35,6 +38,12 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false)
   const [activeTab, setActiveTab] = useState<TabType>('chart')
   const [showWelcome, setShowWelcome] = useState(true)
+  const backgroundMusicRef = useRef<BackgroundMusicHandle>(null)
+
+  const enterSite = () => {
+    backgroundMusicRef.current?.startFromBeginning()
+    setShowWelcome(false)
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -342,9 +351,9 @@ export default function App() {
         </p>
       </footer>
 
-      {showWelcome && <WelcomeLeiLei onEnter={() => setShowWelcome(false)} />}
+      {showWelcome && <WelcomeLeiLei onEnter={enterSite} />}
 
-      <BackgroundMusic />
+      <BackgroundMusic ref={backgroundMusicRef} />
 
       <Analytics />
     </div>

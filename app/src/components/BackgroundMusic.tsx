@@ -1,11 +1,20 @@
-import { useEffect, useRef, useState } from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
 
 const TRACK_URI = 'spotify:track:3XVBdLihbNbxUwZosxcGuJ'
 const SPOTIFY_IFRAME_API = 'https://open.spotify.com/embed/iframe-api/v1'
 
 interface SpotifyPlaybackEvent {
   data: {
+    duration: number
     isPaused: boolean
+    position: number
   }
 }
 
@@ -15,6 +24,8 @@ interface SpotifyEmbedController {
     listener: (event: SpotifyPlaybackEvent) => void,
   ) => void
   destroy: () => void
+  play: () => void
+  restart: () => void
   togglePlay: () => void
 }
 
@@ -59,11 +70,35 @@ function loadSpotifyIframeApi() {
   return spotifyApiPromise
 }
 
-export function BackgroundMusic() {
+export interface BackgroundMusicHandle {
+  startFromBeginning: () => void
+}
+
+export const BackgroundMusic = forwardRef<BackgroundMusicHandle>(function BackgroundMusic(
+  _props,
+  ref,
+) {
   const playerHostRef = useRef<HTMLDivElement>(null)
   const controllerRef = useRef<SpotifyEmbedController | null>(null)
+  const pendingStartRef = useRef(false)
+  const loopPendingRef = useRef(false)
   const [isReady, setIsReady] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
+
+  const startFromBeginning = useCallback(() => {
+    const controller = controllerRef.current
+    if (!controller) {
+      pendingStartRef.current = true
+      return
+    }
+
+    pendingStartRef.current = false
+    loopPendingRef.current = false
+    controller.restart()
+    controller.play()
+  }, [])
+
+  useImperativeHandle(ref, () => ({ startFromBeginning }), [startFromBeginning])
 
   useEffect(() => {
     let cancelled = false
@@ -82,9 +117,23 @@ export function BackgroundMusic() {
 
           controllerRef.current = controller
           controller.addListener('playback_update', (event) => {
-            setIsPlaying(!event.data.isPaused)
+            const { duration, isPaused, position } = event.data
+            const hasEnded = duration > 0 && position >= duration - 250
+
+            if (hasEnded && isPaused && !loopPendingRef.current) {
+              loopPendingRef.current = true
+              controller.restart()
+              controller.play()
+              return
+            }
+
+            if (!isPaused && position < 1_000) {
+              loopPendingRef.current = false
+            }
+            setIsPlaying(!isPaused)
           })
           setIsReady(true)
+          startFromBeginning()
         },
       )
     })
@@ -94,7 +143,7 @@ export function BackgroundMusic() {
       controllerRef.current?.destroy()
       controllerRef.current = null
     }
-  }, [])
+  }, [startFromBeginning])
 
   const togglePlayback = () => {
     controllerRef.current?.togglePlay()
@@ -129,4 +178,4 @@ export function BackgroundMusic() {
       </button>
     </div>
   )
-}
+})
