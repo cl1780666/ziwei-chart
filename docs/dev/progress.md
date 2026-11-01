@@ -17,7 +17,7 @@
   "欢迎蕾蕾大王" entrance, a playful pink-violet theme, an original inline
   violin illustration, floating musical notes, and concise `For Lei · 0819`
   branding.
-- Replaced the short Spotify preview with a four-track romantic instrumental R&B
+- Replaced the short Spotify preview with a four-track quiet romantic Bossa Nova
   playlist licensed through Pixabay. Playback starts from the welcome screen,
   advances automatically, supports manual skipping, and loops the full playlist.
 - Adjusted navigation breakpoints so the personalized header remains readable on

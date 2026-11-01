@@ -9,24 +9,24 @@ import {
 
 const TRACKS = [
   {
-    src: 'https://cdn.pixabay.com/download/audio/2025/01/08/audio_e859480c66.mp3?filename=u_ecplpk4096-emotional-rampb-type-piano-281446.mp3',
-    title: 'Emotional R&B Piano',
-    duration: '4:16',
+    src: 'https://cdn.pixabay.com/download/audio/2025/06/13/audio_4d2920bf9f.mp3?filename=tunetank-soothing-cafe-music-349586.mp3',
+    title: 'Soothing Café Bossa',
+    duration: '2:43',
   },
   {
-    src: 'https://cdn.pixabay.com/download/audio/2024/10/14/audio_0fc8c28daa.mp3?filename=kontraa-inner-desires-rampb-soul-music-250739.mp3',
-    title: 'Inner Desires',
-    duration: '2:47',
+    src: 'https://cdn.pixabay.com/download/audio/2021/05/20/audio_5b8a422fd0.mp3?filename=phill_dillow-bossa-nova-in-a-rainy-city-4575.mp3',
+    title: 'Bossa Nova in a Rainy City',
+    duration: '3:27',
   },
   {
-    src: 'https://cdn.pixabay.com/download/audio/2026/01/02/audio_48a6c38ddd.mp3?filename=openusemusic-low-glow-warm-rampb-chill-for-relaxed-focus-460279.mp3',
-    title: 'Low Glow',
-    duration: '4:40',
+    src: 'https://cdn.pixabay.com/download/audio/2022/01/17/audio_8ddeaf7dc7.mp3?filename=capitalnerd2617-bossa-nova-14396.mp3',
+    title: 'Quiet Bossa Nova',
+    duration: '3:38',
   },
   {
-    src: 'https://cdn.pixabay.com/download/audio/2023/03/25/audio_75e4ef5b76.mp3?filename=wavemaster-rampb-soul-143905.mp3',
-    title: 'R&B Soul',
-    duration: '2:52',
+    src: 'https://cdn.pixabay.com/download/audio/2025/06/13/audio_e08413f251.mp3?filename=tunetank-bossa-nova-cafe-music-347362.mp3',
+    title: 'Bossa Nova Café',
+    duration: '2:18',
   },
 ] as const
 
