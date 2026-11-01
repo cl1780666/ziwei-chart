@@ -52,7 +52,11 @@ npm run test -- sync-zwknows
 open source attribution in the app shell.
 
 `src/components/WelcomeLeiLei.tsx`: Personalized `For Lei · 0819` entrance with
-romantic copy and motion-safe decorative elements.
+randomized contrast quotes and motion-safe decorative elements.
+
+`src/components/AIInterpretation.tsx`: Grounded natal report and follow-up chat
+for the active chart. Conversation state belongs to the content cache and is
+cleared when the chart is cleared.
 
 `src/components/icons/ViolinIcon.tsx`: Code-native violin illustration reused by
 the welcome screen and application shell.

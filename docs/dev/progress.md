@@ -13,6 +13,15 @@
 
 ## Recently Completed
 
+- Added chart-grounded multi-turn chat below the natal interpretation. Visitors
+  can ask a specific question directly or continue after the full report; recent
+  exchanges remain available while the current chart is open, and each shared
+  request uses the existing daily allowance.
+- Changed the birth form defaults to 2002-08-19 and female for the personalized
+  Lei flow.
+- Added twelve playful contrast quotes to the Lei welcome screen. A quote is
+  chosen on every page load and the previous quote is excluded from the next
+  draw so consecutive opens always differ.
 - Prepared a CloudBase static-hosting release path and a dependency-free Node.js
   HTTP function that listens on port 9000, streams Tencent TokenHub Responses API
   events, and keeps the model key on the server.
@@ -108,6 +117,13 @@ Reverified on 2026-11-01 after the shared AI and rate-limit change:
 
 Live CloudBase verification on 2026-11-01:
 
+- Rebuilt and uploaded the static release after the conversation and welcome
+  updates. The public site showed 2002-08-19 and female in the birth form,
+  changed the welcome quote across consecutive reloads, and rendered the new
+  chat panel.
+- Completed a two-turn public conversation about career direction. Both answers
+  streamed from the shared TokenHub route and the second answer used the prior
+  exchange as conversation context.
 - ESLint passed, Vitest passed 32/32 tests, and the TypeScript/Vite production
   build completed successfully after the final TokenHub model update.
 - The public welcome screen rendered with the personalized copy and violin theme.

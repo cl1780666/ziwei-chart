@@ -80,6 +80,8 @@ The shared allowance is five successful AI requests per browser per UTC day,
 stored in an HMAC-signed, HttpOnly cookie. The function also applies a
 best-effort four-request-per-minute IP burst limit. Personal keys preserve the
 existing browser-only provider flow and do not consume the shared allowance.
+Generating the full natal report and sending each follow-up chat question each
+consume one request from this same allowance.
 
 Consequence: the cookie quota is appropriate for a small friends-and-family
 site. A strict global, account, or cross-device limit requires durable storage

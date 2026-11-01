@@ -19,7 +19,8 @@ Primary runtime flow:
 3. True solar time correction can adjust the effective birth time.
 4. iztro generates the chart.
 5. App state stores the chart and user selections.
-6. UI renders chart, fortune, match, K-line, share, and AI interpretation views.
+6. UI renders chart, fortune, match, K-line, share, AI interpretation, and
+   chart-grounded follow-up conversation views.
 7. Knowledge retrieval grounds AI prompts with local structured guidance.
 8. Visitors without a personal key send grounded prompts to `/api/chat`, which
    enforces quota checks before streaming Tencent TokenHub output.
@@ -42,6 +43,7 @@ app/tests/ - Tests outside source tree, currently including workflow validation.
 
 - `app/src/components/BirthForm.tsx` - birth input, birthplace matching entry, and true solar time options.
 - `app/src/components/WelcomeLeiLei.tsx` - personalized romantic entrance shown on page load.
+- `app/src/components/AIInterpretation.tsx` - natal report plus multi-turn questions grounded in the active chart.
 - `app/src/components/icons/ViolinIcon.tsx` - reusable inline violin artwork for the welcome and shell.
 - `app/src/components/OpenSourceLinks.tsx` - GitHub repository and license links for open source attribution.
 - `app/src/lib/true-solar-time.ts` - true solar time calculation and birthplace matching helpers.

@@ -21,11 +21,11 @@ const GENDER_OPTIONS = [
 export function BirthForm() {
   const { setBirthInfo, setChart } = useChartStore()
 
-  const [year, setYear] = useState(1990)
-  const [month, setMonth] = useState(1)
-  const [day, setDay] = useState(1)
+  const [year, setYear] = useState(2002)
+  const [month, setMonth] = useState(8)
+  const [day, setDay] = useState(19)
   const [hour, setHour] = useState(12)
-  const [gender, setGender] = useState<Gender>('male')
+  const [gender, setGender] = useState<Gender>('female')
   const [birthplace, setBirthplace] = useState('')
   const [trueSolarEnabled, setTrueSolarEnabled] = useState(true)
   const [matchedBirthplace, setMatchedBirthplace] = useState<Birthplace | null>(null)

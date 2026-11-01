@@ -41,10 +41,19 @@ interface KLineCache {
   isGenerating: boolean           // 是否正在生成 reason
 }
 
+export interface AIConversationEntry {
+  role: 'user' | 'assistant'
+  content: string
+}
+
 interface ContentCacheState {
   // AI 命盘解读
   aiInterpretation: string | null
   setAiInterpretation: (content: string) => void
+
+  // 围绕当前命盘的连续问答
+  aiConversation: AIConversationEntry[]
+  setAiConversation: (messages: AIConversationEntry[]) => void
 
   // 年度运势解读 (按年份缓存)
   yearlyFortune: Record<number, string>
@@ -62,10 +71,12 @@ interface ContentCacheState {
 
 export const useContentCacheStore = create<ContentCacheState>()((set) => ({
   aiInterpretation: null,
+  aiConversation: [],
   yearlyFortune: {},
   klineCache: null,
 
   setAiInterpretation: (content) => set({ aiInterpretation: content }),
+  setAiConversation: (messages) => set({ aiConversation: messages }),
 
   setYearlyFortune: (year, content) => set((state) => ({
     yearlyFortune: { ...state.yearlyFortune, [year]: content },
@@ -97,6 +108,7 @@ export const useContentCacheStore = create<ContentCacheState>()((set) => ({
 
   clearAll: () => set({
     aiInterpretation: null,
+    aiConversation: [],
     yearlyFortune: {},
     klineCache: null,
   }),
