@@ -3,10 +3,14 @@ const { pickQuote } = require('../../utils/quotes')
 
 const HERO_IMAGES = [
   '/assets/wannan-violin-poster.jpg',
-  '/assets/wannan-autumn-tree.jpg',
+  '/assets/wannan-spring-tea.jpg',
   '/assets/wannan-courtyard.jpg',
-  '/assets/wannan-night.jpg',
+  '/assets/wannan-summer-lotus.jpg',
+  '/assets/wannan-autumn-tree.jpg',
+  '/assets/wannan-winter-window.jpg',
   '/assets/violin-rain-window.jpg',
+  '/assets/wannan-moon-violinist.jpg',
+  '/assets/wannan-night.jpg',
 ]
 
 Page({

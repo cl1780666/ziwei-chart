@@ -109,9 +109,10 @@ to the environment before deployment or device testing.
 
 ## D009 - The Mini Program Uses a Wannan Editorial Poster Visual System
 
-The personalized Mini Program uses an original five-image poster series that
+The personalized Mini Program uses an original nine-image poster series that
 combines antique violins, Wannan mountains and water, Hui-style white walls and
-dark roofs, a quiet courtyard, and an autumn tree. Supporting pages use
+dark roofs, a quiet courtyard, four seasons, and one restrained adult violinist
+seen from behind at night. Supporting pages use
 rice-paper ivory, ink green, walnut, and restrained burgundy with Song-style
 display typography. The direction should stay romantic, quiet, and editorial
 rather than returning to generic pink gradients or floating music-note

@@ -68,9 +68,9 @@ app/tests/ - Tests outside source tree, currently including workflow validation.
 - `app/api/rate-limit.ts` - signed daily quota cookie helpers.
 - `cloudbase/functions/ziwei-ai/index.js` - deployable CloudBase TokenHub proxy.
 - `wechat-miniapp/miniprogram/pages/` - personalized home, birth profile, chart, and chat pages.
-- `wechat-miniapp/miniprogram/assets/` - five compressed original poster scenes:
-  the home violin landscape, autumn tree, Hui courtyard, night river, and quiet
-  violin-by-the-rain-window artwork used across the four Mini Program pages.
+- `wechat-miniapp/miniprogram/assets/` - nine compressed original poster scenes:
+  the home violin landscape, four seasons, Hui courtyard, two night rivers, and
+  quiet violin-by-the-rain-window artwork used across the four Mini Program pages.
 - `wechat-miniapp/design-preview/index.html` - static phone-width visual review of the poster-style home screen.
 - `wechat-miniapp/cloudfunctions/ziwei-mini/index.js` - OPENID-scoped persistence and CloudBase AI calls.
 - `wechat-miniapp/cloudfunctions/ziwei-mini/domain.js` - deterministic profile validation, true solar time, and chart context.
