@@ -80,7 +80,7 @@ Page({
   startQuoteRotation() {
     this.stopQuoteRotation()
     this.setData({ quoteVisible: true })
-    this.quoteTimer = setInterval(() => this.advanceQuote(), 5000)
+    this.quoteTimer = setInterval(() => this.advanceQuote(), 7000)
   },
 
   stopQuoteRotation() {

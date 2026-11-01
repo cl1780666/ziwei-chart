@@ -19,9 +19,9 @@
 - Added an automatic nine-scene home background rotation. The scenes crossfade
   every 6.5 seconds with a restrained slow push, require no visible controls,
   and stop their timers while the home page is hidden.
-- Renamed the home quote feature to `蕾言蕾语` and made it rotate every five
-  seconds with a short fade. The compact translucent sheet clamps each quote to
-  two lines so the artwork remains the primary visual.
+- Renamed the home quote feature to `蕾言蕾语` and made it randomly rotate every
+  seven seconds without an immediate repeat. The compact translucent sheet
+  clamps each quote to two lines so the artwork remains the primary visual.
 - Expanded `蕾言蕾语` from fourteen to one hundred unique short lines. The set
   mixes playful relationship reversals, self-aware confidence, current short-
   video phrasing, and Wannan/violin references while avoiding explicit or

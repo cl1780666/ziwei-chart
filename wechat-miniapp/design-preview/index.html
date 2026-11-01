@@ -95,11 +95,15 @@
     setInterval(() => {
       quote.classList.add('hiding')
       setTimeout(() => {
-        quoteIndex = (quoteIndex + 1) % quotes.length
+        let nextIndex = quoteIndex
+        while (nextIndex === quoteIndex && quotes.length > 1) {
+          nextIndex = Math.floor(Math.random() * quotes.length)
+        }
+        quoteIndex = nextIndex
         quote.textContent = `“${quotes[quoteIndex]}。”`
         quote.classList.remove('hiding')
       }, 220)
-    }, 5000)
+    }, 7000)
   </script>
 </body>
 </html>
