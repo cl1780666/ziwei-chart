@@ -4,7 +4,7 @@ import {
   quotaCookie,
   readCookie,
   secondsUntilNextUtcDay,
-} from './rate-limit'
+} from './rate-limit.js'
 
 type MessageRole = 'system' | 'user' | 'assistant'
 

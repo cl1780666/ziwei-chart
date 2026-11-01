@@ -25,6 +25,8 @@
 - Added a server-managed OpenAI path for visitors who do not provide a personal
   model key. The API key stays in Vercel environment variables and never enters
   the browser bundle.
+- Fixed the Vercel Node ESM function import so `/api/chat` resolves the compiled
+  quota helper at runtime.
 - Added a signed per-browser daily quota of five shared AI requests and a
   best-effort same-IP burst limit of four requests per minute. Personal API
   keys continue to use the existing provider adapters without consuming the
