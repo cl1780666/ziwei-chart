@@ -17,7 +17,6 @@ modifying files under `app/`.
 - Vitest
 - ESLint
 - iztro
-- Vercel Analytics
 
 ## Commands
 
@@ -61,8 +60,9 @@ the welcome screen and application shell.
 `src/lib/`: Business helpers for date handling, astrology support, true solar
 time, birthplace data, LLM wiring, and scoring.
 
-`api/chat.ts`: Vercel server function for shared OpenAI streaming, request
-validation, and quota enforcement. Server secrets must remain environment-only.
+`api/chat.ts`: Vercel-compatible server function for shared Tencent TokenHub
+streaming, request validation, and quota enforcement. Server secrets must remain
+environment-only.
 
 `api/rate-limit.ts`: HMAC-signed daily quota cookie helpers.
 
@@ -87,7 +87,7 @@ matching.
 - Birthplace matching changes should be tested against realistic city input.
 - Workflow changes should keep the source repository guard and deployment mirror
   intent intact.
-- Shared AI changes must keep `OPENAI_API_KEY` out of frontend code and preserve
+- Shared AI changes must keep `TOKENHUB_API_KEY` out of frontend code and preserve
   the personal-key provider path.
 - Documentation changes are required for meaningful app behavior, module, command,
   or workflow changes.

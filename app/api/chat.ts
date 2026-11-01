@@ -129,7 +129,7 @@ export default async function handler(request: ChatRequest, response: ServerResp
     return
   }
 
-  const apiKey = process.env.OPENAI_API_KEY
+  const apiKey = process.env.TOKENHUB_API_KEY
   const quotaSecret = process.env.RATE_LIMIT_SECRET
   if (!apiKey || !quotaSecret) {
     sendJson(response, 503, { error: 'AI 服务尚未完成配置，请稍后再试' })
@@ -185,14 +185,14 @@ export default async function handler(request: ChatRequest, response: ServerResp
 
   let upstream: Response
   try {
-    upstream = await fetch('https://api.openai.com/v1/responses', {
+    upstream = await fetch('https://tokenhub.tencentmaas.com/v1/responses', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || 'gpt-6-luna',
+        model: process.env.TOKENHUB_MODEL || 'deepseek-v4-flash-202605',
         input: messages.map((message) => ({
           role: message.role === 'system' ? 'developer' : message.role,
           content: message.content,
@@ -209,8 +209,13 @@ export default async function handler(request: ChatRequest, response: ServerResp
 
   if (!upstream.ok || !upstream.body) {
     const details = await upstream.text().catch(() => '')
-    console.error('OpenAI API error', upstream.status, details.slice(0, 500))
-    sendJson(response, 502, { error: 'AI 服务暂时不可用，请稍后重试' })
+    console.error('TokenHub API error', upstream.status, details.slice(0, 500))
+    const errorMessage = upstream.status === 402
+      ? '共享 AI 的免费额度暂时用完了，请稍后再试'
+      : upstream.status === 429
+        ? 'AI 服务当前请求较多，请稍后再试'
+        : 'AI 服务暂时不可用，请稍后重试'
+    sendJson(response, 502, { error: errorMessage })
     return
   }
 

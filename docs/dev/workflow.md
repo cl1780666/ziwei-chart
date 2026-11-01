@@ -13,18 +13,18 @@ npm run dev
 Use the local URL printed by Vite. If a frontend behavior changes, verify it in a
 browser when practical.
 
-Shared AI development uses ignored `app/.env.local` values:
+Shared AI development uses server-only values:
 
 ```text
-OPENAI_API_KEY
+TOKENHUB_API_KEY
 RATE_LIMIT_SECRET
 AI_DAILY_LIMIT=5
-OPENAI_MODEL=gpt-6-luna
+TOKENHUB_MODEL=deepseek-v4-flash-202605
 ```
 
 Never commit the environment file or expose these values through `VITE_`
-variables. Vite alone does not emulate Vercel functions; use a Vercel-compatible
-local runtime when exercising `/api/chat` end to end.
+variables. Vite alone does not run the CloudBase HTTP function. For local function
+checks, start `cloudbase/functions/ziwei-ai/index.js`; it listens on port `9000`.
 
 ## Verification
 
@@ -84,7 +84,31 @@ matching documentation is incomplete.
 For code changes, include fresh verification evidence. If a command is not run,
 state the reason in the PR.
 
-## GitHub Sync to Vercel Repository
+## CloudBase Release
+
+Build the Vite app, run `cloudbase/build-static-release.mjs`, and upload the
+resulting `cloudbase-release/` directory to CloudBase static website hosting.
+The release script keeps the four selected licensed music files local to the
+site. Package `cloudbase/functions/ziwei-ai/index.js`, `package.json`, and the
+executable `scf_bootstrap` at the root of a ZIP, then deploy it as a Node.js HTTP
+function. Configure the HTTP gateway with these routes on one domain:
+
+```text
+/api/chat -> ziwei-ai HTTP function
+/         -> static website hosting
+```
+
+Set `TOKENHUB_API_KEY`, `TOKENHUB_MODEL`, `RATE_LIMIT_SECRET`, and
+`AI_DAILY_LIMIT` only in the CloudBase function environment. The static bundle
+must not contain secrets.
+
+The production environment is `supposed-bovid-d4gcywfkh2af1db6e` in Shanghai.
+The gateway domain is
+`supposed-bovid-d4gcywfkh2af1db6e-1522903512.ap-shanghai.app.tcloudbase.com`.
+The shared model is limited to the claimed `deepseek-v4-flash-202605` free-trial
+resource; keep TokenHub pay-as-you-go disabled.
+
+## Legacy GitHub Sync to Vercel Repository
 
 Source repo: `ziweiknows/ziwei-chart`
 
@@ -102,10 +126,9 @@ ZWKNOWS_SYNC_TOKEN
 The token must have access to `ruijayfeng/zwknows` and include permissions needed
 to update workflow files, currently `repo` and `workflow` for a classic PAT.
 
-User forks may connect Vercel directly to their own `main` branch. The
-`for-lei0819` deployment uses this direct-fork model and keeps the Vercel root
-directory set to `app`. Its Production environment must define
-`OPENAI_API_KEY`, `RATE_LIMIT_SECRET`, `AI_DAILY_LIMIT`, and `OPENAI_MODEL`.
+User forks may still connect Vercel directly to their own `main` branch during
+the CloudBase cutover. The Vercel-compatible function now expects
+`TOKENHUB_API_KEY`, `RATE_LIMIT_SECRET`, `AI_DAILY_LIMIT`, and `TOKENHUB_MODEL`.
 
 ## Sync Debugging
 

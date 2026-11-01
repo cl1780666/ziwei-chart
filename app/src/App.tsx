@@ -4,7 +4,6 @@
    ============================================================ */
 
 import { useRef, useState, type ReactNode } from 'react'
-import { Analytics } from '@vercel/analytics/react'
 import { BirthForm } from '@/components/BirthForm'
 import { ChartDisplay } from '@/components/chart'
 import { AIInterpretation } from '@/components/AIInterpretation'
@@ -355,7 +354,6 @@ export default function App() {
 
       <BackgroundMusic ref={backgroundMusicRef} />
 
-      <Analytics />
     </div>
   )
 }

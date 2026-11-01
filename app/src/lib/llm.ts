@@ -348,7 +348,7 @@ async function* streamOpenAICompatible(
 }
 
 /* ------------------------------------------------------------
-   站点共享 OpenAI（服务器端密钥 + 每日次数限制）
+   站点共享国产 AI（服务器端 TokenHub 密钥 + 每日次数限制）
    ------------------------------------------------------------ */
 
 async function* streamServerManaged(

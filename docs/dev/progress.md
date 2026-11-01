@@ -7,11 +7,31 @@
 - Branch: `main`
 - Source repository: `ziweiknows/ziwei-chart`
 - Deployment mirror: `ruijayfeng/zwknows`
-- Vercel should remain connected to `zwknows/main`
+- Public hosting migration target: Tencent CloudBase
 - Source-to-mirror sync verified through: `eb76a165dac652e24ac674d322386e7447a3acf0`
 - Working tree was clean before this documentation task.
 
 ## Recently Completed
+
+- Prepared a CloudBase static-hosting release path and a dependency-free Node.js
+  HTTP function that listens on port 9000, streams Tencent TokenHub Responses API
+  events, and keeps the model key on the server.
+- Removed the Vercel Analytics runtime injection from the CloudBase-targeted app
+  so the public build does not request Vercel-only endpoints.
+- Switched the shared provider contract from OpenAI to mainland TokenHub with a
+  configurable `deepseek-v4-flash-202605` default. The five-request signed browser quota
+  and four-request-per-minute IP burst limit remain in place.
+- Created the Shanghai CloudBase environment
+  `supposed-bovid-d4gcywfkh2af1db6e`, uploaded the static release, deployed the
+  `ziwei-ai` HTTP function, and prepared disabled `/` and `/api/chat` routes on
+  the default gateway domain.
+- Claimed the `deepseek-v4-flash-202605` TokenHub free-trial resource with 100%
+  remaining through 2027-11-01. Token-based pay-as-you-go remains disabled.
+- Completed the CloudBase cutover at
+  `supposed-bovid-d4gcywfkh2af1db6e-1522903512.ap-shanghai.app.tcloudbase.com`.
+  The `/` static route and `/api/chat` HTTP-function route are enabled behind the
+  same gateway domain. The dedicated TokenHub key is restricted to the selected
+  model, has a one-token daily paid-usage ceiling, and was rotated after setup.
 
 - Personalized the public experience for Lei with a full-screen
   "欢迎蕾蕾大王" entrance, a playful pink-violet theme, an original inline
@@ -22,8 +42,8 @@
   advances automatically, provides one play/pause control, and loops the full playlist.
 - Adjusted navigation breakpoints so the personalized header remains readable on
   tablet-width screens and uses the bottom navigation until desktop width.
-- Added a server-managed OpenAI path for visitors who do not provide a personal
-  model key. The API key stays in Vercel environment variables and never enters
+- Added a server-managed AI path for visitors who do not provide a personal
+  model key. The API key stays in server environment variables and never enters
   the browser bundle.
 - Fixed the Vercel Node ESM function import so `/api/chat` resolves the compiled
   quota helper at runtime.
@@ -86,6 +106,19 @@ Reverified on 2026-11-01 after the shared AI and rate-limit change:
 - Vitest passed 32/32 tests, including signed quota tamper and rollover coverage.
 - TypeScript and the Vite production build completed successfully.
 
+Live CloudBase verification on 2026-11-01:
+
+- ESLint passed, Vitest passed 32/32 tests, and the TypeScript/Vite production
+  build completed successfully after the final TokenHub model update.
+- The public welcome screen rendered with the personalized copy and violin theme.
+- The local Bossa Nova track played from CloudBase static hosting and reported a
+  2:43 duration.
+- `GET /api/chat` returned the TokenHub provider and
+  `deepseek-v4-flash-202605` model health metadata.
+- `POST /api/chat` returned HTTP 200, streamed `response.output_text.delta`
+  events, set the signed quota cookie, and reported four of five daily requests
+  remaining for the test browser.
+
 ## Open Risks
 
 - `CLAUDE.md` currently reads as mojibake in this environment and should not be
@@ -96,14 +129,17 @@ Reverified on 2026-11-01 after the shared AI and rate-limit change:
   retaining both `repo` and `workflow` permissions.
 - The signed cookie quota prevents casual overuse. A visitor can reset a browser
   cookie, so strict cross-device or global quotas require durable server storage.
+- The default CloudBase testing domain displays a three-second first-visit
+  warning. Removing it requires a suitable custom domain and the applicable
+  mainland China domain/ICP setup.
 - `npm ci` currently reports 11 dependency audit findings (1 low, 2 moderate,
   8 high); remediation needs a separately scoped dependency review because this
   documentation/license change does not alter the lockfile.
 
 ## Next Useful Work
 
-- Keep `ruijayfeng/zwknows` as the Vercel mirror unless the deployment model is
-  deliberately migrated and revalidated.
+- Bind a custom domain when one is available so visitors no longer see the
+  CloudBase test-domain warning.
 - Consider replacing or migrating the garbled `CLAUDE.md` once the new docs have
   been accepted.
 - Add feature-level tests whenever true solar time or birthplace matching behavior

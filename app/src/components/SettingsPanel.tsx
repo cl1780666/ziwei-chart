@@ -173,7 +173,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
 
       {/* 横幅提示 */}
       <div className="mb-4 p-3 rounded-lg bg-star/10 border border-star/20 text-sm text-text-secondary">
-        <span className="text-star">ⓘ</span> 未填写个人 API Key 时，自动使用本站共享 OpenAI；每个浏览器每天 5 次。
+        <span className="text-star">ⓘ</span> 未填写个人 API Key 时，自动使用本站共享国产 AI；每个浏览器每天 5 次。
       </div>
 
       <div className="space-y-4">

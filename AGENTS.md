@@ -19,7 +19,7 @@ If the task touches deployment, also read `docs/dev/workflow.md`.
 Ziwei is a React + TypeScript + Vite Zi Wei Dou Shu charting application. It
 combines chart generation, true solar time correction, birthplace coordinate
 matching, structured knowledge retrieval, AI interpretation, and deployment
-through a mirrored Vercel repository.
+through Tencent CloudBase.
 
 ## Repository Map
 
@@ -34,6 +34,7 @@ docs/ - User-facing docs, licenses, plans, and development memory.
 06-* / - Domain reference notes for fortune cycles.
 99-* / - Source and reference collection.
 .github/workflows/ - CI and repository synchronization automation.
+cloudbase/ - CloudBase HTTP function source and release notes.
 </directory>
 
 <config>
@@ -93,10 +94,11 @@ A change is not complete until code, tests, and documentation agree.
 
 ## Current Deployment Model
 
-`ziweiknows/ziwei-chart` is the source repository. `ruijayfeng/zwknows` is the
-deployment mirror used by Vercel. Pushes to `ziweiknows/ziwei-chart/main` trigger a GitHub Actions
-workflow that force-with-lease syncs `zwknows/main` using the
-`ZWKNOWS_SYNC_TOKEN` repository secret.
+The public deployment is migrating from Vercel to Tencent CloudBase. CloudBase
+static hosting serves the Vite build, while the `/api/chat` HTTP gateway route
+targets `cloudbase/functions/ziwei-ai`. The HTTP function calls Tencent TokenHub
+with server-only credentials. The previous Vercel mirror workflow remains in the
+repository during the cutover and is not the CloudBase release path.
 
 [PROTOCOL]: Update this file when the top-level architecture, commands, deployment
 model, or documentation contract changes.

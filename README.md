@@ -62,7 +62,7 @@
 | **年度运势** | 结合限流叠宫与月度趋势，浏览阶段性变化。 |
 | **双人合盘** | 用四化互飞、关系匹配与互动视角理解两张命盘。 |
 | **人生 K 线** | 以图形方式浏览长期走势，帮助用户定位不同人生阶段。 |
-| **AI 辅助解读** | 可接入兼容 OpenAI API 的模型；命盘事实仍由确定性工具提供。 |
+| **AI 辅助解读** | 默认通过腾讯 TokenHub 提供每日限次的共享国产模型，也可接入个人模型；命盘事实仍由确定性工具提供。 |
 | **分享卡片** | 将分析结果生成适合保存和传播的视觉卡片。 |
 
 ## 界面预览
@@ -104,7 +104,7 @@ Ziwei Chart 用于生成和可视化浏览命盘、趋势、合盘等结构化�
 
 ### 不配置模型也能使用吗？
 
-可以。排盘、趋势、合盘、人生 K 线和本地浏览功能不依赖模型。只有 AI 解读需要在应用设置中配置兼容 OpenAI API 的服务。
+可以。排盘、趋势、合盘、人生 K 线和本地浏览功能不依赖模型。AI 解读默认使用服务器上的腾讯 TokenHub 共享服务，每个浏览器每天五次；个人 API Key 只是可选配置。
 
 ### 命盘事实和 AI 解读是一回事吗？
 
@@ -125,9 +125,20 @@ npm run dev
 
 ## 配置模型
 
-在应用内打开设置，填写兼容 OpenAI API 的 Provider、Base URL、API Key 与 Model。当前支持 Kimi、Gemini、Claude、DeepSeek 等兼容接口；模型配置仅用于 AI 解读能力。
+访问者无需配置即可使用每日限次的共享 TokenHub 模型。也可以在应用内打开设置，填写个人 Provider、Base URL、API Key 与 Model；当前支持 Kimi、Gemini、Claude、DeepSeek 等兼容接口。个人配置仅保存在当前浏览器。
 
 ## 部署
+
+### Tencent CloudBase
+
+将 Vite 构建产物上传到静态网站托管，并把 `/api/chat` 路由到
+`cloudbase/functions/ziwei-ai` HTTP 函数。函数需要设置
+`TOKENHUB_API_KEY`、`TOKENHUB_MODEL`、`RATE_LIMIT_SECRET` 与
+`AI_DAILY_LIMIT`，具体结构见 `cloudbase/README.md`。
+
+当前公开地址：
+[蕾蕾的星盘 · For Lei 0819](https://supposed-bovid-d4gcywfkh2af1db6e-1522903512.ap-shanghai.app.tcloudbase.com/)。
+CloudBase 默认测试域名首次访问会显示三秒提示页；绑定已备案的自定义域名后可去掉。
 
 ### Vercel
 

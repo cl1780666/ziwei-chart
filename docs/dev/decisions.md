@@ -25,14 +25,16 @@ Reasons:
 Consequence: dataset license and source attribution must remain tracked under
 `docs/licenses/`.
 
-## D003 - Deployment Uses a Mirror Repository
+## D003 - CloudBase Is the Public Deployment Target
 
-`ziweiknows/ziwei-chart` is the development source. `ruijayfeng/zwknows` is the fork or
-mirror connected to Vercel. The source repository syncs to the deployment mirror
-through GitHub Actions.
+The public site uses Tencent CloudBase so it can be opened directly from mainland
+China. Static website hosting serves the Vite build. The HTTP gateway routes
+`/api/chat` to a CloudBase HTTP function and `/` to static hosting by longest
+path match.
 
-Consequence: Vercel does not need to point at the source repository. Sync failures
-should be debugged in GitHub Actions first, then by checking refs:
+The older GitHub mirror workflow and Vercel deployment remain available during
+the cutover, but they are no longer the target architecture. Mirror sync failures
+can still be debugged by checking refs:
 
 ```powershell
 git ls-remote origin refs/heads/main
@@ -67,11 +69,12 @@ Consequence: feature, bug, and task issues should identify documentation impact.
 Pull requests must treat documentation updates as part of the same deliverable as
 code and tests.
 
-## D007 - Shared AI Uses a Server-Only Key and Signed Visitor Quota
+## D007 - Shared AI Uses TokenHub, a Server-Only Key, and Signed Visitor Quota
 
-Visitors who do not configure a personal provider key use the Vercel function at
-`/api/chat`. `OPENAI_API_KEY` and `RATE_LIMIT_SECRET` stay in server environment
-variables and must never be exposed through `VITE_` variables or client code.
+Visitors who do not configure a personal provider key use `/api/chat`. The public
+CloudBase route calls Tencent TokenHub's mainland Responses API. `TOKENHUB_API_KEY`
+and `RATE_LIMIT_SECRET` stay in server environment variables and must never be
+exposed through `VITE_` variables or client code.
 
 The shared allowance is five successful AI requests per browser per UTC day,
 stored in an HMAC-signed, HttpOnly cookie. The function also applies a
@@ -81,6 +84,10 @@ existing browser-only provider flow and do not consume the shared allowance.
 Consequence: the cookie quota is appropriate for a small friends-and-family
 site. A strict global, account, or cross-device limit requires durable storage
 and identity rather than extending the cookie scheme.
+
+TokenHub free-trial exhaustion returns a friendly unavailable message. It does
+not affect deterministic chart, matching, fortune, or K-line features, and no
+postpaid service is required by this design.
 
 [PROTOCOL]: Add a new decision when a choice affects future implementation,
 deployment, product behavior, or contributor workflow.

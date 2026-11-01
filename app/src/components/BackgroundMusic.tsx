@@ -67,13 +67,13 @@ export const BackgroundMusic = forwardRef<BackgroundMusicHandle>(function Backgr
     const audio = audioRef.current
     if (!audio) return
 
-    setIsReady(false)
     audio.load()
     if (shouldPlayRef.current) play(true)
   }, [play, trackIndex])
 
   const nextTrack = useCallback(() => {
     shouldPlayRef.current = true
+    setIsReady(false)
     setTrackIndex((current) => (current + 1) % TRACKS.length)
   }, [])
 

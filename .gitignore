@@ -40,3 +40,8 @@ coverage/
 
 # Local copies of licensed background music (the website streams the originals)
 app/public/audio/*.mp3
+
+# Local CloudBase upload artifacts
+cloudbase-release/
+*-cloudbase.zip
+tokenhub-key-approval.png

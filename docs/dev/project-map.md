@@ -10,8 +10,7 @@ it factual and compact.
 ## Application Shape
 
 The app is a Vite React application under `app/`. It uses TypeScript, React 19,
-Zustand, Tailwind CSS 4, Vitest, ESLint, iztro for Zi Wei Dou Shu charting, and
-Vercel Analytics.
+Zustand, Tailwind CSS 4, Vitest, ESLint, and iztro for Zi Wei Dou Shu charting.
 
 Primary runtime flow:
 
@@ -22,8 +21,8 @@ Primary runtime flow:
 5. App state stores the chart and user selections.
 6. UI renders chart, fortune, match, K-line, share, and AI interpretation views.
 7. Knowledge retrieval grounds AI prompts with local structured guidance.
-8. Visitors without a personal key send grounded prompts to `app/api/chat.ts`,
-   which enforces quota checks before streaming OpenAI output.
+8. Visitors without a personal key send grounded prompts to `/api/chat`, which
+   enforces quota checks before streaming Tencent TokenHub output.
 
 ## App Module Map
 
@@ -35,6 +34,7 @@ app/src/stores/ - Zustand state.
 app/src/knowledge-db/ - Structured guidance database and retrieval pipeline.
 app/src/knowledge/ - Static Zi Wei Dou Shu knowledge modules.
 app/api/ - Vercel server functions for shared AI access and signed quota state.
+cloudbase/functions/ziwei-ai/ - CloudBase HTTP function for the public shared AI route.
 app/tests/ - Tests outside source tree, currently including workflow validation.
 </directory>
 
@@ -49,8 +49,9 @@ app/tests/ - Tests outside source tree, currently including workflow validation.
 - `app/src/lib/birth-date.ts` - birth date handling.
 - `app/src/lib/astro.ts` - chart-facing astrology helpers.
 - `app/src/lib/llm.ts` - personal-provider adapters and shared server streaming.
-- `app/api/chat.ts` - same-origin OpenAI proxy, validation, and stream forwarding.
+- `app/api/chat.ts` - Vercel-compatible TokenHub proxy, validation, and stream forwarding.
 - `app/api/rate-limit.ts` - signed daily quota cookie helpers.
+- `cloudbase/functions/ziwei-ai/index.js` - deployable CloudBase TokenHub proxy.
 - `app/src/knowledge-db/retrieval/retrieve.ts` - guidance retrieval.
 - `.github/workflows/sync-zwknows.yml` - deployment mirror synchronization.
 
@@ -65,7 +66,8 @@ app/tests/ - Tests outside source tree, currently including workflow validation.
 - UI components should call business helpers instead of embedding calculation logic.
 - `app/src/lib/` owns deterministic data transformation and calculation helpers.
 - `app/src/knowledge-db/` owns retrieval data and prompt-grounding context.
-- `app/api/` owns server-only credentials, request validation, and shared limits.
+- `app/api/` and `cloudbase/functions/ziwei-ai/` own server-only credentials,
+  request validation, and shared limits for their deployment targets.
 - Workflow tests under `app/tests/` protect repository automation contracts.
 
 [PROTOCOL]: Update this file when module ownership, data flow, important files, or
