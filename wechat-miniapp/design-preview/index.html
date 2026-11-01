@@ -41,7 +41,7 @@
     </section>
     <section class="sheet">
       <div class="sheet-head"><span>蕾言蕾语</span><span class="place">WANNAN · ANHUI</span></div>
-      <p class="quote">“皖南的路会拐弯，姐的心情也会。”</p>
+      <p class="quote">“喜欢一个人是藏不住的，喜欢两个人一定要藏住。”</p>
       <button class="start">开始测一测</button>
       <div class="hint"><span>资料已保存</span><span>今日余 5 问</span></div>
       <div class="signature"><span>白墙黛瓦 · 一弦一星河</span></div>
@@ -63,13 +63,13 @@
     const incoming = document.querySelector('.bg-incoming')
     const quote = document.querySelector('.quote')
     let quotes = [
-      '你好，少妇没你年轻，少女没你有钱',
+      '喜欢一个人是藏不住的，喜欢两个人一定要藏住',
       '别问姐爱谁，姐连明天穿什么都没决定',
       '心动归心动，排队还是要排队',
-      '感情可以慢慢谈，漂亮必须按时',
-      '皖南的路会拐弯，姐的心情也会',
-      '白墙黛瓦很安静，姐不一定',
-      '小提琴有四根弦，姐的耐心看缘分'
+      '姐的钱自己赚，男朋友随缘',
+      '漂亮姐姐不排队，只换一家店',
+      '系统提示：姐的耐心余额不足',
+      '疑似准备认真，实际系统随机推荐'
     ]
     fetch('../miniprogram/utils/quotes-data.json')
       .then(response => response.json())
@@ -78,7 +78,7 @@
       })
       .catch(() => {})
     let current = 0
-    let quoteIndex = 4
+    let quoteIndex = 0
     setInterval(() => {
       const next = (current + 1) % backgrounds.length
       incoming.style.backgroundImage = `url("${backgrounds[next]}")`

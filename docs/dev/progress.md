@@ -23,10 +23,11 @@
   seven seconds without an immediate repeat. The compact translucent sheet
   clamps each quote to two lines so the artwork remains the primary visual.
 - Expanded `蕾言蕾语` from fourteen to five hundred unique short lines. The set
-  mixes playful relationship reversals, self-aware confidence, current short-
-  video phrasing, and Wannan/violin references while avoiding explicit or
-  insulting material. A JSON mirror keeps the browser design preview on the same
-  five-hundred-line pool as the native Mini Program.
+  now focuses on relationship-reversal jokes, rich-and-stylish older-sister
+  lines, and absurd short-video phrasing. Clear-headed relationship advice,
+  self-admiration jokes, Wannan/violin references, and gentle romantic lines
+  were removed at the user's request. A JSON mirror keeps the browser design
+  preview on the same five-hundred-line pool as the native Mini Program.
 - Expanded the original artwork into a nine-image Wannan and violin series. The
   profile page now uses an autumn tree masthead and courtyard scene, the chart
   page uses a quiet river-at-night scene, and the chat page uses a restrained
