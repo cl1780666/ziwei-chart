@@ -17,10 +17,9 @@
   "欢迎蕾蕾大王" entrance, a playful pink-violet theme, an original inline
   violin illustration, floating musical notes, and concise `For Lei · 0819`
   branding.
-- Added a persistent background-music control for the official Spotify embed of
-  `If I Ain't Got You` by Alicia Keys. The app attempts playback from the
-  beginning on load, restarts reliably when the visitor enters through the
-  welcome screen, and loops after the track finishes.
+- Replaced the short Spotify preview with a four-track romantic instrumental R&B
+  playlist licensed through Pixabay. Playback starts from the welcome screen,
+  advances automatically, supports manual skipping, and loops the full playlist.
 - Adjusted navigation breakpoints so the personalized header remains readable on
   tablet-width screens and uses the bottom navigation until desktop width.
 - Added a server-managed OpenAI path for visitors who do not provide a personal

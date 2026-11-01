@@ -7,68 +7,28 @@ import {
   useState,
 } from 'react'
 
-const TRACK_URI = 'spotify:track:3XVBdLihbNbxUwZosxcGuJ'
-const SPOTIFY_IFRAME_API = 'https://open.spotify.com/embed/iframe-api/v1'
-
-interface SpotifyPlaybackEvent {
-  data: {
-    duration: number
-    isPaused: boolean
-    position: number
-  }
-}
-
-interface SpotifyEmbedController {
-  addListener: (
-    event: 'playback_update',
-    listener: (event: SpotifyPlaybackEvent) => void,
-  ) => void
-  destroy: () => void
-  play: () => void
-  restart: () => void
-  togglePlay: () => void
-}
-
-interface SpotifyIframeApi {
-  createController: (
-    element: HTMLElement,
-    options: { uri: string; width: number; height: number },
-    callback: (controller: SpotifyEmbedController) => void,
-  ) => void
-}
-
-declare global {
-  interface Window {
-    __leiSpotifyIframeApi?: SpotifyIframeApi
-    onSpotifyIframeApiReady?: (api: SpotifyIframeApi) => void
-  }
-}
-
-let spotifyApiPromise: Promise<SpotifyIframeApi> | null = null
-
-function loadSpotifyIframeApi() {
-  if (window.__leiSpotifyIframeApi) {
-    return Promise.resolve(window.__leiSpotifyIframeApi)
-  }
-
-  if (!spotifyApiPromise) {
-    spotifyApiPromise = new Promise((resolve) => {
-      window.onSpotifyIframeApiReady = (api) => {
-        window.__leiSpotifyIframeApi = api
-        resolve(api)
-      }
-
-      if (!document.querySelector(`script[src="${SPOTIFY_IFRAME_API}"]`)) {
-        const script = document.createElement('script')
-        script.src = SPOTIFY_IFRAME_API
-        script.async = true
-        document.body.appendChild(script)
-      }
-    })
-  }
-
-  return spotifyApiPromise
-}
+const TRACKS = [
+  {
+    src: 'https://cdn.pixabay.com/download/audio/2025/01/08/audio_e859480c66.mp3?filename=u_ecplpk4096-emotional-rampb-type-piano-281446.mp3',
+    title: 'Emotional R&B Piano',
+    duration: '4:16',
+  },
+  {
+    src: 'https://cdn.pixabay.com/download/audio/2024/10/14/audio_0fc8c28daa.mp3?filename=kontraa-inner-desires-rampb-soul-music-250739.mp3',
+    title: 'Inner Desires',
+    duration: '2:47',
+  },
+  {
+    src: 'https://cdn.pixabay.com/download/audio/2026/01/02/audio_48a6c38ddd.mp3?filename=openusemusic-low-glow-warm-rampb-chill-for-relaxed-focus-460279.mp3',
+    title: 'Low Glow',
+    duration: '4:40',
+  },
+  {
+    src: 'https://cdn.pixabay.com/download/audio/2023/03/25/audio_75e4ef5b76.mp3?filename=wavemaster-rampb-soul-143905.mp3',
+    title: 'R&B Soul',
+    duration: '2:52',
+  },
+] as const
 
 export interface BackgroundMusicHandle {
   startFromBeginning: () => void
@@ -78,82 +38,71 @@ export const BackgroundMusic = forwardRef<BackgroundMusicHandle>(function Backgr
   _props,
   ref,
 ) {
-  const playerHostRef = useRef<HTMLDivElement>(null)
-  const controllerRef = useRef<SpotifyEmbedController | null>(null)
-  const pendingStartRef = useRef(false)
-  const loopPendingRef = useRef(false)
+  const audioRef = useRef<HTMLAudioElement>(null)
+  const shouldPlayRef = useRef(true)
+  const [trackIndex, setTrackIndex] = useState(0)
   const [isReady, setIsReady] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
+  const track = TRACKS[trackIndex]
+
+  const play = useCallback((restart = false) => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    shouldPlayRef.current = true
+    if (restart) audio.currentTime = 0
+    void audio.play().catch(() => {
+      // Mobile browsers may wait for the visitor's first click before playing.
+      setIsPlaying(false)
+    })
+  }, [])
 
   const startFromBeginning = useCallback(() => {
-    const controller = controllerRef.current
-    if (!controller) {
-      pendingStartRef.current = true
-      return
-    }
-
-    pendingStartRef.current = false
-    loopPendingRef.current = false
-    controller.restart()
-    controller.play()
-  }, [])
+    play(true)
+  }, [play])
 
   useImperativeHandle(ref, () => ({ startFromBeginning }), [startFromBeginning])
 
   useEffect(() => {
-    let cancelled = false
+    const audio = audioRef.current
+    if (!audio) return
 
-    void loadSpotifyIframeApi().then((api) => {
-      if (cancelled || !playerHostRef.current) return
+    setIsReady(false)
+    audio.load()
+    if (shouldPlayRef.current) play(true)
+  }, [play, trackIndex])
 
-      api.createController(
-        playerHostRef.current,
-        { uri: TRACK_URI, width: 300, height: 152 },
-        (controller) => {
-          if (cancelled) {
-            controller.destroy()
-            return
-          }
-
-          controllerRef.current = controller
-          controller.addListener('playback_update', (event) => {
-            const { duration, isPaused, position } = event.data
-            const hasEnded = duration > 0 && position >= duration - 250
-
-            if (hasEnded && isPaused && !loopPendingRef.current) {
-              loopPendingRef.current = true
-              controller.restart()
-              controller.play()
-              return
-            }
-
-            if (!isPaused && position < 1_000) {
-              loopPendingRef.current = false
-            }
-            setIsPlaying(!isPaused)
-          })
-          setIsReady(true)
-          startFromBeginning()
-        },
-      )
-    })
-
-    return () => {
-      cancelled = true
-      controllerRef.current?.destroy()
-      controllerRef.current = null
-    }
-  }, [startFromBeginning])
+  const nextTrack = useCallback(() => {
+    shouldPlayRef.current = true
+    setTrackIndex((current) => (current + 1) % TRACKS.length)
+  }, [])
 
   const togglePlayback = () => {
-    controllerRef.current?.togglePlay()
+    const audio = audioRef.current
+    if (!audio) return
+
+    if (audio.paused) {
+      play(false)
+    } else {
+      shouldPlayRef.current = false
+      audio.pause()
+    }
   }
 
   return (
     <div className={`lei-music-player ${isPlaying ? 'is-playing' : ''}`}>
-      <div className="lei-music-frame" aria-hidden="true">
-        <div ref={playerHostRef} />
-      </div>
+      <audio
+        ref={audioRef}
+        src={track.src}
+        preload="auto"
+        onCanPlay={() => {
+          setIsReady(true)
+          if (shouldPlayRef.current && audioRef.current?.paused) play(false)
+        }}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        onEnded={nextTrack}
+      />
 
       <button
         type="button"
@@ -168,13 +117,23 @@ export const BackgroundMusic = forwardRef<BackgroundMusicHandle>(function Backgr
         </span>
         <span className="lei-music-copy">
           <strong>{isPlaying ? '正在播放' : '播放背景音乐'}</strong>
-          <small>If I Ain't Got You</small>
+          <small>{track.title} · {track.duration}</small>
         </span>
         <span className="lei-music-bars" aria-hidden="true">
           <i />
           <i />
           <i />
         </span>
+      </button>
+
+      <button
+        type="button"
+        className="lei-music-next"
+        onClick={nextTrack}
+        aria-label="播放下一首背景音乐"
+        title="下一首"
+      >
+        ›
       </button>
     </div>
   )

@@ -37,3 +37,6 @@ coverage/
 *.tgz
 .eslintcache
 .worktrees/
+
+# Local copies of licensed background music (the website streams the originals)
+app/public/audio/*.mp3
