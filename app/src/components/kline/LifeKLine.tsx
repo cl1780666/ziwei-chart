@@ -242,21 +242,13 @@ export function LifeKLine() {
     setProgress('初始化...')
 
     try {
-      let lifetime: LifetimeKLinePoint[]
-
-      if (llmConfig.apiKey) {
-        // 使用 LLM 生成 (AI 决定涨跌)
-        lifetime = await generateKLinesWithLLM(
-          chart,
-          birthInfo.year,
-          llmConfig,
-          setProgress
-        )
-      } else {
-        // 无 API Key 时使用算法生成
-        setProgress('正在计算运势...')
-        lifetime = generateLifetimeKLines(chart, birthInfo.year)
-      }
+      // 优先使用访客自己的 API Key；未配置时自动使用站点共享 AI。
+      const lifetime: LifetimeKLinePoint[] = await generateKLinesWithLLM(
+        chart,
+        birthInfo.year,
+        llmConfig,
+        setProgress
+      )
 
       setKlineCache({ lifetime, isGenerating: false })
       setProgress('')
@@ -355,7 +347,7 @@ export function LifeKLine() {
             )}
           </button>
           {!llmConfig.apiKey && (
-            <p className="text-text-muted text-xs">提示：配置 API Key 可使用 AI 分析命盘生成</p>
+            <p className="text-text-muted text-xs">共享 AI 每个浏览器每天可使用 5 次</p>
           )}
         </div>
       ) : (

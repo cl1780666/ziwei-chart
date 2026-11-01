@@ -13,6 +13,15 @@
 
 ## Recently Completed
 
+- Added a server-managed OpenAI path for visitors who do not provide a personal
+  model key. The API key stays in Vercel environment variables and never enters
+  the browser bundle.
+- Added a signed per-browser daily quota of five shared AI requests and a
+  best-effort same-IP burst limit of four requests per minute. Personal API
+  keys continue to use the existing provider adapters without consuming the
+  shared quota.
+- Updated natal interpretation, yearly fortune, compatibility, and life K-line
+  flows to use the shared service automatically when no personal key is saved.
 - Replaced the prefixed LICENSE layout with the unmodified canonical GNU GPLv3
   text so GitHub can identify the repository license; the project copyright and
   GPLv3-or-later notice remain explicit in README.
@@ -60,6 +69,12 @@ Reverified on 2026-07-31 after the LICENSE/README evidence update:
 Known build note: Vite may report a large chunk warning. That warning was already
 known and is not by itself a failure.
 
+Reverified on 2026-11-01 after the shared AI and rate-limit change:
+
+- ESLint passed.
+- Vitest passed 32/32 tests, including signed quota tamper and rollover coverage.
+- TypeScript and the Vite production build completed successfully.
+
 ## Open Risks
 
 - `CLAUDE.md` currently reads as mojibake in this environment and should not be
@@ -68,6 +83,8 @@ known and is not by itself a failure.
   local coordinate dataset.
 - The deployment mirror sync depends on the GitHub secret `ZWKNOWS_SYNC_TOKEN`
   retaining both `repo` and `workflow` permissions.
+- The signed cookie quota prevents casual overuse. A visitor can reset a browser
+  cookie, so strict cross-device or global quotas require durable server storage.
 - `npm ci` currently reports 11 dependency audit findings (1 low, 2 moderate,
   8 high); remediation needs a separately scoped dependency review because this
   documentation/license change does not alter the lockfile.

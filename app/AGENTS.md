@@ -55,6 +55,11 @@ open source attribution in the app shell.
 `src/lib/`: Business helpers for date handling, astrology support, true solar
 time, birthplace data, LLM wiring, and scoring.
 
+`api/chat.ts`: Vercel server function for shared OpenAI streaming, request
+validation, and quota enforcement. Server secrets must remain environment-only.
+
+`api/rate-limit.ts`: HMAC-signed daily quota cookie helpers.
+
 `src/lib/true-solar-time.ts`: True solar time and birthplace matching logic.
 
 `src/lib/birthplace-data.json`: Local coordinate dataset used for birthplace
@@ -76,6 +81,8 @@ matching.
 - Birthplace matching changes should be tested against realistic city input.
 - Workflow changes should keep the source repository guard and deployment mirror
   intent intact.
+- Shared AI changes must keep `OPENAI_API_KEY` out of frontend code and preserve
+  the personal-key provider path.
 - Documentation changes are required for meaningful app behavior, module, command,
   or workflow changes.
 

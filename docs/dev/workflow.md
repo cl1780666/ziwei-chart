@@ -13,6 +13,19 @@ npm run dev
 Use the local URL printed by Vite. If a frontend behavior changes, verify it in a
 browser when practical.
 
+Shared AI development uses ignored `app/.env.local` values:
+
+```text
+OPENAI_API_KEY
+RATE_LIMIT_SECRET
+AI_DAILY_LIMIT=5
+OPENAI_MODEL=gpt-6-luna
+```
+
+Never commit the environment file or expose these values through `VITE_`
+variables. Vite alone does not emulate Vercel functions; use a Vercel-compatible
+local runtime when exercising `/api/chat` end to end.
+
 ## Verification
 
 From `app/`:
@@ -88,6 +101,11 @@ ZWKNOWS_SYNC_TOKEN
 
 The token must have access to `ruijayfeng/zwknows` and include permissions needed
 to update workflow files, currently `repo` and `workflow` for a classic PAT.
+
+User forks may connect Vercel directly to their own `main` branch. The
+`for-lei0819` deployment uses this direct-fork model and keeps the Vercel root
+directory set to `app`. Its Production environment must define
+`OPENAI_API_KEY`, `RATE_LIMIT_SECRET`, `AI_DAILY_LIMIT`, and `OPENAI_MODEL`.
 
 ## Sync Debugging
 

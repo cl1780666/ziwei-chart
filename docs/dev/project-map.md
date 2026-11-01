@@ -22,6 +22,8 @@ Primary runtime flow:
 5. App state stores the chart and user selections.
 6. UI renders chart, fortune, match, K-line, share, and AI interpretation views.
 7. Knowledge retrieval grounds AI prompts with local structured guidance.
+8. Visitors without a personal key send grounded prompts to `app/api/chat.ts`,
+   which enforces quota checks before streaming OpenAI output.
 
 ## App Module Map
 
@@ -32,6 +34,7 @@ app/src/lib/ - Business logic helpers and calculation support.
 app/src/stores/ - Zustand state.
 app/src/knowledge-db/ - Structured guidance database and retrieval pipeline.
 app/src/knowledge/ - Static Zi Wei Dou Shu knowledge modules.
+app/api/ - Vercel server functions for shared AI access and signed quota state.
 app/tests/ - Tests outside source tree, currently including workflow validation.
 </directory>
 
@@ -43,6 +46,9 @@ app/tests/ - Tests outside source tree, currently including workflow validation.
 - `app/src/lib/birthplace-data.json` - local city/region coordinate dataset.
 - `app/src/lib/birth-date.ts` - birth date handling.
 - `app/src/lib/astro.ts` - chart-facing astrology helpers.
+- `app/src/lib/llm.ts` - personal-provider adapters and shared server streaming.
+- `app/api/chat.ts` - same-origin OpenAI proxy, validation, and stream forwarding.
+- `app/api/rate-limit.ts` - signed daily quota cookie helpers.
 - `app/src/knowledge-db/retrieval/retrieve.ts` - guidance retrieval.
 - `.github/workflows/sync-zwknows.yml` - deployment mirror synchronization.
 
@@ -57,6 +63,7 @@ app/tests/ - Tests outside source tree, currently including workflow validation.
 - UI components should call business helpers instead of embedding calculation logic.
 - `app/src/lib/` owns deterministic data transformation and calculation helpers.
 - `app/src/knowledge-db/` owns retrieval data and prompt-grounding context.
+- `app/api/` owns server-only credentials, request validation, and shared limits.
 - Workflow tests under `app/tests/` protect repository automation contracts.
 
 [PROTOCOL]: Update this file when module ownership, data flow, important files, or

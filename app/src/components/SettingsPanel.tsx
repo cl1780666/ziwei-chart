@@ -173,13 +173,13 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
 
       {/* 横幅提示 */}
       <div className="mb-4 p-3 rounded-lg bg-star/10 border border-star/20 text-sm text-text-secondary">
-        <span className="text-star">ⓘ</span> 使用中转 API？展开下方「高级设置」修改 URL 和模型
+        <span className="text-star">ⓘ</span> 未填写个人 API Key 时，自动使用本站共享 OpenAI；每个浏览器每天 5 次。
       </div>
 
       <div className="space-y-4">
         {/* 厂商选择 */}
         <Select
-          label="AI 厂商"
+          label="个人 AI 厂商（可选）"
           options={PROVIDER_OPTIONS}
           value={provider}
           onChange={(e) => handleProviderChange(e.target.value as ModelProvider)}
@@ -187,7 +187,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
 
         {/* API Key */}
         <Input
-          label="API Key"
+          label="个人 API Key（可选）"
           type="password"
           placeholder="输入你的 API Key"
           value={localApiKey}
@@ -374,7 +374,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
 
         {/* 隐私提示 */}
         <p className="text-xs text-text-muted text-center">
-          API Key 仅保存在你的浏览器本地，不会上传到任何服务器。
+          你填写的个人 API Key 仅保存在当前浏览器；留空则使用本站的限次共享 AI。
         </p>
       </div>
     </div>

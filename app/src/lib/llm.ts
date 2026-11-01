@@ -348,6 +348,59 @@ async function* streamOpenAICompatible(
 }
 
 /* ------------------------------------------------------------
+   站点共享 OpenAI（服务器端密钥 + 每日次数限制）
+   ------------------------------------------------------------ */
+
+async function* streamServerManaged(
+  messages: ChatMessage[]
+): AsyncGenerator<string> {
+  const response = await fetch('/api/chat', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages }),
+  })
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => null) as { error?: string } | null
+    throw new Error(data?.error || `AI 服务请求失败 (${response.status})`)
+  }
+
+  const reader = response.body?.getReader()
+  if (!reader) throw new Error('AI 服务没有返回内容')
+
+  const decoder = new TextDecoder()
+  let buffer = ''
+
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+
+    buffer += decoder.decode(value, { stream: true })
+    const lines = buffer.split('\n')
+    buffer = lines.pop() || ''
+
+    for (const line of lines) {
+      if (!line.startsWith('data: ')) continue
+      const data = line.slice(6)
+      if (data === '[DONE]') return
+
+      try {
+        const event = JSON.parse(data)
+        if (event.type === 'response.output_text.delta' && event.delta) {
+          yield event.delta
+        } else if (event.type === 'error' || event.type === 'response.failed') {
+          throw new Error(event.error?.message || 'AI 生成失败，请稍后重试')
+        }
+      } catch (error) {
+        if (error instanceof SyntaxError) continue
+        throw error
+      }
+    }
+  }
+}
+
+/* ------------------------------------------------------------
    Gemini API 请求
    ------------------------------------------------------------ */
 
@@ -523,6 +576,11 @@ export async function* streamChat(
   config: LLMConfig,
   messages: ChatMessage[]
 ): AsyncGenerator<string> {
+  if (!config.apiKey.trim()) {
+    yield* streamServerManaged(messages)
+    return
+  }
+
   switch (config.provider) {
     case 'gemini':
       yield* streamGemini(config, messages)

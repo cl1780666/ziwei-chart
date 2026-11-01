@@ -67,5 +67,20 @@ Consequence: feature, bug, and task issues should identify documentation impact.
 Pull requests must treat documentation updates as part of the same deliverable as
 code and tests.
 
+## D007 - Shared AI Uses a Server-Only Key and Signed Visitor Quota
+
+Visitors who do not configure a personal provider key use the Vercel function at
+`/api/chat`. `OPENAI_API_KEY` and `RATE_LIMIT_SECRET` stay in server environment
+variables and must never be exposed through `VITE_` variables or client code.
+
+The shared allowance is five successful AI requests per browser per UTC day,
+stored in an HMAC-signed, HttpOnly cookie. The function also applies a
+best-effort four-request-per-minute IP burst limit. Personal keys preserve the
+existing browser-only provider flow and do not consume the shared allowance.
+
+Consequence: the cookie quota is appropriate for a small friends-and-family
+site. A strict global, account, or cross-device limit requires durable storage
+and identity rather than extending the cookie scheme.
+
 [PROTOCOL]: Add a new decision when a choice affects future implementation,
 deployment, product behavior, or contributor workflow.
