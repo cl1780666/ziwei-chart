@@ -19,7 +19,7 @@
   branding.
 - Replaced the short Spotify preview with a four-track quiet romantic Bossa Nova
   playlist licensed through Pixabay. Playback starts from the welcome screen,
-  advances automatically, supports manual skipping, and loops the full playlist.
+  advances automatically, provides one play/pause control, and loops the full playlist.
 - Adjusted navigation breakpoints so the personalized header remains readable on
   tablet-width screens and uses the bottom navigation until desktop width.
 - Added a server-managed OpenAI path for visitors who do not provide a personal

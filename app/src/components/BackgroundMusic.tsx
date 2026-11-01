@@ -125,16 +125,6 @@ export const BackgroundMusic = forwardRef<BackgroundMusicHandle>(function Backgr
           <i />
         </span>
       </button>
-
-      <button
-        type="button"
-        className="lei-music-next"
-        onClick={nextTrack}
-        aria-label="播放下一首背景音乐"
-        title="下一首"
-      >
-        ›
-      </button>
     </div>
   )
 })
