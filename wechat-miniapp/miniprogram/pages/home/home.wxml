@@ -13,10 +13,10 @@
 
   <view class="bottom-sheet">
     <view class="quote-heading">
-      <text>今日一签</text>
+      <text>蕾言蕾语</text>
       <text class="quote-place">WANNAN · ANHUI</text>
     </view>
-    <text class="quote">“{{quote}}”</text>
+    <text class="quote {{quoteVisible ? 'is-visible' : 'is-hidden'}}">“{{quote}}”</text>
 
     <button class="primary-button start-button" bindtap="start">
       {{hasProfile ? '开始聊一聊' : '开始测一测'}}

@@ -19,13 +19,14 @@
     .meta { display: flex; padding-bottom: 10px; border-bottom: 1px solid rgba(74,69,61,.28); color: #585a52; font-size: 10px; font-weight: 700; letter-spacing: 2px; }
     h1 { margin: 20px 0 0; font-family: "Songti SC", "STSong", serif; font-size: 34px; letter-spacing: 4px; }
     .sub { margin: 7px 0 0; color: #74675e; font-family: "Songti SC", serif; font-size: 14px; letter-spacing: 4px; }
-    .sheet { position: absolute; z-index: 2; left: 14px; right: 14px; bottom: max(14px, env(safe-area-inset-bottom)); padding: 18px 18px 15px; border: 1px solid rgba(255,248,238,.6); border-radius: 7px; background: rgba(247,239,228,.94); box-shadow: 0 14px 40px rgba(24,20,18,.28); }
+    .sheet { position: absolute; z-index: 2; left: 14px; right: 14px; bottom: max(14px, env(safe-area-inset-bottom)); padding: 14px 15px 11px; border: 1px solid rgba(255,248,238,.6); border-radius: 7px; background: rgba(247,239,228,.89); box-shadow: 0 14px 40px rgba(24,20,18,.28); }
     .sheet-head { display: flex; justify-content: space-between; color: #7e3036; font-family: "Songti SC", serif; font-size: 14px; font-weight: 700; letter-spacing: 2px; }
     .place { color: #7b786f; font-family: sans-serif; font-size: 9px; letter-spacing: 1.5px; }
-    .quote { min-height: 50px; margin: 10px 0 14px; color: #474943; font-family: "Songti SC", serif; font-size: 17px; line-height: 1.6; }
-    .start { width: 100%; height: 52px; border: 0; border-radius: 5px; color: #fffaf1; background: linear-gradient(135deg, #7f2f36, #54252a); font-size: 16px; font-weight: 700; letter-spacing: 4px; box-shadow: 0 8px 18px rgba(92,42,43,.22); }
-    .hint { display: flex; justify-content: space-between; margin-top: 12px; padding: 9px 0; border-bottom: 1px solid rgba(72,75,68,.15); color: #676b63; font-size: 11px; }
-    .signature { display: flex; justify-content: space-between; margin-top: 13px; color: #989085; font-size: 9px; letter-spacing: 1px; }
+    .quote { display: -webkit-box; height: 42px; margin: 7px 0 8px; overflow: hidden; color: #474943; font-family: "Songti SC", serif; font-size: 15px; line-height: 1.45; -webkit-box-orient: vertical; -webkit-line-clamp: 2; transition: opacity .22s ease, transform .22s ease; }
+    .quote.hiding { opacity: 0; transform: translateY(4px); }
+    .start { width: 100%; height: 44px; border: 0; border-radius: 5px; color: #fffaf1; background: linear-gradient(135deg, #7f2f36, #54252a); font-size: 15px; font-weight: 700; letter-spacing: 4px; box-shadow: 0 8px 18px rgba(92,42,43,.22); }
+    .hint { display: flex; justify-content: space-between; margin-top: 8px; padding: 7px 0; border-bottom: 1px solid rgba(72,75,68,.15); color: #676b63; font-size: 11px; }
+    .signature { display: flex; justify-content: space-between; margin-top: 8px; color: #989085; font-size: 9px; letter-spacing: 1px; }
   </style>
 </head>
 <body>
@@ -39,7 +40,7 @@
       <p class="sub">山水入弦，星辰有信</p>
     </section>
     <section class="sheet">
-      <div class="sheet-head"><span>今日一签</span><span class="place">WANNAN · ANHUI</span></div>
+      <div class="sheet-head"><span>蕾言蕾语</span><span class="place">WANNAN · ANHUI</span></div>
       <p class="quote">“皖南的路会拐弯，姐的心情也会。”</p>
       <button class="start">开始测一测</button>
       <div class="hint"><span>资料已保存</span><span>今日余 5 问</span></div>
@@ -56,7 +57,18 @@
     ]
     const base = document.querySelector('.bg-base')
     const incoming = document.querySelector('.bg-incoming')
+    const quote = document.querySelector('.quote')
+    const quotes = [
+      '你好，少妇没你年轻，少女没你有钱',
+      '别问姐爱谁，姐连明天穿什么都没决定',
+      '心动归心动，排队还是要排队',
+      '感情可以慢慢谈，漂亮必须按时',
+      '皖南的路会拐弯，姐的心情也会',
+      '白墙黛瓦很安静，姐不一定',
+      '小提琴有四根弦，姐的耐心看缘分'
+    ]
     let current = 0
+    let quoteIndex = 4
     setInterval(() => {
       const next = (current + 1) % backgrounds.length
       incoming.style.backgroundImage = `url("${backgrounds[next]}")`
@@ -67,6 +79,14 @@
         current = next
       }, 1800)
     }, 6500)
+    setInterval(() => {
+      quote.classList.add('hiding')
+      setTimeout(() => {
+        quoteIndex = (quoteIndex + 1) % quotes.length
+        quote.textContent = `“${quotes[quoteIndex]}。”`
+        quote.classList.remove('hiding')
+      }, 220)
+    }, 3000)
   </script>
 </body>
 </html>

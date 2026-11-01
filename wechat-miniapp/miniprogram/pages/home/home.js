@@ -20,6 +20,7 @@ Page({
     visibleHeroIndex: 0,
     incomingHeroIndex: 1,
     incomingVisible: false,
+    quoteVisible: true,
   },
 
   onLoad() {
@@ -29,18 +30,25 @@ Page({
   onShow() {
     this.loadState()
     this.startHeroRotation()
+    this.startQuoteRotation()
   },
 
   onHide() {
     this.stopHeroRotation()
+    this.stopQuoteRotation()
   },
 
   onUnload() {
     this.stopHeroRotation()
+    this.stopQuoteRotation()
   },
 
   startHeroRotation() {
     this.stopHeroRotation()
+    const visibleHeroIndex = this.data.incomingVisible
+      ? this.data.incomingHeroIndex
+      : this.data.visibleHeroIndex
+    this.setData({ visibleHeroIndex, incomingVisible: false })
     this.heroTimer = setInterval(() => this.advanceHero(), 6500)
   },
 
@@ -63,6 +71,27 @@ Page({
         })
       }, 1800)
     }, 80)
+  },
+
+  startQuoteRotation() {
+    this.stopQuoteRotation()
+    this.setData({ quoteVisible: true })
+    this.quoteTimer = setInterval(() => this.advanceQuote(), 3000)
+  },
+
+  stopQuoteRotation() {
+    clearInterval(this.quoteTimer)
+    clearTimeout(this.quoteSwapTimer)
+  },
+
+  advanceQuote() {
+    this.setData({ quoteVisible: false })
+    this.quoteSwapTimer = setTimeout(() => {
+      this.setData({
+        quote: pickQuote(),
+        quoteVisible: true,
+      })
+    }, 220)
   },
 
   async loadState() {
