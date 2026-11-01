@@ -14,9 +14,9 @@ const TRACKS = [
     duration: '2:43',
   },
   {
-    src: 'https://cdn.pixabay.com/download/audio/2021/05/20/audio_5b8a422fd0.mp3?filename=phill_dillow-bossa-nova-in-a-rainy-city-4575.mp3',
-    title: 'Bossa Nova in a Rainy City',
-    duration: '3:27',
+    src: 'https://cdn.pixabay.com/download/audio/2024/10/11/audio_9114fa0972.mp3?filename=alanajordan-priscilla-bossa-nova-249846.mp3',
+    title: 'Priscilla Bossa Nova',
+    duration: '2:37',
   },
   {
     src: 'https://cdn.pixabay.com/download/audio/2022/01/17/audio_8ddeaf7dc7.mp3?filename=capitalnerd2617-bossa-nova-14396.mp3',
