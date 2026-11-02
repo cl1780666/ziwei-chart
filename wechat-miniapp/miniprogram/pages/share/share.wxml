@@ -21,4 +21,3 @@
   <view wx:if="{{error}}" class="error-card">{{error}}</view>
   <canvas id="share-canvas" type="2d" class="export-canvas" style="width: {{cardWidth}}px; height: {{cardHeight}}px;"></canvas>
 </view>
-<music-control />

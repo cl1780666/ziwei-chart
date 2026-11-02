@@ -20,4 +20,3 @@
     <view wx:if="{{report}}" class="card report-card"><view class="report-heading"><view><text class="section-title">双人命盘合参</text><text class="cache-label">{{cached ? '已读取本机缓存，不消耗额度' : '本次结果已保存在这部手机'}}</text></view><button class="copy-button" bindtap="copyReport">复制</button></view><text wx:for="{{blocks}}" wx:key="index" class="report-block {{item.heading ? 'report-subheading' : ''}}" selectable>{{item.text}}</text><text class="report-footnote">合盘用于增进了解，现实里的相处仍由你们自己选择。</text></view>
   </block>
 </view>
-<music-control />

@@ -2,7 +2,14 @@
 
 > L2 | Parent: `AGENTS.md`
 
-## D012 — Foreground music reuses existing licensed hosting
+## D013 — Mini Program stays silent
+
+On 2026-11-02 the user requested removing music. Remove the native audio
+context, App playback hooks, all eight page controls, and music-only tests.
+This supersedes D012 for the Mini Program. The separate website's existing
+music and hosted licensed tracks are outside this native change.
+
+## D012 — Foreground music reuses existing licensed hosting (superseded by D013)
 
 Restore the website's four quiet Bossa Nova tracks through a global native
 `InnerAudioContext`, directly streaming existing HTTPS URLs. Keep only one

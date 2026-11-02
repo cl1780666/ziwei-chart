@@ -38,4 +38,3 @@
   <button wx:if="{{error}}" class="secondary-button retry" bindtap="loadState">重新加载曲线</button>
   <text class="privacy-note">曲线与报告仅存本机 · 术数趋势示意，供参考</text>
 </view>
-<music-control />

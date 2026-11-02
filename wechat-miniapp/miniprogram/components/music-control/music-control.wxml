@@ -1,5 +1,0 @@
-<view wx:if="{{available}}" class="music-control" style="top:{{top}};">
-  <button class="music-toggle {{playing ? 'is-playing' : ''}}" bindtap="toggle" aria-label="{{description}}" hover-class="music-hover">
-    <text class="music-note">♪</text><text class="music-action">{{action}}</text>
-  </button>
-</view>

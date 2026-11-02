@@ -1,6 +1,3 @@
 {
-  "navigationBarTitleText": "一纸星语",
-  "usingComponents": {
-    "music-control": "/components/music-control/music-control"
-  }
+  "navigationBarTitleText": "一纸星语"
 }

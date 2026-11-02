@@ -2,12 +2,8 @@
 
 > L2 | Parent: `AGENTS.md`
 
-Native Mini Program foreground music lives in `miniprogram/utils/music.js`,
-with one shared `InnerAudioContext` and a small `components/music-control` on
-each page. It streams the existing four licensed CloudBase tracks directly,
-continues across page changes, pauses on App hide, and respects explicit pause.
-No audio binaries, download API, recording permission, or background mode are
-added to the Mini Program.
+The native Mini Program has no background music or playback controls, at the
+user's request. Keep its entry, navigation and App lifecycle silent.
 
 ## Purpose
 

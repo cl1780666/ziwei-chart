@@ -13,6 +13,16 @@
 
 ## Recently Completed
 
+- Removed native Mini Program background music at the user's request: App
+  playback hooks, the shared audio module, all eight page controls, and nine
+  music-only tests. The separate website and hosted tracks are unchanged.
+  Official WCC/WCSC compilation passed for all eight pages and the remaining
+  report component; eighteen JS and twelve JSON files passed syntax checks,
+  with no stale audio references or diff errors. Source package is 1,970,569
+  bytes. DevTools recompiled without errors, showing no playback button and
+  the unchanged eleven remaining calls; no model request was made.
+  The silent phone preview was uploaded again: code package 1878 KB, with a
+  fresh QR code generated.
 - Restored the original website's five core tabs in the native Mini Program:
   full twelve-palace star details and natal report, annual transit charts and
   independent yearly report, a 100-year OHLC curve with four-dimensional radar
@@ -45,7 +55,8 @@
   single-year report. AI timeout, truncated-output and upstream failures use
   fixed diagnostic codes and retain quota refunds, with eight seconds reserved
   for finishing/refunding before the unchanged 90-second function timeout.
-- Restored foreground Bossa Nova playback using one native audio context and
+- Previously restored foreground Bossa Nova playback (superseded by the user's
+  subsequent removal request) using one native audio context and
   the four existing licensed CloudBase tracks. The eight pages have only a
   play/pause control, with automatic playlist looping, page-to-page continuity,
   background pause, and preserved explicit pause. No MP3, new dependency,
@@ -77,8 +88,9 @@
   the model again. The complete quota collection remained a single document
   with count nine, no pending request, and timestamps only. Uploaded the new
   development preview successfully; DevTools generated a fresh phone QR and
-  reported a 1883 KB code package. Same-account/two-phone separation, real-phone
-  audio and album permission checks remain explicitly unconfirmed by the user.
+  reported a 1883 KB code package. Same-account/two-phone separation and album
+  permission checks remain explicitly unconfirmed by the user. The later music
+  removal supersedes the real-phone audio check.
 - Replaced Mini Program cloud content storage with device-local, account-scoped
   profiles, chart summaries, and chats at the user's explicit request. Another
   phone, including the same WeChat account, starts without personal records.

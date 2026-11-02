@@ -217,12 +217,9 @@ to confirm no personal fields were recreated. Native forwarding must contain
 only the generic home path and fixed artwork; a private PNG is exported only
 when its owner explicitly chooses to do so.
 
-Verify foreground music with domain checking enabled on a real phone: cold
-start begins the first track from zero when autoplay is permitted, pause stays
-paused across pages and app hide/show, page navigation preserves playback, and
-track endings advance through all four tracks and loop. It uses direct HTTPS
-`InnerAudioContext.src`, not `wx.downloadFile`; do not add download permissions
-speculatively or declare background audio for this foreground-only feature.
+The native Mini Program is silent. Verify that its source contains no audio
+context, playback lifecycle hooks, music component or page playback controls.
+Compile every page after removing a shared component to catch stale imports.
 
 ## Legacy GitHub Sync to Vercel Repository
 

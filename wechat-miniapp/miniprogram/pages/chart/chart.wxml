@@ -78,4 +78,3 @@
   <view wx:if="{{error}}" class="error-card">{{error}}</view>
   <button wx:if="{{error && !chart}}" class="secondary-button retry" bindtap="loadState">重新加载</button>
 </view>
-<music-control />

@@ -1,7 +1,6 @@
 {
   "navigationBarTitleText": "人生 K 线",
   "usingComponents": {
-    "report-view": "/components/report-view/report-view",
-    "music-control": "/components/music-control/music-control"
+    "report-view": "/components/report-view/report-view"
   }
 }

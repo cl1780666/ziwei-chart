@@ -27,4 +27,3 @@
   <button wx:if="{{error}}" class="secondary-button retry" bindtap="loadState">重新加载</button>
   <text class="privacy-note">资料与报告仅存本机，换手机不会同步。</text>
 </view>
-<music-control />
