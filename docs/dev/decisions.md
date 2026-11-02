@@ -2,6 +2,18 @@
 
 > L2 | Parent: `AGENTS.md`
 
+## D012 — Foreground music reuses existing licensed hosting
+
+Restore the website's four quiet Bossa Nova tracks through a global native
+`InnerAudioContext`, directly streaming existing HTTPS URLs. Keep only one
+play/pause control; advance on end and loop the playlist. Pause on App hide,
+resume only when the user's prior intent was playing, and never automatically
+retry an error. Avoid new binaries, downloads, provider dependencies, recording
+permissions, or background-audio declarations. Initial autoplay is attempted,
+with explicit playback available when the device blocks it. Real-device audio
+and domain checks remain release checks; the direct-src API is not a promise
+that every device will permit autoplay.
+
 ## D001 - True Solar Time Uses Birthplace Matching
 
 Users should not need to know longitude, latitude, or minute-level correction
@@ -164,6 +176,48 @@ Application error logs use fixed codes and HTTP status only. Never log request
 or response text, provider error bodies, or arbitrary error messages that could
 echo a prompt. This application-level rule is not a claim about third-party
 provider data-retention terms.
+
+## D011 - Native Mini Program Feature Parity Uses Shared Quota and Local Reports
+
+The Mini Program includes dedicated full-chart/natal, yearly, 100-year K-line,
+compatibility, and share-card views. These are independent functional pages;
+general chat is not a substitute for yearly reports or a real interactive curve.
+Keep all reports, trends, partner drafts, and chart content on the current device.
+
+Deterministic chart, yearly, and basic curve calculation does not consume model
+allowance. Every model task uses the same authenticated quota reservation path;
+an AI full-curve generation consumes one successful request, not one per year.
+Its compact response must contain all 100 valid OHLC/dimension rows. Reject and
+refund incomplete or invalid model data instead of fabricating missing years.
+
+The `lifetime_curve_v3` wire object has only a `decades` field: exactly ten
+groups, each containing only `startAge` and ten `rows` of seven integers.
+Group starts must be 1, 11, 21, …, 91 in order; flatten the validated ten by ten
+groups into 100 points. Each row is:
+`[close, upperWick, lowerWick, career, wealth, relationship, health]`.
+The first open is 50 and later opens are the prior close. Decode high as
+`min(100, max(open, close) + upperWick)` and low as
+`max(0, min(open, close) - lowerWick)`. This prescribed representation avoids
+asking the model to maintain cross-row envelope constraints; it does not repair
+invalid numbers or fill absent years. Do not guess the former absolute-high/low
+format. Every group, starting age, row and integer still undergoes strict
+validation. Ten-year grouping replaces the unreliable flat 100-row model
+response without filling absent data or making extra model calls.
+The fixed curve mode also requests the matching Responses `text.format`
+JSON Schema. Server validation remains authoritative because provider support
+does not prove every constraint was enforced on a particular response.
+
+The complete curve alone uses a fixed proxy mode with reasoning disabled and
+a 6000-token output cap; ordinary chat/reports keep low reasoning and 3000.
+Live testing established that the previous shared cap truncated the 100-row
+response. The flag is an enum, not authentication or an arbitrary model-option
+channel; all pre-existing quota and IP controls remain.
+
+Basic curves reuse the original star/brightness/transformation scoring approach
+with deterministic real chart and transit sampling. Do not add arbitrary random
+variation. These are traditional chart illustrations, not measured probabilities,
+investment prices, or lifespan predictions. Use actual transit scopes for palace
+overlays and traditional nominal-age decadal ranges.
 
 [PROTOCOL]: Add a new decision when a choice affects future implementation,
 deployment, product behavior, or contributor workflow.

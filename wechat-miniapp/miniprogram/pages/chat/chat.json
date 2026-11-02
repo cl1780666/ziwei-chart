@@ -1,4 +1,7 @@
 {
   "navigationBarTitleText": "命盘问答",
-  "disableScroll": true
+  "disableScroll": true,
+  "usingComponents": {
+    "music-control": "/components/music-control/music-control"
+  }
 }

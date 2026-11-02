@@ -1,5 +1,10 @@
 const CHAT_URL = 'https://supposed-bovid-d4gcywfkh2af1db6e-1522903512.ap-shanghai.app.tcloudbase.com/api/chat'
 const REQUEST_TIMEOUT_MS = 80000
+const AI_ERROR_CODES = new Set(['AI_INCOMPLETE', 'AI_TIMEOUT', 'AI_UPSTREAM'])
+
+function aiError(code) {
+  return Object.assign(new Error(code), { code })
+}
 
 async function readAnswer(body) {
   const reader = body.getReader()
@@ -19,10 +24,14 @@ async function readAnswer(body) {
     if (!data.length) return
     const raw = data.join('\n')
     if (raw === '[DONE]') { completed = true; return }
-    const value = JSON.parse(raw)
+    let value
+    try { value = JSON.parse(raw) } catch { throw aiError('AI_INCOMPLETE') }
     const type = value.type || eventName
-    if (type === 'error' || type === 'response.failed' || type === 'response.incomplete' || value.error) {
-      throw new Error('AI provider returned an error')
+    if (type === 'response.incomplete' || value.response && value.response.status === 'incomplete') {
+      throw aiError('AI_INCOMPLETE')
+    }
+    if (type === 'error' || type === 'response.failed' || value.error) {
+      throw aiError('AI_UPSTREAM')
     }
     if (type === 'response.output_text.delta' && typeof value.delta === 'string') deltas += value.delta
     if (type === 'response.output_text.done' && typeof value.text === 'string') {
@@ -44,33 +53,36 @@ async function readAnswer(body) {
     if (buffer.trim()) event(buffer)
     // The done event repeats the full text. Use it only when no deltas arrived.
     const answer = (deltas || completedTexts.join('')).trim()
-    if (!completed || !answer) throw new Error('AI response was empty or interrupted')
+    if (!completed || !answer) throw aiError('AI_INCOMPLETE')
     return answer
   } catch (error) {
     await reader.cancel().catch(() => {})
-    throw error
+    throw AI_ERROR_CODES.has(error && error.code) ? error : aiError('AI_UPSTREAM')
   } finally {
     reader.releaseLock()
   }
 }
 
-async function generateAnswer(messages, { fetchImpl = fetch, timeoutMs = REQUEST_TIMEOUT_MS } = {}) {
+async function generateAnswer(messages, { fetchImpl = fetch, timeoutMs = REQUEST_TIMEOUT_MS, analysisMode } = {}) {
   const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(new Error('AI request timed out')), timeoutMs)
+  const timer = setTimeout(() => controller.abort(aiError('AI_TIMEOUT')), timeoutMs)
   try {
     const response = await fetchImpl(CHAT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' },
-      body: JSON.stringify({ messages }),
+      body: JSON.stringify({ messages, ...(analysisMode === 'kline' ? { analysisMode: 'kline' } : {}) }),
       credentials: 'omit',
       redirect: 'error',
       signal: controller.signal,
     })
-    if (!response.ok) throw new Error(`AI upstream request failed (${response.status})`)
+    if (!response.ok) throw aiError('AI_UPSTREAM')
     if (!response.body || !/text\/event-stream/i.test(response.headers.get('content-type') || '')) {
-      throw new Error('AI upstream returned an invalid response')
+      throw aiError('AI_UPSTREAM')
     }
     return await readAnswer(response.body)
+  } catch (error) {
+    if (controller.signal.aborted) throw aiError('AI_TIMEOUT')
+    throw AI_ERROR_CODES.has(error && error.code) ? error : aiError('AI_UPSTREAM')
   } finally {
     clearTimeout(timer)
   }

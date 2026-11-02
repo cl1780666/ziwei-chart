@@ -149,6 +149,23 @@ guard also applies to cloud-function egress; upstream failures refund the Mini
 Program reservation. Its own default allowance is twenty questions per user
 per Shanghai day, while the website browser quota remains five.
 
+The validated full-curve task sends the fixed `analysisMode: "kline"` flag to
+the existing proxy. Only that exact value selects the fixed TokenHub
+`reasoning.effort: "none"` and `max_output_tokens: 6000`; chat and text reports
+retain `low` / `3000`. The larger output allowance prevents 100 rows from being
+truncated by a budget shared with reasoning tokens. Do not forward arbitrary
+client model, token, key, URL or reasoning options. This public mode flag is
+not service authentication: all requests still use the existing cookie/IP
+controls, and the Mini Program separately enforces its trusted UID quota.
+Curve rows use close, upper/lower wick amplitudes and four dimensions; the
+server reconstructs continuous OHLC by the documented rule. Keep decoder and
+prompt on the same explicit `lifetime_curve_v3` object with only `decades`:
+ten ordered groups starting at 1/11/…/91, each with ten seven-integer rows. The
+curve mode requests a fixed matching Responses `text.format` JSON Schema;
+ordinary requests do not send a format and caller schemas are ignored.
+Invalid JSON, row count, row shape or
+numbers produce distinct fixed diagnostic messages, never echoed model text.
+
 Enable `pgdoc` in the PG Document editor, create the
 `ziwei_mini_users` collection, and keep it inaccessible to direct client reads
 and writes. All access goes through the UID-aware cloud function, which rejects
@@ -176,11 +193,36 @@ installed `iztro` dependency:
 NODE_PATH=app/node_modules node --test wechat-miniapp/cloudfunctions/ziwei-mini/*.test.js wechat-miniapp/tests/*.test.js
 ```
 
-Before review submission, verify current-device profile/chat persistence,
-twelve-palace rendering, two-turn context, quota decrement, account isolation,
-and that the same account on a second phone sees no personal data. Inspect the
-quota collection after a successful conversation to confirm no personal fields
-were recreated.
+When uploading a ZIP rather than deploying the directory, include these ten
+runtime files at its root: `index.js`, `domain.js`, `identity.js`, `user-store.js`,
+`ai.js`, `chart-data.js`, `fortune.js`, `analysis.js`, `birthplace-data.json`, and
+`package.json`. Do not upload tests, local databases, credentials, or
+`node_modules`; install pinned dependencies in the cloud. Deploy the backend
+before compiling the new client because old local chart summaries are upgraded
+to schema version 2 through its free calculation endpoint.
+
+Before review submission, verify full twelve-palace details and natal reports,
+year switching and its independent report, all 100 candles and the four-axis
+radar, strict complete AI curve generation, selected-year interpretation,
+independent two-person compatibility, and a locally generated PNG with birth
+details hidden by default. Free calculation must not reduce quota; every AI
+feature and chat must share the same allowance and refund failures. Reopen
+cached reports without another AI request. Never use real third-party birth
+details for smoke tests without their permission.
+
+Also verify current-device persistence, two-turn context, quota decrement,
+account isolation, and that the same account on a second phone sees no personal
+data. Inspect the quota collection after successful reports and conversations
+to confirm no personal fields were recreated. Native forwarding must contain
+only the generic home path and fixed artwork; a private PNG is exported only
+when its owner explicitly chooses to do so.
+
+Verify foreground music with domain checking enabled on a real phone: cold
+start begins the first track from zero when autoplay is permitted, pause stays
+paused across pages and app hide/show, page navigation preserves playback, and
+track endings advance through all four tracks and loop. It uses direct HTTPS
+`InnerAudioContext.src`, not `wx.downloadFile`; do not add download permissions
+speculatively or declare background audio for this foreground-only feature.
 
 ## Legacy GitHub Sync to Vercel Repository
 

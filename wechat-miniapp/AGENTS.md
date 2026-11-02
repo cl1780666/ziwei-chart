@@ -14,13 +14,17 @@ CloudBase function.
   `ziwei-mini`. Require a nonempty trusted UID and `isAnonymous === false`;
   namespace stored IDs as `uid:<uid>`. Never fall back to identity in event data.
 - Keep database access inside the cloud function; pages call `utils/api.js` only.
-- Persist birth profiles, chart summaries, and chat history only in account-scoped
+- Persist birth profiles, chart summaries, chat history, partner drafts, and
+  analysis/curve caches only in account-scoped
   storage on the current device. Never return legacy cloud content or sync these
   records between devices, including devices using the same WeChat account.
 - Store only quota counters, pending-request leases, and necessary timestamps in
   the cloud collection. Whitelist database fields to remove legacy personal
   content, and never log birth profiles, questions, answers, or prompt bodies.
 - Keep the model call behind the cloud function so daily quota is checked before use.
+- All AI tasks (natal, yearly, K-line, selected-year, match, and chat) share the
+  same quota reservation path. Deterministic chart/year/curve calculations are
+  free. Reject incomplete 100-year AI curves and refund the reservation.
 - Preserve the 2002-08-19 female default and the personalized Lei welcome unless
   the product request changes them.
 - Reuse the local birthplace dataset and deterministic true-solar-time logic.
@@ -56,6 +60,13 @@ quota before calling AI and keep the model outside transaction retries. The
 client serializes local profile/history changes while a request is in flight.
 Model requests transiently include the current device's profile and recent
 conversation; never persist that content in application cloud storage.
+
+The complete chart payload is `schemaVersion: 2`. Upgrade older local chart
+summaries by sending their current-device profile for recalculation; preserve
+local messages while never importing cloud content. Keep feature caches scoped
+to the active profile and relevant year/age/partner, and invalidate them when
+the primary profile changes. Native share messages use only a generic path and
+static artwork; exporting a personal PNG is an explicit user action.
 
 [PROTOCOL]: Update this file when Mini Program identity, storage, deployment, or
 testing boundaries change.

@@ -19,7 +19,7 @@
     <text class="quote {{quoteVisible ? 'is-visible' : 'is-hidden'}}">“{{quote}}”</text>
 
     <button class="primary-button start-button" bindtap="start" disabled="{{loading || clearing}}">
-      {{hasProfile ? '开始聊一聊' : '开始测一测'}}
+      {{hasProfile ? '打开完整命盘' : '开始测一测'}}
     </button>
 
     <view wx:if="{{hasProfile}}" class="profile-pill">
@@ -28,8 +28,12 @@
     </view>
     <text wx:else class="intro">将生辰落于纸上，慢慢展开十二宫。</text>
 
-    <view wx:if="{{hasProfile}}" class="shortcut-row">
-      <button class="secondary-button shortcut" bindtap="openChart">查看命盘</button>
+    <view wx:if="{{hasProfile}}" class="shortcut-grid">
+      <button class="secondary-button shortcut" data-feature="fortune" bindtap="openFeature">年度运势</button>
+      <button class="secondary-button shortcut" data-feature="kline" bindtap="openFeature">人生 K 线</button>
+      <button class="secondary-button shortcut" data-feature="match" bindtap="openFeature">双人合盘</button>
+      <button class="secondary-button shortcut" data-feature="chat" bindtap="openFeature">星图问答</button>
+      <button class="secondary-button shortcut" data-feature="share" bindtap="openFeature">分享卡片</button>
       <button class="secondary-button shortcut" bindtap="openProfile">修改资料</button>
     </view>
     <view class="sheet-signature">
@@ -40,3 +44,4 @@
 
   <view wx:if="{{error}}" class="error-card">{{error}}</view>
 </view>
+<music-control />

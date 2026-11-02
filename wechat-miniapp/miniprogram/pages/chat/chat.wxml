@@ -46,3 +46,4 @@
     <button class="send-button" disabled="{{sending || !question}}" bindtap="send">发送</button>
   </view>
 </view>
+<music-control top="144rpx" />

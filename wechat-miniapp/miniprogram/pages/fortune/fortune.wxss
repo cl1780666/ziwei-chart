@@ -1,0 +1,44 @@
+.fortune-page { padding-top: 0; }
+.fortune-masthead { position: relative; height: 270rpx; margin: 0 -28rpx 28rpx; overflow: hidden; }
+.fortune-masthead image, .fortune-masthead > view { position: absolute; inset: 0; width: 100%; height: 100%; }
+.fortune-masthead > view { background: linear-gradient(90deg,rgba(35,47,37,.8),rgba(35,47,37,.1)); }
+.fortune-masthead > text { position: relative; display: block; margin-left: 40rpx; color: #fff6e6; }
+.mast-kicker { padding-top: 54rpx; font-size: 21rpx; letter-spacing: 4rpx; opacity: .8; }
+.mast-title { margin-top: 25rpx; font-family: "Songti SC",serif; font-size: 44rpx; letter-spacing: 4rpx; }
+.section-title, .year-intro, .small-note, .summary-label, .report-description, .privacy-note { display: block; }
+.year-intro { font-family: "Songti SC",serif; font-size: 25rpx; }
+.year-picker { display: flex; justify-content: space-between; align-items: center; margin-top: 28rpx; padding: 22rpx; border: 1rpx solid #c9c9b9; border-radius: 6rpx; color: #48564a; background: #f5f1e6; font-family: "Songti SC",serif; font-size: 35rpx; }
+.year-picker text { color: #8b7d6b; font-family: sans-serif; font-size: 21rpx; }
+.small-note { margin: 18rpx 0 0; color: #9a8b78; font-size: 21rpx; line-height: 1.65; }
+.loading-card { padding: 80rpx 15rpx; color: #858373; font-size: 26rpx; text-align: center; }
+.year-summary { margin-top: 24rpx; }
+.year-heading { display: flex; justify-content: space-between; align-items: baseline; color: #475749; font-family: "Songti SC",serif; font-size: 38rpx; }
+.year-heading text:last-child { color: #958573; font-size: 25rpx; }
+.year-life-palace { display: block; margin-top: 14rpx; color: #97826c; font-size: 24rpx; }
+.summary-label { margin: 26rpx 0 16rpx; color: #8a806f; font-size: 23rpx; }
+.mutagen-list { display: grid; grid-template-columns: repeat(4,1fr); gap: 10rpx; }
+.mutagen { padding: 16rpx 5rpx; border: 1rpx solid #cfd4c4; border-radius: 5rpx; color: #53664f; background: #eef0e5; text-align: center; }
+.mutagen text { display: block; font-size: 27rpx; }
+.mutagen text:first-child { margin-bottom: 8rpx; color: #90917c; font-size: 20rpx; }
+.mutagen .mutagen-palace { margin-top: 8rpx; color: #918572; font-size: 18rpx; }
+.mutagen.ji { border-color: #dcc3bc; color: #8d4248; background: #f6e9e0; }
+.decadal-tags { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.decadal-tags text { color: #7e735e; font-size: 23rpx; }
+.section-heading { display: flex; align-items: center; justify-content: space-between; margin: 34rpx 0 18rpx; }
+.section-heading .section-title { margin: 0; }
+.section-heading > text:last-child { color: #968b78; font-size: 20rpx; }
+.year-palaces { display: grid; grid-template-columns: 1fr 1fr; gap: 12rpx; }
+.year-palace { padding: 23rpx; }
+.year-palace text { display: block; }
+.palace-name { color: #4b5c4d; font-family: "Songti SC",serif; font-size: 29rpx; font-weight: 600; }
+.original-palace { margin-top: 9rpx; color: #9b846d; font-size: 19rpx; }
+.stars { margin-top: 16rpx; color: #7e4348; font-size: 24rpx; line-height: 1.6; }
+.minor-stars { margin-top: 7rpx; color: #7f8778; font-size: 21rpx; line-height: 1.5; }
+.year-star-tags { display: flex; flex-wrap: wrap; gap: 5rpx; margin-top: 12rpx; }
+.year-star-tags text { padding: 3rpx 7rpx; color: #966c68; background: #f3e6dc; font-size: 18rpx; }
+.annual-gods { margin-top: 11rpx; color: #a39a85; font-size: 18rpx; }
+.report-actions { margin-top: 28rpx; }
+.report-description { color: #7b8173; font-size: 25rpx; line-height: 1.7; }
+.primary-button { min-height: 90rpx; margin-top: 25rpx; border-radius: 6rpx; font-size: 27rpx; }
+.chat-link, .retry { margin-top: 25rpx; border-radius: 6rpx; }
+.privacy-note { margin-top: 25rpx; color: #9a9182; font-size: 21rpx; text-align: center; }

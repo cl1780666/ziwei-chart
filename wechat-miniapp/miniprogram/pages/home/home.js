@@ -120,7 +120,7 @@ Page({
   },
 
   start() {
-    if (this.data.hasProfile) return this.openChat()
+    if (this.data.hasProfile) return this.openChart()
     return this.openProfile()
   },
 
@@ -134,11 +134,22 @@ Page({
     wx.navigateTo({ url: '/pages/chat/chat' })
   },
 
+  openFeature(event) {
+    const routes = {
+      fortune: '/pages/fortune/fortune', kline: '/pages/kline/kline',
+      match: '/pages/match/match', share: '/pages/share/share', chat: '/pages/chat/chat',
+    }
+    const route = routes[event.currentTarget.dataset.feature]
+    if (!route) return
+    if (!this.data.hasProfile) return this.openProfile()
+    wx.navigateTo({ url: route })
+  },
+
   async clearLocalData() {
     if (this.data.clearing) return
     const answer = await wx.showModal({
       title: '清除本机数据',
-      content: '删除这部手机当前微信账号的出生资料、命盘和聊天记录，无法找回。今日已用额度不会重置。',
+      content: '删除这部手机当前微信账号的出生资料、命盘、聊天、合盘资料和解读报告，无法找回。今日已用额度不会重置。',
       confirmText: '确认清除',
       confirmColor: '#7f3036',
     })

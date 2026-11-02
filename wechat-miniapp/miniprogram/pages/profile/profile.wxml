@@ -73,3 +73,4 @@
 
   <view wx:if="{{error}}" class="error-card">{{error}}</view>
 </view>
+<music-control />

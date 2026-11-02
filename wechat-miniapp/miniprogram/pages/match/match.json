@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "双人合盘",
+  "usingComponents": {
+    "music-control": "/components/music-control/music-control"
+  }
+}

@@ -1,5 +1,6 @@
 const { astro } = require('iztro')
 const birthplaces = require('./birthplace-data.json')
+const { NAYIN_TABLE } = require('./chart-data')
 
 const BEIJING_STANDARD_LONGITUDE = 120
 const MINUTES_PER_LONGITUDE_DEGREE = 4
@@ -153,7 +154,7 @@ function formatStar(star) {
   return value
 }
 
-function createChartSummary(profile) {
+function createAstrolabe(profile) {
   const resolved = resolveBirthTime(profile)
   const chart = astro.bySolar(
     `${resolved.year}-${resolved.month}-${resolved.day}`,
@@ -162,34 +163,122 @@ function createChartSummary(profile) {
     true,
     'zh-CN',
   )
+  return { chart, resolved }
+}
 
-  const palaces = (chart.palaces || []).map((palace) => {
+function serializeStar(star) {
+  return {
+    name: String(star.name || ''),
+    brightness: String(star.brightness || ''),
+    mutagen: Array.isArray(star.mutagen) ? star.mutagen.map(String).join('') : String(star.mutagen || ''),
+    type: String(star.type || ''),
+  }
+}
+
+function serializePalace(palace) {
     const majorStars = (palace.majorStars || []).map(formatStar)
     const minorStars = (palace.minorStars || []).map(formatStar)
+    const adjectiveStars = (palace.adjectiveStars || []).map((star) => String(star.name || ''))
     const decadalRange = palace.decadal && palace.decadal.range
       ? `${palace.decadal.range[0]}–${palace.decadal.range[1]}岁`
       : ''
     return {
+      index: Number(palace.index),
       name: String(palace.name || ''),
       isBodyPalace: Boolean(palace.isBodyPalace),
+      isOriginalPalace: Boolean(palace.isOriginalPalace),
+      heavenlyStem: String(palace.heavenlyStem || ''),
+      earthlyBranch: String(palace.earthlyBranch || ''),
       stemBranch: `${palace.heavenlyStem || ''}${palace.earthlyBranch || ''}`,
       majorStars,
       minorStars,
+      adjectiveStars,
+      adjectiveStarsText: adjectiveStars.join('、'),
+      starDetails: {
+        major: (palace.majorStars || []).map(serializeStar),
+        minor: (palace.minorStars || []).map(serializeStar),
+        adjective: (palace.adjectiveStars || []).map(serializeStar),
+      },
+      changsheng12: String(palace.changsheng12 || ''),
+      boshi12: String(palace.boshi12 || ''),
+      jiangqian12: String(palace.jiangqian12 || ''),
+      suiqian12: String(palace.suiqian12 || ''),
+      decadal: palace.decadal ? {
+        range: (palace.decadal.range || []).map(Number),
+        heavenlyStem: String(palace.decadal.heavenlyStem || ''),
+        earthlyBranch: String(palace.decadal.earthlyBranch || ''),
+      } : null,
+      ages: (palace.ages || []).map(Number),
       majorStarsText: majorStars.length ? majorStars.join('、') : '无主星（借对宫）',
       minorStarsText: minorStars.join('、'),
       decadalRange,
     }
-  })
+}
 
-  const currentYear = new Date().getUTCFullYear()
+function scopeMutagens(chart, scope) {
+  // iztro's four star names are ordered as 禄、权、科、忌.
+  return (scope.mutagen || []).map((star, index) => {
+    const palace = chart.palaces.find((item) => [...item.majorStars, ...item.minorStars]
+      .some((itemStar) => String(itemStar.name) === String(star)))
+    return { type: ['禄', '权', '科', '忌'][index], star: String(star), palace: palace ? String(palace.name) : '', index: palace ? palace.index : -1 }
+  })
+}
+
+function serializeScope(chart, scope) {
+  return {
+    index: scope.index,
+    heavenlyStem: String(scope.heavenlyStem || ''),
+    earthlyBranch: String(scope.earthlyBranch || ''),
+    stemBranch: `${scope.heavenlyStem || ''}${scope.earthlyBranch || ''}`,
+    palaceName: chart.palaces[scope.index] ? String(chart.palaces[scope.index].name) : '',
+    palaceNames: (scope.palaceNames || []).map(String),
+    mutagen: (scope.mutagen || []).map(String),
+    mutagens: scopeMutagens(chart, scope),
+  }
+}
+
+function activeDecadal(chart, horoscope) {
+  const palace = chart.palaces[horoscope.decadal.index]
+  if (!palace || Number(horoscope.age.nominalAge) < 1) return null
+  const firstAge = Math.min(...chart.palaces.map((item) => item.decadal.range[0]))
+  const childhood = Number(horoscope.age.nominalAge) < firstAge
+  return {
+    daYun: childhood ? '童限' : `${horoscope.decadal.heavenlyStem}${horoscope.decadal.earthlyBranch}`,
+    range: childhood ? [1, firstAge - 1] : palace.decadal.range.slice(),
+    palaceName: String(palace.name), palace,
+  }
+}
+
+function currentFortune(chart, profile, referenceDate) {
+  const asOfDate = shanghaiDay(referenceDate)
+  const year = Number(asOfDate.slice(0, 4))
+  const birthDate = `${profile.year}-${String(profile.month).padStart(2, '0')}-${String(profile.day).padStart(2, '0')}`
+  if (asOfDate < birthDate) return { asOfDate, year, available: false, reason: 'BEFORE_BIRTH' }
+  const horoscope = chart.horoscope(asOfDate)
+  const nominalAge = Number(horoscope.age.nominalAge)
+  const decadal = activeDecadal(chart, horoscope)
+  if (!decadal) return { asOfDate, year, nominalAge, available: false, reason: 'OUTSIDE_DECADAL_RANGE' }
+  return {
+    asOfDate, year, nominalAge, available: true,
+    yearly: serializeScope(chart, horoscope.yearly),
+    decadal: { ...serializeScope(chart, horoscope.decadal), range: decadal.range, daYun: decadal.daYun },
+  }
+}
+
+function createChartSummary(profile, referenceDate = new Date()) {
+  const { chart, resolved } = createAstrolabe(profile)
+  const palaces = (chart.palaces || []).map(serializePalace)
+
+  const current = currentFortune(chart, profile, referenceDate)
+  const currentYear = current.year
   const annual = []
   for (let year = currentYear; year <= currentYear + 2; year += 1) {
     try {
-      const yearly = chart.horoscope(new Date(`${year}-06-15T00:00:00+08:00`)).yearly
+      const yearly = chart.horoscope(`${year}-6-15`).yearly
       annual.push({
         year,
         stemBranch: `${yearly.heavenlyStem || ''}${yearly.earthlyBranch || ''}`,
-        palaceName: String((yearly.palaceNames || [])[0] || ''),
+        palaceName: String(chart.palaces[yearly.index] && chart.palaces[yearly.index].name || ''),
         mutagens: (yearly.mutagen || []).map(String),
       })
     } catch (error) {
@@ -198,6 +287,10 @@ function createChartSummary(profile) {
   }
 
   return {
+    schemaVersion: 2,
+    gender: String(chart.gender || ''),
+    yinYang: `${['甲', '丙', '戊', '庚', '壬'].includes(String(chart.chineseDate || '')[0]) ? '阳' : '阴'}${profile.gender === 'female' ? '女' : '男'}`,
+    nayin: NAYIN_TABLE[String(chart.chineseDate || '').split(' ')[0]] || '',
     solarDate: String(chart.solarDate || ''),
     lunarDate: String(chart.lunarDate || ''),
     chineseDate: String(chart.chineseDate || ''),
@@ -212,6 +305,7 @@ function createChartSummary(profile) {
     bodyPalaceBranch: String(chart.earthlyBranchOfBodyPalace || ''),
     palaces,
     annual,
+    currentFortune: current,
     timeCorrection: resolved,
   }
 }
@@ -220,22 +314,36 @@ function buildChartContext(profile, chart) {
   const lines = [
     '【命主资料】',
     `阳历：${profile.year}年${profile.month}月${profile.day}日`,
+    `出生小时：${String(profile.hour).padStart(2, '0')}:00；排盘时辰：${chart.time}(${chart.timeRange})`,
     `性别：${profile.gender === 'female' ? '女' : '男'}`,
+    `干支：${chart.chineseDate}；纳音：${chart.nayin || '未知'}；${chart.yinYang || ''}`,
     `五行局：${chart.fiveElementsClass}`,
     `命主/身主：${chart.soul || '未知'} / ${chart.body || '未知'}`,
     `命宫/身宫地支：${chart.soulPalaceBranch || '未知'} / ${chart.bodyPalaceBranch || '未知'}`,
-    '',
-    '【十二宫星曜】',
   ]
 
+  const current = chart.currentFortune
+  if (current && current.available) {
+    const four = (items) => items.map((item) => `${item.star}化${item.type}落本命${item.palace}`).join('；')
+    lines.push('', '【当前时点：服务端真实排盘结果】',
+      `参考日期（北京时间）：${current.asOfDate}；当前公历年份：${current.year}；农历虚岁：${current.nominalAge}岁`,
+      `当前大限：${current.decadal.range.join('–')}虚岁，落本命${current.decadal.palaceName}，${current.decadal.stemBranch}${current.decadal.daYun === '童限' ? '（童限）' : ''}`,
+      `当前大限四化：${four(current.decadal.mutagens)}`,
+      `当前流年：${current.yearly.stemBranch}；流年命宫叠本命${current.yearly.palaceName}；${four(current.yearly.mutagens)}`,
+      '下面十二宫所列其他大限仅为完整排期，不能替代上面的当前大限。')
+  } else if (current) {
+    lines.push('', `【当前时点】${current.asOfDate}；当前大限不可用（${current.reason === 'BEFORE_BIRTH' ? '出生日期在参考日期之后' : '超出排盘支持的大限范围'}），不要推定当前大限。`)
+  }
+  lines.push('', '【十二宫星曜】')
+
   for (const palace of chart.palaces) {
-    lines.push(`${palace.name}${palace.isBodyPalace ? '（身宫）' : ''}：主星 ${palace.majorStarsText}${palace.minorStarsText ? `；辅星 ${palace.minorStarsText}` : ''}`)
+    lines.push(`${palace.name}${palace.isBodyPalace ? '（身宫）' : ''}(${palace.stemBranch})：主星 ${palace.majorStarsText}${palace.minorStarsText ? `；辅星 ${palace.minorStarsText}` : ''}${palace.adjectiveStarsText ? `；杂曜 ${palace.adjectiveStarsText}` : ''}；长生/博士/将前/岁前：${palace.changsheng12}/${palace.boshi12}/${palace.jiangqian12}/${palace.suiqian12}；大限 ${palace.decadalRange}`)
   }
 
   if (chart.annual.length) {
     lines.push('', '【近三年流年】')
     for (const year of chart.annual) {
-      lines.push(`${year.year}年 ${year.stemBranch}：流年命宫 ${year.palaceName || '未知'}；四化 ${year.mutagens.join('、') || '未知'}`)
+      lines.push(`${year.year}年 ${year.stemBranch}：流年命宫叠本命${year.palaceName || '未知'}；四化 ${year.mutagens.map((star, index) => `${star}化${['禄', '权', '科', '忌'][index]}`).join('、') || '未知'}`)
     }
   }
 
@@ -255,6 +363,12 @@ function quotaState(quota, limit, date = new Date()) {
 module.exports = {
   buildChartContext,
   createChartSummary,
+  createAstrolabe,
+  serializePalace,
+  serializeStar,
+  scopeMutagens,
+  serializeScope,
+  activeDecadal,
   findBirthplace,
   quotaState,
   resolveBirthTime,

@@ -105,8 +105,9 @@ repository during the cutover and is not the CloudBase release path.
 The companion WeChat Mini Program lives under `wechat-miniapp/`. It uses a
 separate event-triggered cloud function, trusted CloudBase runtime UID identity
 after HTTP WeChat OpenID login, a quota-only CloudBase database, and the existing
-shared TokenHub HTTP service. Birth profiles, chart summaries, and chat history
-belong only in the current device's local storage; do not add cloud content
+shared TokenHub HTTP service. Birth profiles, chart summaries, chat history,
+interpretation reports, lifetime curves, and partner drafts belong only in the
+current device's local storage; do not add cloud content
 sync. Keep its per-user quota isolated from the website's cookie-based quota
 path.
 

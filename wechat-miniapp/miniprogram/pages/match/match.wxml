@@ -1,0 +1,23 @@
+<view class="page-shell match-page">
+  <view class="match-masthead"><image src="/assets/wannan-courtyard.jpg" mode="aspectFill" /><view class="mast-shade"></view><view class="mast-copy"><text class="eyebrow">双人合盘</text><text class="mast-title">两份星图，一起参看</text><text class="mast-note">看性情、看默契，也看怎样好好相处。</text></view></view>
+  <view class="privacy-note">两人的资料与报告仅存这部手机。分析时临时发送至云端计算，云端不保存正文。甲方修改会更新本机命盘并清空旧解读与聊天，乙方只用于合盘。</view>
+  <view wx:if="{{loading}}" class="card loading-note">正在翻开本机资料…</view>
+  <block wx:else>
+    <view wx:for="{{people}}" wx:key="label" wx:for-index="personIndex" class="card person-card">
+      <view class="person-heading"><text class="person-title">{{item.label}}</text><text class="person-seal">{{personIndex === 0 ? '甲' : '乙'}}</text></view>
+      <view class="field"><text class="field-label">出生日期</text><picker mode="date" value="{{item.date}}" start="1900-01-01" end="2100-12-31" disabled="{{busy}}" data-index="{{personIndex}}" bindchange="onDateChange"><view class="picker-value">{{item.date}}<text>›</text></view></picker></view>
+      <view class="field"><text class="field-label">出生时辰</text><picker range="{{shichenOptions}}" value="{{item.hourIndex}}" disabled="{{busy}}" data-index="{{personIndex}}" bindchange="onHourChange"><view class="picker-value">{{shichenOptions[item.hourIndex]}}<text>›</text></view></picker></view>
+      <view class="field"><text class="field-label">性别</text><radio-group class="gender-row" data-index="{{personIndex}}" bindchange="onGenderChange"><label class="gender-option {{item.gender === 'female' ? 'selected' : ''}}"><radio value="female" color="#7f3036" checked="{{item.gender === 'female'}}" disabled="{{busy}}" />女</label><label class="gender-option {{item.gender === 'male' ? 'selected' : ''}}"><radio value="male" color="#526158" checked="{{item.gender === 'male'}}" disabled="{{busy}}" />男</label></radio-group></view>
+      <view class="field"><text class="field-label">出生地（可选）</text><input class="text-input" value="{{item.birthplace}}" maxlength="80" disabled="{{busy}}" placeholder="城市或区县，如：安徽宣城" data-index="{{personIndex}}" bindinput="onPlaceInput" /></view>
+      <view class="solar-row"><view><text class="field-label">真太阳时校正</text><text class="field-hint">根据出生地自动匹配并校正</text></view><switch color="#7f3036" checked="{{item.trueSolarEnabled}}" disabled="{{busy}}" data-index="{{personIndex}}" bindchange="onSolarChange" /></view>
+    </view>
+    <button class="secondary-button preview-button" disabled="{{busy}}" loading="{{busy && !analyzing}}" bindtap="previewCharts">先展开两份命盘 · 免费</button>
+    <view wx:if="{{summaries.length}}" class="summary-grid"><view wx:for="{{summaries}}" wx:key="label" class="card summary-card"><text class="summary-label">{{item.label}} · {{item.elements}}</text><text class="summary-line">命宫：{{item.life}}</text><text class="summary-line">夫妻宫：{{item.spouse}}</text><text class="summary-small">命主 {{item.soul}} · 身主 {{item.body}}</text><text wx:if="{{item.corrected}}" class="summary-small">{{item.corrected}}</text></view></view>
+    <button class="primary-button analyze-button" disabled="{{busy || !remaining}}" loading="{{analyzing}}" bindtap="analyze">{{analyzing ? '正在合参…' : report ? '重新生成合盘报告' : '生成双人合盘报告'}}</button>
+    <text class="allowance">每份报告使用 1 次额度 · 今日余 {{remaining}} 次；失败会退回额度。</text>
+    <view wx:if="{{progress}}" class="progress-note"><text class="progress-dot"></text>{{progress}}</view>
+    <view wx:if="{{error}}" class="error-card">{{error}}</view>
+    <view wx:if="{{report}}" class="card report-card"><view class="report-heading"><view><text class="section-title">双人命盘合参</text><text class="cache-label">{{cached ? '已读取本机缓存，不消耗额度' : '本次结果已保存在这部手机'}}</text></view><button class="copy-button" bindtap="copyReport">复制</button></view><text wx:for="{{blocks}}" wx:key="index" class="report-block {{item.heading ? 'report-subheading' : ''}}" selectable>{{item.text}}</text><text class="report-footnote">合盘用于增进了解，现实里的相处仍由你们自己选择。</text></view>
+  </block>
+</view>
+<music-control />

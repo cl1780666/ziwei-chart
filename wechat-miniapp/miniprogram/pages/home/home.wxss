@@ -158,17 +158,18 @@
   line-height: 1.6;
 }
 
-.shortcut-row {
-  display: flex;
-  gap: 14rpx;
+.shortcut-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10rpx;
   margin-top: 12rpx;
 }
 
 .shortcut {
-  flex: 1;
-  min-height: 76rpx;
+  min-height: 58rpx;
   border-radius: 8rpx;
-  font-size: 24rpx;
+  padding: 0 8rpx;
+  font-size: 23rpx;
 }
 
 .sheet-signature {

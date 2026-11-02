@@ -25,24 +25,57 @@
       <view class="summary-item"><text>身宫</text><text class="summary-strong">{{chart.bodyPalaceBranch || '—'}}</text></view>
     </view>
 
-    <view class="palace-heading"><text class="section-title">十二宫</text><text class="heading-note">徽墨落纸 · 星曜成章</text></view>
-    <view class="palace-list">
-      <view wx:for="{{chart.palaces}}" wx:key="name" class="card palace-card">
-        <view class="palace-head">
-          <view>
-            <text class="palace-name">{{item.name}}</text>
-            <text wx:if="{{item.isBodyPalace}}" class="body-mark">身宫</text>
-          </view>
-          <text class="palace-meta">{{item.stemBranch}} · {{item.decadalRange || '—'}}</text>
-        </view>
-        <text class="star-line">主星：{{item.majorStarsText}}</text>
-        <text wx:if="{{item.minorStarsText}}" class="star-line minor">辅星：{{item.minorStarsText}}</text>
-      </view>
+    <view class="feature-nav">
+      <button data-page="fortune" bindtap="openFeature">年度运势</button><button data-page="kline" bindtap="openFeature">人生 K 线</button><button data-page="match" bindtap="openFeature">双人合盘</button><button data-page="share" bindtap="openFeature">分享卡片</button>
     </view>
+
+    <view class="palace-heading"><text class="section-title">十二宫全盘</text><text class="heading-note">左右滑动 · 点宫位看细项</text></view>
+    <scroll-view scroll-x class="chart-scroll" enhanced show-scrollbar="{{true}}">
+      <view class="palace-board">
+        <view class="board-center">
+          <text class="center-title">紫微斗数</text>
+          <text>{{chart.solarDate}}</text><text>农历 {{chart.lunarDate}}</text><text>{{chart.chineseDate}}</text><text>{{chart.time}} {{chart.timeRange}}</text>
+          <text>{{profile.gender === 'female' ? '女命' : '男命'}} · {{chart.fiveElementsClass}}</text>
+          <text>命主 {{chart.soul}} · 身主 {{chart.body}}</text>
+          <text wx:if="{{chart.nayin}}">纳音 {{chart.nayin}}</text>
+          <text class="center-seal">弦上星河</text>
+        </view>
+        <view wx:for="{{palaces}}" wx:key="name" class="board-palace {{selected.name === item.name ? 'selected-palace' : ''}} {{item.name === '命宫' ? 'life-palace' : ''}}" style="{{item.position}}" data-index="{{index}}" bindtap="selectPalace">
+          <view class="board-head"><text>{{item.name}}</text><text>{{item.stemBranch}}</text></view>
+          <text class="board-range">{{item.decadalRange}} {{item.isBodyPalace ? '· 身宫' : ''}}</text>
+          <text class="board-major">{{item.majorStarsText}}</text>
+          <text class="board-minor">{{item.minorStarsText}}</text>
+          <text class="board-adjective">{{item.adjectiveStarsText}}</text>
+          <text class="board-gods">{{item.changsheng12}} · {{item.boshi12}}</text>
+        </view>
+      </view>
+    </scroll-view>
+    <view wx:if="{{selected}}" class="card palace-detail">
+      <view class="detail-heading"><text>{{selected.name}} · {{selected.stemBranch}}</text><text>{{selected.decadalRange}}</text></view>
+      <text wx:if="{{selected.isBodyPalace}}" class="body-mark">身宫</text>
+      <text class="detail-label">主星 · 亮度 / 四化</text>
+      <view wx:if="{{selected.starDetails.major.length}}" class="star-tags"><view wx:for="{{selected.starDetails.major}}" wx:key="name" class="star-tag {{item.mutagen ? 'mutagen-tag' : ''}}"><text>{{item.name}}</text><text class="star-meta">{{item.brightness}} {{item.mutagen ? '化' + item.mutagen : ''}}</text></view></view>
+      <text wx:else class="star-line">{{selected.majorStarsText}}</text>
+      <text class="detail-label">辅星</text>
+      <view wx:if="{{selected.starDetails.minor.length}}" class="star-tags"><view wx:for="{{selected.starDetails.minor}}" wx:key="name" class="star-tag"><text>{{item.name}}</text><text class="star-meta">{{item.brightness}} {{item.mutagen ? '化' + item.mutagen : ''}}</text></view></view>
+      <text wx:else class="star-line">{{selected.minorStarsText || '无'}}</text>
+      <text class="detail-label">杂曜</text><text class="star-line">{{selected.adjectiveStarsText || '无'}}</text>
+      <view class="gods-grid"><text>长生十二神：{{selected.changsheng12 || '—'}}</text><text>博士十二神：{{selected.boshi12 || '—'}}</text><text>将前十二神：{{selected.jiangqian12 || '—'}}</text><text>岁前十二神：{{selected.suiqian12 || '—'}}</text></view>
+    </view>
+
+    <view class="card analysis-card">
+      <text class="section-title">本命综合批注</text>
+      <text class="analysis-copy">命格、事业财运、婚姻情感、六亲人际与行事建议，独立成篇。</text>
+      <text class="allowance">今日余 {{remaining}} 问 · 每次生成使用 1 次，查看已存报告不扣次数</text>
+      <button class="primary-button" loading="{{analyzing}}" disabled="{{analyzing}}" bindtap="analyze">{{analyzing ? '正在推演，请稍候…' : report ? '重新生成本命报告' : '生成本命报告'}}</button>
+    </view>
+    <report-view title="本命综合批注" text="{{report}}" />
 
     <button class="primary-button chat-button" bindtap="openChat">弦外问星</button>
     <button class="secondary-button edit-button" bindtap="editProfile">修改出生资料</button>
   </block>
 
   <view wx:if="{{error}}" class="error-card">{{error}}</view>
+  <button wx:if="{{error && !chart}}" class="secondary-button retry" bindtap="loadState">重新加载</button>
 </view>
+<music-control />

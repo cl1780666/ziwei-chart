@@ -1,0 +1,51 @@
+.kline-page { padding-top: 0; }
+.kline-masthead { position: relative; height: 270rpx; margin: 0 -28rpx 28rpx; overflow: hidden; }
+.kline-masthead image, .kline-masthead > view { position: absolute; inset: 0; width: 100%; height: 100%; }
+.kline-masthead > view { background: linear-gradient(90deg,rgba(29,42,37,.85),rgba(29,42,37,.08)); }
+.kline-masthead > text { position: relative; display: block; margin-left: 40rpx; color: #fff6e6; }
+.mast-kicker { padding-top: 54rpx; font-size: 21rpx; letter-spacing: 4rpx; opacity: .8; }
+.mast-title { margin-top: 25rpx; font-family: "Songti SC",serif; font-size: 42rpx; letter-spacing: 3rpx; }
+.section-title, .intro-copy, .allowance, .privacy-note { display: block; }
+.intro-copy { color: #7a8073; font-size: 25rpx; line-height: 1.75; }
+.allowance { margin-top: 16rpx; color: #9a8b78; font-size: 21rpx; line-height: 1.65; }
+.primary-button { min-height: 88rpx; margin-top: 26rpx; border-radius: 6rpx; font-size: 26rpx; }
+.loading-card { padding: 90rpx 12rpx; color: #858373; font-size: 26rpx; text-align: center; }
+.plot-card { margin-top: 25rpx; padding: 24rpx 16rpx; }
+.plot-heading { display: flex; align-items: center; justify-content: space-between; padding: 0 8rpx 25rpx; color: #526154; font-size: 25rpx; font-weight: 600; }
+.plot-heading > view { font-size: 19rpx; font-weight: 400; }
+.rise-legend { margin-right: 14rpx; color: #648263; }
+.fall-legend { color: #9f5057; }
+.plot-scroll { width: 100%; height: 425rpx; }
+.plot-board { position: relative; height: 410rpx; }
+.grid-line { position: absolute; right: 0; left: 44rpx; height: 1rpx; border-top: 1rpx solid #e1dbcf; }
+.grid-line text { position: absolute; top: -13rpx; left: -42rpx; color: #a29886; font-size: 18rpx; }
+.candle-column { position: absolute; top: 0; width: 34rpx; height: 390rpx; }
+.selected-column { background: rgba(157,113,75,.12); }
+.decadal-boundary { border-left: 1rpx dashed #b3ac97; }
+.candle-wick { position: absolute; left: 16rpx; width: 2rpx; }
+.candle-body { position: absolute; left: 8rpx; width: 18rpx; border-radius: 2rpx; }
+.rise { background: #6e8c68; }
+.fall { background: #a2555b; }
+.peak-mark { position: absolute; left: 5rpx; color: #b7924c; font-size: 24rpx; line-height: 1; }
+.year-label { position: absolute; top: 344rpx; left: -7rpx; width: 60rpx; color: #9d907d; font-size: 19rpx; white-space: nowrap; }
+.decadal-label { position: absolute; top: 375rpx; left: 4rpx; width: 140rpx; color: #918773; font-size: 18rpx; white-space: nowrap; }
+.plot-note { display: block; margin: 12rpx 6rpx 0; color: #9e9582; font-size: 20rpx; line-height: 1.6; }
+.year-picker { display: flex; align-items: center; justify-content: space-between; margin-top: 24rpx; padding: 24rpx; border: 1rpx solid #c9cbbb; border-radius: 6rpx; color: #4e5e51; background: #f6f3e8; font-family: "Songti SC",serif; font-size: 28rpx; }
+.year-picker text:last-child { color: #91816d; font-family: sans-serif; font-size: 20rpx; }
+.selected-card { margin-top: 24rpx; }
+.detail-heading { display: flex; align-items: center; justify-content: space-between; color: #526154; font-family: "Songti SC",serif; font-size: 32rpx; }
+.score { color: #92535a; font-family: sans-serif; font-size: 42rpx; font-weight: 600; }
+.score text { color: #9b8d7a; font-size: 22rpx; font-weight: 400; }
+.dayun-copy { display: block; margin-top: 10rpx; color: #948270; font-size: 23rpx; }
+.ohlc-grid { display: grid; grid-template-columns: repeat(4,1fr); margin-top: 25rpx; padding: 20rpx 8rpx; border-radius: 5rpx; background: #f0eee2; }
+.ohlc-grid view text { display: block; color: #9d9380; font-size: 21rpx; text-align: center; }
+.ohlc-grid view text:last-child { margin-top: 12rpx; color: #566652; font-size: 28rpx; font-weight: 600; }
+.radar-canvas { width: 100%; height: 230px; }
+.dimension-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10rpx; margin-top: 5rpx; }
+.dimension-grid text { padding: 13rpx 18rpx; border: 1rpx solid #dcd9c8; color: #7b806c; font-size: 23rpx; text-align: center; }
+.detail-label { display: block; margin: 26rpx 0 15rpx; color: #9a8a74; font-size: 22rpx; }
+.mutagen-tags { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.mutagen-tags text { padding: 8rpx 12rpx; background: #f2e8df; color: #8b5a58; font-size: 22rpx; }
+.point-reason { display: block; color: #68715f; font-size: 26rpx; line-height: 1.85; white-space: pre-wrap; }
+.yearly-link, .retry { margin-top: 25rpx; border-radius: 6rpx; }
+.privacy-note { margin-top: 26rpx; color: #9a9182; font-size: 21rpx; text-align: center; }

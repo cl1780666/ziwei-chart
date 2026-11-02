@@ -1,0 +1,5 @@
+<view wx:if="{{text}}" class="report-paper">
+  <view class="report-head"><text>{{title}}</text><button class="report-copy" bindtap="copy">复制全文</button></view>
+  <rich-text class="report-content" nodes="{{nodes}}" user-select="{{true}}" />
+  <text class="report-foot">仅存这部手机 · 术数解读供参考</text>
+</view>

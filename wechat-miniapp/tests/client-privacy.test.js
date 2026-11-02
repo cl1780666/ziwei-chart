@@ -4,7 +4,7 @@ const { readFileSync } = require('node:fs')
 
 const directory = `${__dirname}/../miniprogram/utils`
 const profile = { year: 2002, month: 8, day: 19, hour: 12, gender: 'female' }
-const chartSummary = { palaces: [{ name: '命宫' }] }
+const chartSummary = { schemaVersion: 2, palaces: [{ name: '命宫' }] }
 
 function load(name, requireModule, wx) {
   const module = { exports: {} }
@@ -43,6 +43,15 @@ function device(options = {}) {
       quota.used += 1
       quota.remaining -= 1
       return { answer: options.answer || `answer:${data.question}`, quota: { ...quota } }
+    }
+    if (action === 'getYearly') return { yearly: { year: data.year, palaceName: '官禄' }, quota: { ...quota } }
+    if (action === 'getLifetime') return { points: Array.from({ length: 100 }, (_, i) => ({ age: i + 1 })), quota: { ...quota } }
+    if (action === 'analysis') {
+      quota.used += 1
+      quota.remaining -= 1
+      return data.task === 'kline'
+        ? { points: Array.from({ length: 100 }, (_, i) => ({ age: i + 1 })), quota: { ...quota } }
+        : { text: `report:${data.task}:${data.year || ''}:${data.partner && data.partner.year || ''}`, quota: { ...quota } }
     }
     throw new Error(`unexpected cloud action ${action}`)
   }
@@ -244,4 +253,93 @@ test('read and clear errors stay visible, and corrupt local state can be cleared
   phone.failClear(false)
   await phone.api.clearLocalData()
   assert.equal((await phone.api.getState()).profile, null)
+})
+
+test('reports, lifetime curves and partner drafts stay on the current device and account', async () => {
+  const first = device()
+  await first.api.saveProfile(profile)
+  const partner = { ...profile, year: 1999, gender: 'male' }
+  await first.api.saveMatchPartner(partner)
+  const preview = await first.api.previewProfile(partner)
+  assert.equal(preview.profile.year, 1999)
+  assert.equal((await first.api.getState()).profile.year, 2002)
+  await first.api.analyze('natal')
+  await first.api.analyze('match', { partner })
+  const curve = await first.api.getLifetime()
+  assert.equal(curve.points.length, 100)
+  const year = await first.api.getYearly(2027)
+  assert.equal(year.yearly.year, 2027)
+  assert.equal(year.quota.remaining, 18)
+  const calculations = first.calls.filter((call) => ['getYearly', 'getLifetime'].includes(call.action)).length
+  await first.api.getYearly(2027)
+  await first.api.getLifetime()
+  assert.equal(first.calls.filter((call) => ['getYearly', 'getLifetime'].includes(call.action)).length, calculations)
+  assert.match((await first.api.getFeatureCache('match', { partner })).text, /1999/)
+  assert.equal(await first.api.getFeatureCache('match', { partner: { ...partner, year: 1998 } }), null)
+  const restarted = device({ storage: first.storage })
+  assert.match((await restarted.api.getFeatureCache('natal')).text, /natal/)
+  assert.equal((await restarted.api.getMatchPartner()).year, 1999)
+  const otherPhone = device()
+  assert.equal(await otherPhone.api.getFeatureCache('natal'), null)
+  assert.equal(await otherPhone.api.getMatchPartner(), null)
+  first.switchUser('bob')
+  assert.equal(await first.api.getFeatureCache('natal'), null)
+  assert.equal(await first.api.getMatchPartner(), null)
+})
+
+test('year-specific reports do not collide and profile edits invalidate all primary-chart reports', async () => {
+  const phone = device()
+  await phone.api.saveProfile(profile)
+  await phone.api.analyze('yearly', { year: 2026 })
+  await phone.api.analyze('yearly', { year: 2027 })
+  assert.match((await phone.api.getFeatureCache('yearly', { year: 2026 })).text, /2026/)
+  assert.match((await phone.api.getFeatureCache('yearly', { year: 2027 })).text, /2027/)
+  await phone.api.clearConversation()
+  assert.ok(await phone.api.getFeatureCache('yearly', { year: 2026 }))
+  await phone.api.saveProfile({ ...profile, day: 20 })
+  assert.equal(await phone.api.getFeatureCache('yearly', { year: 2026 }), null)
+  await phone.api.analyze('natal')
+  await phone.api.clearLocalData()
+  assert.equal(await phone.api.getFeatureCache('natal'), null)
+})
+
+test('legacy local charts upgrade without importing cloud content or dropping local conversations', async () => {
+  const phone = device({ legacy: { messages: [{ role: 'user', content: 'cloud secret' }] } })
+  await phone.api.saveProfile(profile)
+  await phone.api.ask('local only')
+  const [key, saved] = [...phone.storage.entries()][0]
+  saved.chartSummary = { palaces: [{ name: '旧命宫' }] }
+  phone.storage.set(key, saved)
+  const state = await phone.api.getState()
+  assert.equal(state.chartSummary.schemaVersion, 2)
+  assert.equal(state.messages[0].content, 'local only')
+  const calculationCount = phone.calls.filter((call) => call.action === 'saveProfile').length
+  await phone.api.getState()
+  assert.equal(phone.calls.filter((call) => call.action === 'saveProfile').length, calculationCount)
+})
+
+test('bounded local feature cache discards oldest reports and serializes profile edits during analysis', async () => {
+  const phone = device()
+  await phone.api.saveProfile(profile)
+  for (let year = 2020; year < 2035; year += 1) await phone.api.analyze('yearly', { year })
+  const state = await phone.api.getState()
+  assert.equal(Object.keys(state.features).length, 12)
+  assert.equal(await phone.api.getFeatureCache('yearly', { year: 2020 }), null)
+  assert.ok(await phone.api.getFeatureCache('yearly', { year: 2034 }))
+
+  const started = deferred()
+  const answer = deferred()
+  const slow = device({ server: async (data) => {
+    if (data.action === 'saveProfile') return { profile: data.profile, chartSummary }
+    if (data.action === 'analysis') { started.resolve(); return answer.promise }
+    return { quota: { remaining: 19 } }
+  } })
+  await slow.api.saveProfile(profile)
+  const analyzing = slow.api.analyze('natal')
+  await started.promise
+  const editing = slow.api.saveProfile({ ...profile, day: 20 })
+  answer.resolve({ text: 'old profile report', quota: { remaining: 19 } })
+  await Promise.all([analyzing, editing])
+  assert.equal(await slow.api.getFeatureCache('natal'), null)
+  assert.equal((await slow.api.getState()).profile.day, 20)
 })

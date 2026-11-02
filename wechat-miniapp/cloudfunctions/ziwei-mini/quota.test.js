@@ -56,6 +56,9 @@ function user(count = 0) {
 
 const profile = { year: 2002, month: 8, day: 19, hour: 12, gender: 'female', trueSolarEnabled: false }
 const chatEvent = (question, extra = {}) => ({ action: 'chat', question, profile, ...extra })
+const grouped = (rows) => ({ decades: Array.from({ length: Math.ceil(rows.length / 10) }, (_, index) => ({
+  startAge: index * 10 + 1, rows: rows.slice(index * 10, index * 10 + 10),
+})) })
 
 function assertQuotaOnly(record) {
   assert.deepEqual(Object.keys(record).sort(), ['createdAt', 'pendingChat', 'quota', 'updatedAt'])
@@ -82,7 +85,7 @@ function handler(db, uid, generateText, { isAnonymous = false, dailyLimit = 5 } 
   load((name) => {
     if (name === 'wx-server-sdk') return cloud
     if (name === '@cloudbase/node-sdk') return nodeSdk
-    if (name === './ai') return { generateAnswer: async (messages) => (await generateText(messages)).text }
+    if (name === './ai') return { generateAnswer: async (messages, options) => (await generateText(messages, options)).text }
     return require(name)
   }, module, module.exports, { env: dailyLimit == null ? {} : { MINI_AI_DAILY_LIMIT: String(dailyLimit) } })
   return module.exports.main
@@ -291,7 +294,7 @@ test('read-time cleanup preserves an active lease and strips nested non-quota fi
 
 test('upstream failures and database errors log only safe error codes', async () => {
   const db = memoryDatabase({})
-  const main = handler(db, 'alice', () => { throw new Error('PRIVATE QUESTION provider details') })
+  const main = handler(db, 'alice', () => { throw Object.assign(new Error('PRIVATE QUESTION provider details'), { code: 'PRIVATE_CODE' }) })
   const logged = []
   const original = console.error
   console.error = (...args) => logged.push(args.join(' '))
@@ -306,4 +309,172 @@ test('upstream failures and database errors log only safe error codes', async ()
   }
   assert.deepEqual(logged, ['ziwei-mini AI_UNAVAILABLE', 'ziwei-mini SERVER_ERROR'])
   assertQuotaOnly(db.read('alice'))
+})
+
+test('safe AI diagnostic codes reach users and logs while all failed model calls refund quota', async () => {
+  const db = memoryDatabase({ alice: user(2) })
+  const logged = []
+  const original = console.error
+  console.error = (...args) => logged.push(args.join(' '))
+  try {
+    for (const [code, expectedCode, message] of [
+      ['AI_INCOMPLETE', 'AI_INCOMPLETE', 'AI输出被截断，请重试；失败不会扣次数'],
+      ['AI_TIMEOUT', 'AI_TIMEOUT', 'AI响应超时，请重试；失败不会扣次数'],
+      ['AI_UPSTREAM', 'AI_UNAVAILABLE', 'AI 现在有点忙，请稍后再试；失败不会扣次数'],
+    ]) {
+      const main = handler(db, 'alice', () => { throw Object.assign(new Error('PRIVATE MODEL CONTENT'), { code }) })
+      const result = await main(chatEvent('private question'))
+      assert.equal(result.code, expectedCode)
+      assert.equal(result.error, message)
+      assert.equal(JSON.stringify(result).includes('PRIVATE'), false)
+      assert.equal(db.read('alice').quota.count, 2)
+      assertQuotaOnly(db.read('alice'))
+    }
+  } finally { console.error = original }
+  assert.deepEqual(logged, ['ziwei-mini AI_UNAVAILABLE AI_INCOMPLETE', 'ziwei-mini AI_UNAVAILABLE AI_TIMEOUT', 'ziwei-mini AI_UNAVAILABLE AI_UPSTREAM'])
+})
+
+test('yearly and lifetime calculations are free even after the daily AI quota is exhausted', async () => {
+  const db = memoryDatabase({ alice: user(20) })
+  const main = handler(db, 'alice', () => { throw new Error('free calculation called AI') }, { dailyLimit: 20 })
+  const yearly = await main({ action: 'getYearly', profile, year: 2028 })
+  assert.equal(yearly.data.yearly.year, 2028)
+  assert.equal(yearly.data.quota.remaining, 0)
+  const lifetime = await main({ action: 'getLifetime', profile })
+  assert.equal(lifetime.data.points.length, 100)
+  assert.equal(lifetime.data.quota.count, 20)
+  assertQuotaOnly(db.read('alice'))
+  assert.equal(db.read('alice').quota.count, 20)
+})
+
+test('natal, selected-year, matching reports and chat share the same twenty-use allowance', async () => {
+  const db = memoryDatabase({ alice: user(16) })
+  const prompts = []
+  const main = handler(db, 'alice', async (messages) => {
+    prompts.push(messages)
+    return { text: 'PRIVATE REPORT CONTENT' }
+  }, { dailyLimit: 20 })
+  const partner = { ...profile, year: 1998, gender: 'male' }
+  for (const task of ['natal', 'yearly', 'match']) {
+    const result = await main({ action: 'analysis', task, profile, partner, year: 2028 })
+    assert.equal(result.data.text, 'PRIVATE REPORT CONTENT')
+    if (task === 'match') {
+      assert.equal(result.data.chartSummary.schemaVersion, 2)
+      assert.equal(result.data.partnerChartSummary.schemaVersion, 2)
+    }
+  }
+  assert.equal((await main(chatEvent('a private follow-up'))).data.quota.count, 20)
+  assert.equal((await main({ action: 'analysis', task: 'natal', profile })).code, 'DAILY_LIMIT')
+  assert.equal(prompts.length, 4)
+  assert.match(prompts[1][1].content, /指定流年】2028年/)
+  assert.match(prompts[2][1].content, /1998年8月19日/)
+  assertQuotaOnly(db.read('alice'))
+  assert.equal(JSON.stringify(db.read('alice')).includes('PRIVATE'), false)
+})
+
+test('different paid feature types cannot reserve the same final slot concurrently', async () => {
+  const db = memoryDatabase({ alice: user(19) })
+  const started = deferred()
+  const release = deferred()
+  let calls = 0
+  const main = handler(db, 'alice', async () => {
+    calls += 1
+    started.resolve()
+    await release.promise
+    return { text: 'natal report' }
+  }, { dailyLimit: 20 })
+  const first = main({ action: 'analysis', task: 'natal', profile })
+  await started.promise
+  assert.equal((await main({ action: 'analysis', task: 'yearly', profile, year: 2028 })).code, 'CHAT_IN_PROGRESS')
+  assert.equal((await main(chatEvent('concurrent chat'))).code, 'CHAT_IN_PROGRESS')
+  release.resolve()
+  assert.equal((await first).data.quota.count, 20)
+  assert.equal(calls, 1)
+  assertQuotaOnly(db.read('alice'))
+})
+
+test('incomplete AI K-line output refunds its reservation and a complete retry succeeds', async () => {
+  const db = memoryDatabase({ alice: user(2) })
+  let calls = 0
+  const main = handler(db, 'alice', async () => {
+    const length = calls++ === 0 ? 99 : 100
+    return { text: JSON.stringify(grouped(Array.from({ length }, () => [0, 50, 0, 0, 0, 0, 0]))) }
+  }, { dailyLimit: 20 })
+  const event = { action: 'analysis', task: 'kline', profile }
+  assert.equal((await main(event)).code, 'KLINE_ROW_COUNT')
+  assert.equal(db.read('alice').quota.count, 2)
+  assert.equal(db.read('alice').pendingChat, null)
+  const success = await main(event)
+  assert.equal(success.data.points.length, 100)
+  assert.equal(success.data.points[0].close, 0)
+  assert.equal(success.data.quota.count, 3)
+  assertQuotaOnly(db.read('alice'))
+})
+
+test('new feature endpoints reject invalid parameters and unauthenticated identity before AI use', async () => {
+  const db = memoryDatabase({})
+  const main = handler(db, 'alice', () => { throw new Error('invalid request called AI') })
+  const invalid = [
+    [{ action: 'getYearly', profile, year: 1899 }, 'INVALID_YEAR'],
+    [{ action: 'getYearly', profile, year: 2001 }, 'INVALID_YEAR'],
+    [{ action: 'getLifetime', profile: null }, 'INVALID_PROFILE'],
+    [{ action: 'analysis', task: 'match', profile }, 'INVALID_PROFILE'],
+    [{ action: 'analysis', task: 'yearly', profile, year: 'wrong' }, 'INVALID_YEAR'],
+    [{ action: 'analysis', task: 'klineYear', profile, age: 0 }, 'INVALID_AGE'],
+    [{ action: 'analysis', task: 'eraseEveryone', profile }, 'INVALID_TASK'],
+  ]
+  for (const [event, code] of invalid) assert.equal((await main(event)).code, code)
+  assert.equal(db.read('alice'), undefined)
+  const anonymous = handler({ runTransaction: () => { throw new Error('anonymous database access') } }, undefined,
+    () => { throw new Error('anonymous AI access') })
+  for (const action of ['analysis', 'getYearly', 'getLifetime']) {
+    assert.equal((await anonymous({ action, task: 'natal', profile, year: 2028, uid: 'alice' })).code, 'AUTH_REQUIRED')
+  }
+})
+
+test('only a validated AI kline task can select the fixed server mode', async () => {
+  const db = memoryDatabase({})
+  const calls = []
+  const main = handler(db, 'alice', async (messages, options) => {
+    calls.push(options)
+    return { text: options.analysisMode === 'kline'
+      ? JSON.stringify(grouped(Array.from({ length: 100 }, () => [50, 60, 40, 50, 50, 50, 50])))
+      : 'ordinary answer' }
+  }, { dailyLimit: 20 })
+  assert.equal((await main({ action: 'analysis', task: 'kline', profile: null, analysisMode: 'kline' })).code, 'INVALID_PROFILE')
+  assert.equal(calls.length, 0)
+  const kline = await main({ action: 'analysis', task: 'kline', profile })
+  assert.equal(kline.data.points.length, 100)
+  assert.equal(calls[0].analysisMode, 'kline')
+  assert.equal((await main({ action: 'analysis', task: 'natal', profile, analysisMode: 'kline', max_output_tokens: 999999, model: 'forged' })).ok, true)
+  assert.equal((await main(chatEvent('hello', { analysisMode: 'kline', reasoning: { effort: 'high' } }))).ok, true)
+  assert.equal(calls.length, 3)
+  assert.ok(calls[0].timeoutMs > 0 && calls[0].timeoutMs <= 80000)
+  assert.deepEqual(Object.keys(calls[0]).sort(), ['analysisMode', 'timeoutMs'])
+  for (const options of calls.slice(1)) assert.deepEqual(Object.keys(options), ['timeoutMs'])
+  assert.equal(db.read('alice').quota.count, 3)
+  assertQuotaOnly(db.read('alice'))
+})
+
+test('wick failures expose only fixed diagnostic categories and refund every reservation', async () => {
+  const db = memoryDatabase({ alice: user(2) })
+  const rows = Array.from({ length: 100 }, () => [50, 0, 0, 50, 50, 50, 50])
+  const failures = [
+    ['PRIVATE INVALID JSON', 'KLINE_JSON_PARSE', 'AI曲线格式无法读取'],
+    [JSON.stringify(grouped(rows.slice(0, 99))), 'KLINE_ROW_COUNT', 'AI曲线分组没有完整10年'],
+    [JSON.stringify({ decades: grouped(rows).decades.slice(0, 9) }), 'KLINE_GROUP_COUNT', 'AI曲线没有完整10组'],
+    [JSON.stringify({ decades: grouped(rows).decades.map((group, index) => index === 0 ? { ...group, startAge: 2 } : group) }), 'KLINE_START_AGE', 'AI曲线分组年龄顺序不正确'],
+    [JSON.stringify(grouped(rows.map((row, index) => index === 0 ? { content: 'PRIVATE CONTENT' } : row))), 'KLINE_ROW_SHAPE', 'AI曲线每年数据结构不正确'],
+    [JSON.stringify(grouped(rows.map((row, index) => index === 0 ? ['PRIVATE NUMBER', 0, 0, 50, 50, 50, 50] : row))), 'KLINE_NUMBER_RANGE', 'AI曲线评分不是0–100整数'],
+  ]
+  for (const [text, code, message] of failures) {
+    const main = handler(db, 'alice', async () => ({ text }), { dailyLimit: 20 })
+    const result = await main({ action: 'analysis', task: 'kline', profile })
+    assert.equal(result.code, code)
+    assert.equal(result.error, `${message}，请重试；失败不会扣次数`)
+    assert.equal(JSON.stringify(result).includes('PRIVATE'), false)
+    assert.equal(db.read('alice').quota.count, 2)
+    assert.equal(db.read('alice').pendingChat, null)
+    assertQuotaOnly(db.read('alice'))
+  }
 })

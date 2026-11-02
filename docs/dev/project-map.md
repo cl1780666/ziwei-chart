@@ -2,6 +2,13 @@
 
 > L2 | Parent: `AGENTS.md`
 
+Native Mini Program foreground music lives in `miniprogram/utils/music.js`,
+with one shared `InnerAudioContext` and a small `components/music-control` on
+each page. It streams the existing four licensed CloudBase tracks directly,
+continues across page changes, pauses on App hide, and respects explicit pause.
+No audio binaries, download API, recording permission, or background mode are
+added to the Mini Program.
+
 ## Purpose
 
 This file gives future agents a fast structural map before they touch code. Keep
@@ -42,6 +49,11 @@ The companion Mini Program has a separate runtime flow:
    timestamps. Field allowlisting strips legacy personal content. No device
    imports cloud profiles or chats; the same account on another phone starts
    without personal records while sharing the account's remaining quota.
+5. Dedicated natal, yearly, K-line, and compatibility requests use the same
+   authenticated twenty-use AI allowance. Free yearly/100-year calculations
+   return structured data; only the current device caches reports, curves, and
+   partner drafts. Explicit share-card export draws a local PNG; native app
+   sharing sends a generic entrance with static artwork and no personal data.
 
 ## App Module Map
 
@@ -76,7 +88,13 @@ app/tests/ - Tests outside source tree, currently including workflow validation.
 - `app/api/chat.ts` - Vercel-compatible TokenHub proxy, validation, and stream forwarding.
 - `app/api/rate-limit.ts` - signed daily quota cookie helpers.
 - `cloudbase/functions/ziwei-ai/index.js` - deployable CloudBase TokenHub proxy.
-- `wechat-miniapp/miniprogram/pages/` - personalized home, birth profile, chart, and chat pages.
+- `wechat-miniapp/miniprogram/pages/` - home, birth profile, complete chart,
+  chat, yearly fortune, 100-year K-line, compatibility, and PNG share-card pages.
+- `wechat-miniapp/miniprogram/components/report-view/` - constrained Markdown
+  display and copyable reports without arbitrary model HTML or remote media.
+- `wechat-miniapp/miniprogram/utils/plot.js` - native candle and radar geometry.
+- `wechat-miniapp/miniprogram/utils/share-card.js` - explicit local PNG composition,
+  default-private card content, and text wrapping.
 - `wechat-miniapp/miniprogram/assets/` - nine compressed original poster scenes:
   the home violin landscape, four seasons, Hui courtyard, two night rivers, and
   quiet violin-by-the-rain-window artwork used across the four Mini Program pages.
@@ -91,6 +109,12 @@ app/tests/ - Tests outside source tree, currently including workflow validation.
 - `wechat-miniapp/cloudfunctions/ziwei-mini/user-store.js` - quota-only transactions and legacy personal-field removal.
 - `wechat-miniapp/cloudbaserc.json` - event-function CLI deployment and explicit execution timeout.
 - `wechat-miniapp/cloudfunctions/ziwei-mini/domain.js` - deterministic profile validation, true solar time, and chart context.
+- `wechat-miniapp/cloudfunctions/ziwei-mini/fortune.js` - real yearly overlays,
+  deterministic 100-year OHLC/dimension data, and strict AI curve validation.
+- `wechat-miniapp/cloudfunctions/ziwei-mini/analysis.js` - independent natal,
+  yearly, selected-year, compatibility, and compact full-curve AI prompts.
+- `wechat-miniapp/cloudfunctions/ziwei-mini/chart-data.js` - original chart
+  scoring, brightness, transformation, and nayin reference tables.
 - `app/src/knowledge-db/retrieval/retrieve.ts` - guidance retrieval.
 - `.github/workflows/sync-zwknows.yml` - deployment mirror synchronization.
 

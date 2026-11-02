@@ -1,0 +1,7 @@
+.music-control { position: fixed; z-index: 40; right: 14rpx; padding: 8rpx; }
+.music-toggle { display: flex; align-items: center; justify-content: center; gap: 10rpx; min-width: 112rpx; height: 64rpx; margin: 0; padding: 0 18rpx; border: 1rpx solid rgba(110,112,91,.25); border-radius: 40rpx; color: #64715f; background: rgba(250,245,233,.91); box-shadow: 0 4rpx 18rpx rgba(44,45,34,.09); line-height: 1; }
+.music-toggle::after { border: 0; }
+.music-note { font-family: serif; font-size: 31rpx; }
+.music-action { font-size: 20rpx; letter-spacing: 1rpx; }
+.is-playing { color: #853d42; border-color: rgba(127,48,54,.25); }
+.music-hover { background: #eee4d4; }

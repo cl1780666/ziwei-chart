@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "欢迎蕾蕾大王"
+  "navigationBarTitleText": "欢迎蕾蕾大王",
+  "usingComponents": {
+    "music-control": "/components/music-control/music-control"
+  }
 }

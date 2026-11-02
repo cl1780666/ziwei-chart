@@ -30,3 +30,38 @@
 .star-line.minor { margin-top: 5rpx; color: #8a877f; font-size: 20rpx; }
 .chat-button { margin-top: 30rpx; border-radius: 7rpx; letter-spacing: 4rpx; }
 .edit-button { margin-top: 16rpx; border-radius: 7rpx; }
+
+.feature-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 12rpx; margin-top: 26rpx; }
+.feature-nav button { margin: 0; padding: 20rpx; border: 1rpx solid #d3c8b8; border-radius: 6rpx; background: #fbf4e9; color: #526157; font-size: 25rpx; line-height: 1.5; }
+.chart-scroll { width: 100%; border: 1rpx solid #c9c3b6; border-radius: 8rpx; }
+.palace-board { position: relative; width: 1060rpx; height: 1200rpx; background: #faf4e9; }
+.board-palace { box-sizing: border-box; position: absolute; width: 25%; height: 25%; padding: 17rpx 16rpx; overflow: hidden; border: 1rpx solid #ddd4c4; }
+.board-head { display: flex; justify-content: space-between; color: #465549; font-family: "Songti SC", serif; font-size: 28rpx; font-weight: 700; }
+.board-head text:last-child { font-family: sans-serif; font-size: 21rpx; font-weight: 400; }
+.board-range, .board-major, .board-minor, .board-adjective, .board-gods { display: block; margin-top: 9rpx; line-height: 1.55; }
+.board-range { color: #986661; font-size: 18rpx; }
+.board-major { color: #81343a; font-size: 23rpx; }
+.board-minor { color: #5a645a; font-size: 20rpx; }
+.board-adjective { color: #918675; font-size: 18rpx; }
+.board-gods { position: absolute; right: 16rpx; bottom: 10rpx; left: 16rpx; color: #8c8a78; font-size: 18rpx; }
+.life-palace { background: #f3e8db; }
+.selected-palace { box-shadow: inset 0 0 0 4rpx #8a474b; }
+.board-center { position: absolute; top: 25%; left: 25%; display: flex; box-sizing: border-box; flex-direction: column; align-items: center; justify-content: center; width: 50%; height: 50%; padding: 20rpx; background: radial-gradient(ellipse at 50% 30%, #f8efe1, #eee5d6); }
+.board-center text { display: block; margin: 8rpx 0; color: #6e7165; font-size: 23rpx; text-align: center; }
+.board-center .center-title { margin-bottom: 26rpx; color: #3f5145; font-family: "Songti SC", serif; font-size: 40rpx; font-weight: 700; letter-spacing: 7rpx; }
+.board-center .center-seal { margin-top: 32rpx; padding: 8rpx 15rpx; border: 1rpx solid #9d5c5b; color: #895051; font-family: "Songti SC", serif; font-size: 22rpx; letter-spacing: 5rpx; }
+.palace-detail { margin-top: 22rpx; }
+.detail-heading { display: flex; align-items: center; justify-content: space-between; color: #465549; font-family: "Songti SC", serif; font-size: 32rpx; font-weight: 600; }
+.detail-heading text:last-child { color: #917561; font-size: 22rpx; font-weight: 400; }
+.detail-label { display: block; margin: 25rpx 0 12rpx; color: #8a8373; font-size: 21rpx; }
+.star-tags { display: flex; flex-wrap: wrap; gap: 10rpx; }
+.star-tag { padding: 9rpx 14rpx; border: 1rpx solid #d9d7c8; border-radius: 4rpx; background: #f1f1e8; color: #516354; font-size: 25rpx; }
+.star-meta { margin-left: 6rpx; color: #9b8069; font-size: 19rpx; }
+.mutagen-tag { border-color: #bd9992; background: #f5e7de; color: #8c4448; }
+.gods-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12rpx; margin-top: 25rpx; padding-top: 20rpx; border-top: 1rpx solid #e5dacb; color: #87816f; font-size: 21rpx; }
+.analysis-card { margin-top: 30rpx; }
+.analysis-card .section-title, .analysis-copy, .allowance { display: block; }
+.analysis-copy { margin: 12rpx 0; color: #7a7f72; font-size: 25rpx; line-height: 1.7; }
+.allowance { margin: 18rpx 0 24rpx; color: #9a8b78; font-size: 21rpx; line-height: 1.6; }
+.analysis-card .primary-button { border-radius: 6rpx; font-size: 27rpx; }
+.retry { margin-top: 20rpx; }

@@ -13,6 +13,72 @@
 
 ## Recently Completed
 
+- Restored the original website's five core tabs in the native Mini Program:
+  full twelve-palace star details and natal report, annual transit charts and
+  independent yearly report, a 100-year OHLC curve with four-dimensional radar
+  and selected-year reports, independent two-person compatibility, and local
+  PNG share cards. The home now links to all features and the existing chat.
+- Added free deterministic annual/lifetime calculations and a common AI report
+  endpoint. Natal, yearly, compatibility, full-curve and selected-year reports
+  share chat's existing twenty-use daily quota and failure refunds. AI curves
+  must contain exactly 100 bounded, complete rows with valid OHLC envelopes;
+  truncated or malformed output is rejected and refunded.
+- Preserved device-only privacy for every new report, curve, and partner draft.
+  Local report caches are keyed by profile, feature, year/age and partner,
+  bounded to twelve entries, and invalidated when the primary profile changes.
+  Schema-1 local charts upgrade without importing cloud content or losing local
+  conversations. Native forwarding uses generic artwork; generated cards hide
+  birth details by default and leave the phone only through an explicit export.
+- Corrected annual palace indexing and pre-lunar-new-year decadal scope using
+  iztro's actual nominal age. Annual charts and lifetime points now consistently
+  use the engine's palace, stem and decadal range rather than mixing calendar
+  age with traditional nominal-age boundaries.
+- Passed 108 focused backend, privacy, feature UI, chart geometry, lifecycle and
+  proxy tests on 2026-11-02. This includes concurrent final-slot reservations,
+  invalid-curve refunds, cross-device/account storage separation, stale page
+  responses, cached reports, and private PNG/forwarding behavior.
+- Added the exact current Shanghai date, lunar nominal age and active decadal
+  to AI context after a live natal report guessed the prior decade. Optimized
+  quarterly sampling using the same iztro lunar dependency and verified formulas:
+  the full baseline is byte-for-byte unchanged, while local calculation fell
+  from 2873 ms to 647 ms. Removed needless full-lifetime calculation from a
+  single-year report. AI timeout, truncated-output and upstream failures use
+  fixed diagnostic codes and retain quota refunds, with eight seconds reserved
+  for finishing/refunding before the unchanged 90-second function timeout.
+- Restored foreground Bossa Nova playback using one native audio context and
+  the four existing licensed CloudBase tracks. The eight pages have only a
+  play/pause control, with automatic playlist looping, page-to-page continuity,
+  background pause, and preserved explicit pause. No MP3, new dependency,
+  recording permission or background-audio capability was added. Nine focused
+  audio tests and official compilation passed; source main-package size is
+  1,978,743 bytes after the final component selector fix, below 2 MiB. Device
+  autoplay remains a real-phone check.
+- Verified full features in DevTools against the live backend: detailed star
+  data, natal report, independent annual report, free complete baseline curve
+  and four-axis radar, independent compatibility using a synthetic partner,
+  selected-year curve report, and locally generated PNG preview. Successful
+  reports reduced the remaining allowance 16 → 15 → 14 → 13 → 12; failed
+  full-curve attempts were refunded and kept the existing baseline. Safe
+  diagnostics identified truncation and later missing rows. The final V3
+  ten-by-ten grouped response generated all 100 AI points successfully and
+  reduced the remaining allowance 12 → 11, preserving the selected 2027 year
+  and updating its four-dimensional scores. Reopening
+  cached reports and recompiling retained local content without further charge.
+  The complete cloud collection still contained one quota-only record, no
+  profile, chart, report, partner or chat fields.
+- Deployed the optimized event function and the fixed curve-only proxy mode
+  in the existing environment. Current timing, model credentials, runtime and
+  256 MB memory remain; no new paid environment or resource allocation was
+  created. The final complete AI curve passed real provider decoding and
+  strict server validation; the development preview still needs the user's
+  same-account/two-phone privacy check before public review.
+- Recompiled after the successful AI curve and reopened it from the local cache:
+  it still showed AI inference with eleven calls remaining, without invoking
+  the model again. The complete quota collection remained a single document
+  with count nine, no pending request, and timestamps only. Uploaded the new
+  development preview successfully; DevTools generated a fresh phone QR and
+  reported a 1883 KB code package. Same-account/two-phone separation, real-phone
+  audio and album permission checks remain explicitly unconfirmed by the user.
 - Replaced Mini Program cloud content storage with device-local, account-scoped
   profiles, chart summaries, and chats at the user's explicit request. Another
   phone, including the same WeChat account, starts without personal records.

@@ -3,7 +3,11 @@
     "pages/home/home",
     "pages/profile/profile",
     "pages/chart/chart",
-    "pages/chat/chat"
+    "pages/chat/chat",
+    "pages/fortune/fortune",
+    "pages/kline/kline",
+    "pages/match/match",
+    "pages/share/share"
   ],
   "window": {
     "navigationBarBackgroundColor": "#f4eadc",

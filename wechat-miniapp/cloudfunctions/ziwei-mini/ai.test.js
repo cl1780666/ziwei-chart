@@ -41,6 +41,19 @@ test('supports a full-text done fallback without deltas and trailing blank line'
   assert.equal(text, 'quiet answer')
 })
 
+test('only the exact server kline mode adds a fixed body flag and never forwards provider options', async () => {
+  for (const analysisMode of ['kline', 'KLINE', 'kline ', 'natal', undefined, { mode: 'kline' }]) {
+    await generateAnswer(messages, {
+      analysisMode, max_output_tokens: 999999, reasoning: { effort: 'high' }, model: 'forged', url: 'https://invalid.example',
+      fetchImpl: async (url, options) => {
+        assert.equal(url, 'https://supposed-bovid-d4gcywfkh2af1db6e-1522903512.ap-shanghai.app.tcloudbase.com/api/chat')
+        assert.deepEqual(JSON.parse(options.body), analysisMode === 'kline' ? { messages, analysisMode: 'kline' } : { messages })
+        return sse(frame({ type: 'response.output_text.done', text: 'answer' }))
+      },
+    })
+  }
+})
+
 test('provider error, HTTP error, and incomplete output all reject for quota refund', async () => {
   const responses = [
     new Response('{"error":"rate limited"}', { status: 429 }),
@@ -52,6 +65,21 @@ test('provider error, HTTP error, and incomplete output all reject for quota ref
   for (const response of responses) {
     await assert.rejects(generateAnswer(messages, { fetchImpl: async () => response }))
   }
+})
+
+test('failure diagnostics use safe fixed codes without provider text', async () => {
+  const cases = [
+    [new Response('PRIVATE PROVIDER BODY', { status: 429 }), 'AI_UPSTREAM'],
+    [sse(frame({ type: 'response.incomplete', response: { status: 'incomplete' } })), 'AI_INCOMPLETE'],
+    [sse(frame({ type: 'response.output_text.done', text: 'private partial answer' })
+      + frame({ type: 'response.completed', response: { status: 'incomplete' } })), 'AI_INCOMPLETE'],
+    [sse(frame({ type: 'response.output_text.delta', delta: 'private interrupted answer' })), 'AI_INCOMPLETE'],
+  ]
+  for (const [response, code] of cases) {
+    await assert.rejects(generateAnswer(messages, { fetchImpl: async () => response }), (error) => error.code === code && error.message === code)
+  }
+  await assert.rejects(generateAnswer(messages, { fetchImpl: async () => { throw new Error('PRIVATE NETWORK DETAILS') } }),
+    (error) => error.code === 'AI_UPSTREAM' && error.message === 'AI_UPSTREAM')
 })
 
 test('request timeout also aborts a response that stalls during streaming', async () => {
@@ -66,6 +94,6 @@ test('request timeout also aborts a response that stalls during streaming', asyn
         })
       },
     }), { headers: { 'content-type': 'text/event-stream' } }),
-  }), /timed out/)
+  }), (error) => error.code === 'AI_TIMEOUT' && error.message === 'AI_TIMEOUT')
   assert.equal(aborted, true)
 })

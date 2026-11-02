@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "年度运势",
+  "usingComponents": {
+    "report-view": "/components/report-view/report-view",
+    "music-control": "/components/music-control/music-control"
+  }
+}
