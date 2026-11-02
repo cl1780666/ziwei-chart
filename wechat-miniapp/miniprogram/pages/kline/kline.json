@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "人生 K 线",
+  "usingComponents": {
+    "report-view": "/components/report-view/report-view"
+  }
+}

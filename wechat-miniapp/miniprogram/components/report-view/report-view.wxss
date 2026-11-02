@@ -1,0 +1,6 @@
+.report-paper { margin-top: 26rpx; padding: 28rpx; border: 1rpx solid rgba(80,83,74,.14); border-radius: 8rpx; background: #fffaf1; color: #4b554c; }
+.report-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 18rpx; border-bottom: 1rpx solid #e4dacb; color: #754348; font-family: "Songti SC", serif; font-size: 28rpx; font-weight: 600; }
+.report-copy { margin: 0; padding: 9rpx 16rpx; border: 1rpx solid #d9cbb9; border-radius: 4rpx; background: transparent; color: #76695d; font-family: sans-serif; font-size: 21rpx; line-height: 1.5; }
+.report-copy::after { border: 0; }
+.report-content { display: block; margin-top: 12rpx; font-size: 27rpx; }
+.report-foot { display: block; margin-top: 26rpx; color: #a19887; font-size: 20rpx; }

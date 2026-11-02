@@ -208,8 +208,9 @@ export default async function handler(request: ChatRequest, response: ServerResp
   }
 
   if (!upstream.ok || !upstream.body) {
-    const details = await upstream.text().catch(() => '')
-    console.error('TokenHub API error', upstream.status, details.slice(0, 500))
+    // Provider errors may echo private messages; discard them without logging.
+    await upstream.body?.cancel().catch(() => {})
+    console.error('TOKENHUB_API_FAILED', upstream.status)
     const errorMessage = upstream.status === 402
       ? '共享 AI 的免费额度暂时用完了，请稍后再试'
       : upstream.status === 429

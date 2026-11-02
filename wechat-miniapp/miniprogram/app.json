@@ -1,0 +1,21 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/profile/profile",
+    "pages/chart/chart",
+    "pages/chat/chat",
+    "pages/fortune/fortune",
+    "pages/kline/kline",
+    "pages/match/match",
+    "pages/share/share"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#f4eadc",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "弦上星河",
+    "backgroundColor": "#f4eadc",
+    "backgroundTextStyle": "light"
+  },
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json"
+}

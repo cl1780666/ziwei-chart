@@ -2,6 +2,25 @@
 
 > L2 | Parent: `AGENTS.md`
 
+## D013 — Mini Program stays silent
+
+On 2026-11-02 the user requested removing music. Remove the native audio
+context, App playback hooks, all eight page controls, and music-only tests.
+This supersedes D012 for the Mini Program. The separate website's existing
+music and hosted licensed tracks are outside this native change.
+
+## D012 — Foreground music reuses existing licensed hosting (superseded by D013)
+
+Restore the website's four quiet Bossa Nova tracks through a global native
+`InnerAudioContext`, directly streaming existing HTTPS URLs. Keep only one
+play/pause control; advance on end and loop the playlist. Pause on App hide,
+resume only when the user's prior intent was playing, and never automatically
+retry an error. Avoid new binaries, downloads, provider dependencies, recording
+permissions, or background-audio declarations. Initial autoplay is attempted,
+with explicit playback available when the device blocks it. Real-device audio
+and domain checks remain release checks; the direct-src API is not a promise
+that every device will permit autoplay.
+
 ## D001 - True Solar Time Uses Birthplace Matching
 
 Users should not need to know longitude, latitude, or minute-level correction
@@ -90,6 +109,122 @@ and identity rather than extending the cookie scheme.
 TokenHub free-trial exhaustion returns a friendly unavailable message. It does
 not affect deterministic chart, matching, fortune, or K-line features, and no
 postpaid service is required by this design.
+
+## D008 - The Mini Program Uses HTTP WeChat Login and Trusted CloudBase UID
+
+The paid PostgreSQL environment is not selectable in WeChat DevTools' native
+environment conversion. The native Mini Program therefore uses CloudBase JS SDK
+OpenID login with `useWxCloud: false`, then authenticated SDK `callFunction` to
+invoke the event-triggered `ziwei-mini` backend. The enabled identity source is
+the registered Mini Program AppID; the SDK exchanges the one-use `wx.login` code.
+
+The cloud function gets its trusted UID through the Node SDK's runtime
+`auth().getUserInfo()` and rejects missing or anonymous identities. It never
+accepts a user identifier from event data. Documents are keyed as `uid:<uid>`;
+only daily quota, request leases, and necessary timestamps remain in
+`ziwei_mini_users`.
+The PG environment provides document operations through `pgdoc`, with client
+database access disabled. The existing per-user transactional reservation,
+refund, and account isolation rules remain in force. Birth profiles, charts,
+and chats use account-scoped local storage on each device. The same account on
+another phone must not receive any earlier device's personal records.
+
+The Mini Program's backend calls the fixed, owned website `/api/chat` endpoint
+to reuse the already configured TokenHub `deepseek-v4-flash-202605` free-trial
+resource. The server-only adapter forwards messages without user cookies or
+page-supplied URLs, reads the Responses SSE protocol, and times out after 80
+seconds. Its own durable UID quota is twenty questions per Shanghai day; the
+website retains its five-request browser allowance and four-per-minute IP burst
+guard. No separate CloudBase AI activation or new provider key is required.
+
+Consequence: Mini Program identity and quota changes belong in `ziwei-mini`; do
+not reuse the website cookie as Mini Program identity. Authorize and enable
+the Mini Program identity source before device testing. Keep all provider and
+management credentials out of the bundled client SDK and page code.
+
+## D009 - The Mini Program Uses a Wannan Editorial Poster Visual System
+
+The personalized Mini Program uses an original nine-image poster series that
+combines antique violins, Wannan mountains and water, Hui-style white walls and
+dark roofs, a quiet courtyard, four seasons, and one restrained adult violinist
+seen from behind at night. Supporting pages use
+rice-paper ivory, ink green, walnut, and restrained burgundy with Song-style
+display typography. The direction should stay romantic, quiet, and editorial
+rather than returning to generic pink gradients or floating music-note
+decoration.
+
+The production image lives in `miniprogram/assets`; the browser mock under
+`design-preview/` mirrors the home composition for review before a real AppID is
+available.
+
+Consequence: future Mini Program visual changes should preserve poster hierarchy,
+legibility over the artwork, and package-conscious compressed assets. Keep the
+home screen simple and avoid using `0819` as decorative branding there. Keep
+the automatic background rotation slow and control-free, and stop its timers
+when the page is hidden. Keep functional copy and controls in WXML instead of
+baking text into the image.
+
+## D010 - Personal Mini Program Content Stays on the Current Device
+
+The user explicitly rejected backend retention and cross-device synchronization,
+including two phones using the same WeChat account. Birth profiles, chart
+summaries, and chat history therefore belong only in that device's local storage.
+Clearing local data or reinstalling can lose these records; do not restore them
+from the cloud or add a cloud fallback.
+
+Chart calculation and AI requests still transiently send the needed profile,
+question, and bounded recent conversation to the server/model. The backend
+recalculates charts and validates history without retaining personal content.
+Only the authenticated account's quota persists in the cloud. Database field
+allowlisting strips old content while keeping its counter; releases must also
+check for unvisited legacy documents and clean them before completion.
+
+Application error logs use fixed codes and HTTP status only. Never log request
+or response text, provider error bodies, or arbitrary error messages that could
+echo a prompt. This application-level rule is not a claim about third-party
+provider data-retention terms.
+
+## D011 - Native Mini Program Feature Parity Uses Shared Quota and Local Reports
+
+The Mini Program includes dedicated full-chart/natal, yearly, 100-year K-line,
+compatibility, and share-card views. These are independent functional pages;
+general chat is not a substitute for yearly reports or a real interactive curve.
+Keep all reports, trends, partner drafts, and chart content on the current device.
+
+Deterministic chart, yearly, and basic curve calculation does not consume model
+allowance. Every model task uses the same authenticated quota reservation path;
+an AI full-curve generation consumes one successful request, not one per year.
+Its compact response must contain all 100 valid OHLC/dimension rows. Reject and
+refund incomplete or invalid model data instead of fabricating missing years.
+
+The `lifetime_curve_v3` wire object has only a `decades` field: exactly ten
+groups, each containing only `startAge` and ten `rows` of seven integers.
+Group starts must be 1, 11, 21, …, 91 in order; flatten the validated ten by ten
+groups into 100 points. Each row is:
+`[close, upperWick, lowerWick, career, wealth, relationship, health]`.
+The first open is 50 and later opens are the prior close. Decode high as
+`min(100, max(open, close) + upperWick)` and low as
+`max(0, min(open, close) - lowerWick)`. This prescribed representation avoids
+asking the model to maintain cross-row envelope constraints; it does not repair
+invalid numbers or fill absent years. Do not guess the former absolute-high/low
+format. Every group, starting age, row and integer still undergoes strict
+validation. Ten-year grouping replaces the unreliable flat 100-row model
+response without filling absent data or making extra model calls.
+The fixed curve mode also requests the matching Responses `text.format`
+JSON Schema. Server validation remains authoritative because provider support
+does not prove every constraint was enforced on a particular response.
+
+The complete curve alone uses a fixed proxy mode with reasoning disabled and
+a 6000-token output cap; ordinary chat/reports keep low reasoning and 3000.
+Live testing established that the previous shared cap truncated the 100-row
+response. The flag is an enum, not authentication or an arbitrary model-option
+channel; all pre-existing quota and IP controls remain.
+
+Basic curves reuse the original star/brightness/transformation scoring approach
+with deterministic real chart and transit sampling. Do not add arbitrary random
+variation. These are traditional chart illustrations, not measured probabilities,
+investment prices, or lifespan predictions. Use actual transit scopes for palace
+overlays and traditional nominal-age decadal ranges.
 
 [PROTOCOL]: Add a new decision when a choice affects future implementation,
 deployment, product behavior, or contributor workflow.

@@ -6,6 +6,38 @@ const DEFAULT_DAILY_LIMIT = 5
 const BURST_LIMIT = 4
 const BURST_WINDOW_MS = 60_000
 const TOKENHUB_RESPONSES_URL = 'https://tokenhub.tencentmaas.com/v1/responses'
+const KLINE_TEXT_FORMAT = {
+  format: {
+    type: 'json_schema',
+    name: 'lifetime_curve_v3',
+    strict: true,
+    schema: {
+      type: 'object',
+      properties: {
+        decades: {
+          type: 'array', minItems: 10, maxItems: 10,
+          items: {
+            type: 'object',
+            properties: {
+              startAge: { type: 'integer', enum: [1, 11, 21, 31, 41, 51, 61, 71, 81, 91] },
+              rows: {
+                type: 'array', minItems: 10, maxItems: 10,
+                items: {
+                  type: 'array', minItems: 7, maxItems: 7,
+                  items: { type: 'integer', minimum: 0, maximum: 100 },
+                },
+              },
+            },
+            required: ['startAge', 'rows'],
+            additionalProperties: false,
+          },
+        },
+      },
+      required: ['decades'],
+      additionalProperties: false,
+    },
+  },
+}
 const burstRequests = new Map()
 
 function sendJson(response, status, body, headers = {}) {
@@ -214,6 +246,9 @@ async function handleChat(request, response) {
     sendJson(response, 400, { error: '消息内容不正确或过长' })
     return
   }
+  // A fixed output profile for the full 100-year curve. Never accept caller
+  // model, reasoning or token-budget options; ordinary reports stay unchanged.
+  const klineMode = body.analysisMode === 'kline'
 
   const abortController = new AbortController()
   response.on('close', () => {
@@ -234,15 +269,16 @@ async function handleChat(request, response) {
           role: message.role === 'system' ? 'developer' : message.role,
           content: message.content,
         })),
-        reasoning: { effort: 'low' },
-        max_output_tokens: 3_000,
+        reasoning: { effort: klineMode ? 'none' : 'low' },
+        max_output_tokens: klineMode ? 6_000 : 3_000,
+        ...(klineMode ? { text: KLINE_TEXT_FORMAT } : {}),
         stream: true,
       }),
       signal: abortController.signal,
     })
   } catch (error) {
     if (error?.name !== 'AbortError') {
-      console.error('TokenHub connection error', error instanceof Error ? error.message : error)
+      console.error('TOKENHUB_CONNECTION_FAILED')
     }
     if (!response.headersSent) {
       sendJson(response, 502, { error: '暂时无法连接 AI 服务，请稍后再试' })
@@ -251,8 +287,9 @@ async function handleChat(request, response) {
   }
 
   if (!upstream.ok || !upstream.body) {
-    const details = await upstream.text().catch(() => '')
-    console.error('TokenHub API error', upstream.status, details.slice(0, 500))
+    // Provider errors may echo the submitted messages. Never read them into logs.
+    await upstream.body?.cancel().catch(() => {})
+    console.error('TOKENHUB_API_FAILED', upstream.status)
 
     const errorMessage = upstream.status === 402
       ? '共享 AI 的免费额度暂时用完了，请稍后再试'
@@ -283,7 +320,7 @@ async function handleChat(request, response) {
     }
   } catch (error) {
     if (error?.name !== 'AbortError') {
-      console.error('TokenHub stream error', error instanceof Error ? error.message : error)
+      console.error('TOKENHUB_STREAM_FAILED')
     }
   } finally {
     reader.releaseLock()

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "年度运势",
+  "usingComponents": {
+    "report-view": "/components/report-view/report-view"
+  }
+}

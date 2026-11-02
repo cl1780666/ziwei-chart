@@ -108,6 +108,119 @@ The gateway domain is
 The shared model is limited to the claimed `deepseek-v4-flash-202605` free-trial
 resource; keep TokenHub pay-as-you-go disabled.
 
+## WeChat Mini Program Release
+
+Import `wechat-miniapp/` into WeChat DevTools with the registered Mini Program
+AppID `wx7284ee2afe7ed462`, which is already stored in `project.config.json`.
+The paid environment `supposed-bovid-d4gcywfkh2af1db6e` is PostgreSQL and is not
+selectable in DevTools' native environment conversion. Authorize the Mini Program
+under that environment and enable the exact AppID identity source. The bundled
+CloudBase JS SDK 3.10.4 uses HTTP OpenID login and authenticated `callFunction`.
+Register `https://supposed-bovid-d4gcywfkh2af1db6e.api.tcloudbasegateway.com`
+as a request legal domain in the Mini Program backend. Never add an AppSecret,
+admin API key, or user identifier to client requests.
+
+The production Auth/Functions client bundle is checked into `miniprogram/vendor`
+so DevTools does not need to build npm. To rebuild from `wechat-miniapp/`, run
+`pnpm install --ignore-scripts` and `pnpm build:sdk`. The script preserves SDK
+licenses and enforces a 2 MiB maximum for the whole main package.
+
+Deploy `wechat-miniapp/cloudfunctions/ziwei-mini` as an event-triggered function
+with cloud-side dependency installation. It expects `wx-server-sdk` 4.0.2 and
+`iztro` 2.5.8, plus `@cloudbase/node-sdk` 3.17.2 for trusted runtime identity.
+Set the deployed execution timeout to 90 seconds in the cloud
+console. For CLI deployments, run `tcb functions:deploy ziwei-mini` from
+`wechat-miniapp/`; its `cloudbaserc.json` declares the event handler, Node.js
+20.19 runtime, dependency installation, and 90-second timeout. This execution
+timeout must remain below the two-minute pending-request lease used to recover
+abandoned requests. SDK request timeout alone does not configure execution time.
+Optional environment values are:
+
+```text
+MINI_AI_DAILY_LIMIT=20
+```
+
+The Mini Program backend reuses the existing website's TokenHub `/api/chat`
+service through a fixed server-only URL. Keep that service and its already
+configured free-trial resource available; no separate CloudBase AI activation
+or Mini Program model key is needed. The adapter omits cookies, rejects redirects,
+and aborts after 80 seconds. The website's existing four-per-minute IP burst
+guard also applies to cloud-function egress; upstream failures refund the Mini
+Program reservation. Its own default allowance is twenty questions per user
+per Shanghai day, while the website browser quota remains five.
+
+The validated full-curve task sends the fixed `analysisMode: "kline"` flag to
+the existing proxy. Only that exact value selects the fixed TokenHub
+`reasoning.effort: "none"` and `max_output_tokens: 6000`; chat and text reports
+retain `low` / `3000`. The larger output allowance prevents 100 rows from being
+truncated by a budget shared with reasoning tokens. Do not forward arbitrary
+client model, token, key, URL or reasoning options. This public mode flag is
+not service authentication: all requests still use the existing cookie/IP
+controls, and the Mini Program separately enforces its trusted UID quota.
+Curve rows use close, upper/lower wick amplitudes and four dimensions; the
+server reconstructs continuous OHLC by the documented rule. Keep decoder and
+prompt on the same explicit `lifetime_curve_v3` object with only `decades`:
+ten ordered groups starting at 1/11/…/91, each with ten seven-integer rows. The
+curve mode requests a fixed matching Responses `text.format` JSON Schema;
+ordinary requests do not send a format and caller schemas are ignored.
+Invalid JSON, row count, row shape or
+numbers produce distinct fixed diagnostic messages, never echoed model text.
+
+Enable `pgdoc` in the PG Document editor, create the
+`ziwei_mini_users` collection, and keep it inaccessible to direct client reads
+and writes. All access goes through the UID-aware cloud function, which rejects
+anonymous or missing authenticated runtime identity.
+
+This collection is quota-only: never store profiles, charts, questions, or
+answers. Each phone uses account-scoped local storage for its personal content,
+with no cloud import or cross-device synchronization. On upgrades from the old
+cloud-history version, deploy the quota-only function first, let old in-flight
+calls finish within their 90-second execution window, and remove legacy personal
+fields while preserving existing quota. The new store automatically allowlists
+any document it reads or writes; check the complete collection for unvisited
+legacy records as well. Recompile and regenerate the device preview afterward.
+
+Deploy the matching privacy-safe `ziwei-ai` proxy code in place, keeping its
+existing server environment configuration. Proxy logs must contain only fixed
+error codes and HTTP status, never provider error bodies or arbitrary exception
+messages that may echo private input. Run its local mock verification with
+`node --test cloudbase/functions/ziwei-ai/privacy.test.js`.
+
+Local deterministic checks can run with any Node runtime that resolves the app's
+installed `iztro` dependency:
+
+```powershell
+NODE_PATH=app/node_modules node --test wechat-miniapp/cloudfunctions/ziwei-mini/*.test.js wechat-miniapp/tests/*.test.js
+```
+
+When uploading a ZIP rather than deploying the directory, include these ten
+runtime files at its root: `index.js`, `domain.js`, `identity.js`, `user-store.js`,
+`ai.js`, `chart-data.js`, `fortune.js`, `analysis.js`, `birthplace-data.json`, and
+`package.json`. Do not upload tests, local databases, credentials, or
+`node_modules`; install pinned dependencies in the cloud. Deploy the backend
+before compiling the new client because old local chart summaries are upgraded
+to schema version 2 through its free calculation endpoint.
+
+Before review submission, verify full twelve-palace details and natal reports,
+year switching and its independent report, all 100 candles and the four-axis
+radar, strict complete AI curve generation, selected-year interpretation,
+independent two-person compatibility, and a locally generated PNG with birth
+details hidden by default. Free calculation must not reduce quota; every AI
+feature and chat must share the same allowance and refund failures. Reopen
+cached reports without another AI request. Never use real third-party birth
+details for smoke tests without their permission.
+
+Also verify current-device persistence, two-turn context, quota decrement,
+account isolation, and that the same account on a second phone sees no personal
+data. Inspect the quota collection after successful reports and conversations
+to confirm no personal fields were recreated. Native forwarding must contain
+only the generic home path and fixed artwork; a private PNG is exported only
+when its owner explicitly chooses to do so.
+
+The native Mini Program is silent. Verify that its source contains no audio
+context, playback lifecycle hooks, music component or page playback controls.
+Compile every page after removing a shared component to catch stale imports.
+
 ## Legacy GitHub Sync to Vercel Repository
 
 Source repo: `ziweiknows/ziwei-chart`

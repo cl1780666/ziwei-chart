@@ -1,0 +1,23 @@
+<view class="page-shell share-page">
+  <view class="page-heading"><text class="eyebrow">一纸星语</text><text class="section-title">把这一句，留在纸上</text><text class="muted intro">由本机真实命盘生成。图片预览留在本机，只有你主动保存或发送时才会导出。</text></view>
+  <view wx:if="{{loading}}" class="card notice">正在翻开本机命盘…</view>
+  <view wx:elif="{{!hasChart}}" class="card notice"><text>这部手机还没有命盘，先填写出生资料。</text><button class="primary-button" bindtap="openProfile">先去排盘</button></view>
+  <block wx:else>
+    <view class="card settings-card">
+      <text class="field-label">{{extracted ? '来自本机命盘解读的金句，可改写' : '尚无报告金句，写一句自己的话'}}</text>
+      <textarea class="quote-input" value="{{quote}}" maxlength="100" bindinput="onQuoteInput" placeholder="写一句想分享的话…" />
+      <text class="field-hint">{{quote.length}} / 100 字 · 卡片显示最多五行，超出会省略</text>
+      <view class="private-row"><view><text class="field-label">在图片中附上出生资料</text><text class="field-hint block">默认关闭；开启后会展示生日、时间和出生地</text></view><switch checked="{{includePrivate}}" color="#7f3036" bindchange="onPrivateChange" /></view>
+    </view>
+    <view class="poster-wrap">
+      <image wx:if="{{imagePath}}" class="poster-image" src="{{imagePath}}" mode="widthFix" bindtap="previewImage" />
+      <view wx:else class="poster-placeholder">{{generating ? '正在落墨成画…' : '点下方重新生成图片'}}</view>
+      <text class="poster-hint">{{generating ? '正在生成高清 PNG' : '点击图片可放大预览'}}</text>
+    </view>
+    <button class="primary-button" disabled="{{generating || saving}}" loading="{{saving}}" bindtap="saveImage">保存图片到相册</button>
+    <view class="action-row"><button class="secondary-button" disabled="{{generating}}" bindtap="refreshImage">重新生成</button><button class="secondary-button" open-type="share">分享小程序入口</button></view>
+    <text class="field-hint block share-note">分享入口不会携带命盘、生日、聊天或金句。发送海报请保存后自行选择图片。</text>
+  </block>
+  <view wx:if="{{error}}" class="error-card">{{error}}</view>
+  <canvas id="share-canvas" type="2d" class="export-canvas" style="width: {{cardWidth}}px; height: {{cardHeight}}px;"></canvas>
+</view>

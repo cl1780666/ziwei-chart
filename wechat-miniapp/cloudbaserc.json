@@ -1,0 +1,14 @@
+{
+  "envId": "supposed-bovid-d4gcywfkh2af1db6e",
+  "functionRoot": "cloudfunctions",
+  "functions": [
+    {
+      "name": "ziwei-mini",
+      "type": "Event",
+      "handler": "index.main",
+      "runtime": "Nodejs20.19",
+      "timeout": 90,
+      "installDependency": true
+    }
+  ]
+}

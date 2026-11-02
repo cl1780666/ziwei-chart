@@ -1,0 +1,40 @@
+<view class="page-shell kline-page">
+  <view class="kline-masthead"><image src="/assets/wannan-night.jpg" mode="aspectFill" /><view></view><text class="mast-kicker">弦上星河 · 百岁长卷</text><text class="mast-title">将起伏，绘成山水</text></view>
+  <view class="card intro-card"><text class="section-title">人生 K 线</text><text class="intro-copy">从出生公历年起算的 100 年趋势长卷。左右滑动查看，点选一根蜡烛，展开那一年的四维分析。</text><text class="allowance">今日余 {{remaining}} 问 · 基础曲线免费，AI 重绘或单年解读各使用 1 次</text><button class="primary-button" bindtap="analyzeLifetime" loading="{{analyzing}}" disabled="{{loading || analyzing || analyzingYear}}">{{analyzing ? 'AI 正在推演百岁趋势…' : sourceLabel === 'AI 推演' ? 'AI 重新分析整条曲线' : '用 AI 分析整条曲线'}}</button></view>
+  <view wx:if="{{loading}}" class="loading-card">正在铺开百岁长卷…</view>
+  <block wx:elif="{{points.length}}">
+    <view class="card plot-card">
+      <view class="plot-heading"><text>百岁趋势 · {{sourceLabel}}</text><view><text class="rise-legend">● 上行</text><text class="fall-legend">● 下行</text></view></view>
+      <scroll-view class="plot-scroll" scroll-x enhanced show-scrollbar="{{true}}" scroll-into-view="{{scrollTarget}}" scroll-with-animation>
+        <view class="plot-board" style="width:{{chartWidth}}rpx;">
+          <view wx:for="{{grid}}" wx:key="value" class="grid-line" style="top:{{item.y}}rpx;"><text>{{item.value}}</text></view>
+          <view wx:for="{{candles}}" wx:key="year" id="candle-{{index}}" class="candle-column {{index === selectedIndex ? 'selected-column' : ''}} {{item.boundary ? 'decadal-boundary' : ''}}" style="left:{{item.x}}rpx;" data-index="{{index}}" bindtap="selectPoint">
+            <view class="candle-wick {{item.up ? 'rise' : 'fall'}}" style="top:{{item.highY}}rpx;height:{{item.wickHeight}}rpx;"></view>
+            <view class="candle-body {{item.up ? 'rise' : 'fall'}}" style="top:{{item.bodyY}}rpx;height:{{item.bodyHeight}}rpx;"></view>
+            <text wx:if="{{item.peak}}" class="peak-mark" style="top:{{item.highY - 25}}rpx;">✦</text>
+            <text wx:if="{{item.label || index === selectedIndex}}" class="year-label">第{{item.age}}年</text>
+            <text wx:if="{{item.boundary}}" class="decadal-label">{{item.daYun}}</text>
+          </view>
+        </view>
+      </scroll-view>
+      <text class="plot-note">曲线按出生公历年起算，大限按农历虚岁排定。虚线为大限分界，金星标记峰值；蜡烛实体为年初 / 年末，影线为年内高低。</text>
+    </view>
+    <picker range="{{yearLabels}}" value="{{selectedIndex}}" disabled="{{analyzingYear}}" bindchange="changeYear"><view class="year-picker"><text>{{selected.year}} 年 · {{selected.ganZhi}} · {{selected.ageLabel}}</text><text>切换年份 ›</text></view></picker>
+    <view class="card selected-card">
+      <view class="detail-heading"><text>{{selected.year}} 年的起伏</text><text class="score">{{selected.score}} <text>分</text></text></view>
+      <text class="dayun-copy">虚岁大限：{{selected.daYun}} {{selected.daYunRange}}岁</text>
+      <view class="ohlc-grid"><view><text>年初</text><text>{{selected.open}}</text></view><view><text>年末</text><text>{{selected.close}}</text></view><view><text>年内高</text><text>{{selected.high}}</text></view><view><text>年内低</text><text>{{selected.low}}</text></view></view>
+      <canvas id="score-radar" canvas-id="score-radar" class="radar-canvas"></canvas>
+      <view class="dimension-grid"><text>事业 {{selected.dimensions.career}}</text><text>财运 {{selected.dimensions.wealth}}</text><text>感情 {{selected.dimensions.relationship}}</text><text>健康 {{selected.dimensions.health}}</text></view>
+      <text class="detail-label">流年四化</text><view class="mutagen-tags"><text wx:for="{{selected.yearlyMutagens}}" wx:key="*this">{{item}}</text><text wx:if="{{!selected.yearlyMutagens.length}}">暂无</text></view>
+      <text class="detail-label">这一年的提示</text><text class="point-reason" selectable>{{selected.reason || '趋势已展开，可生成这一年的独立解读。'}}</text>
+      <button class="primary-button" bindtap="analyzeYear" loading="{{analyzingYear}}" disabled="{{analyzing || analyzingYear}}">{{analyzingYear ? '正在解读这一年…' : yearReport ? '重新生成这一年解读' : '解读这一年'}}</button>
+    </view>
+    <view wx:if="{{reportError}}" class="error-card">{{reportError}}</view>
+    <report-view title="{{selected.year}} 年曲线解读" text="{{yearReport}}" />
+    <button class="secondary-button yearly-link" bindtap="openYearly">查看年度流年盘</button>
+  </block>
+  <view wx:if="{{error}}" class="error-card">{{error}}</view>
+  <button wx:if="{{error}}" class="secondary-button retry" bindtap="loadState">重新加载曲线</button>
+  <text class="privacy-note">曲线与报告仅存本机 · 术数趋势示意，供参考</text>
+</view>

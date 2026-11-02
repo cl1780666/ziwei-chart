@@ -1,0 +1,29 @@
+<view class="page-shell fortune-page">
+  <view class="fortune-masthead"><image src="/assets/wannan-autumn-tree.jpg" mode="aspectFill" /><view></view><text class="mast-kicker">弦上星河 · 岁次推演</text><text class="mast-title">一年，一纸新章</text></view>
+  <view class="card year-card">
+    <text class="section-title">年度运势</text>
+    <text class="muted year-intro">本命为体，大限为用，流年为应。</text>
+    <picker range="{{yearLabels}}" value="{{yearIndex}}" disabled="{{analyzing || loading}}" bindchange="changeYear"><view class="year-picker">{{year}} 年 <text>选择年份 ›</text></view></picker>
+    <text class="small-note">流年排盘免费；生成独立 AI 报告使用 1 次额度。大限按农历虚岁排定。</text>
+  </view>
+  <view wx:if="{{loading || loadingYear}}" class="loading-card">正在展开 {{year}} 年流年盘…</view>
+  <block wx:elif="{{yearly}}">
+    <view class="card year-summary">
+      <view class="year-heading"><text>{{yearly.year}} · {{yearly.heavenlyStem}}{{yearly.earthlyBranch}}</text><text>{{ageLabel}}</text></view>
+      <text class="year-life-palace">流年命宫叠本命{{yearly.palaceName}}</text>
+      <text class="summary-label">流年四化</text>
+      <view class="mutagen-list"><view wx:for="{{mutagens}}" wx:key="label" class="mutagen {{index === 3 ? 'ji' : ''}}"><text>{{item.label}}</text><text>{{item.name}}</text><text wx:if="{{item.palace}}" class="mutagen-palace">本命{{item.palace}}</text></view></view>
+      <text class="summary-label">虚岁大限 · {{yearly.decadal.heavenlyStem}}{{yearly.decadal.earthlyBranch}} {{yearly.decadal.range[0]}}–{{yearly.decadal.range[1]}}岁</text>
+      <view class="decadal-tags"><text wx:for="{{decadalMutagens}}" wx:key="label">{{item.name}}{{item.label}}</text></view>
+    </view>
+    <view class="section-heading"><text class="section-title">流年十二宫</text><text>流年宫位 → 本命宫位</text></view>
+    <view class="year-palaces"><view wx:for="{{yearly.palaces}}" wx:key="name" class="card year-palace"><text class="palace-name">{{item.name}}</text><text class="original-palace">{{item.stemBranch}} · 叠本命{{item.originalName || item.natalName || '—'}}</text><text class="stars">{{item.majorStarsText}}</text><text class="minor-stars">{{item.minorStarsText}}</text><view class="year-star-tags"><text wx:for="{{item.scopeStars}}" wx:for-item="star" wx:key="name">{{star.name}}</text><text wx:for="{{item.yearlyMutagens}}" wx:for-item="mutagen" wx:key="type">{{mutagen.star}}化{{mutagen.type}}</text></view><text class="annual-gods">{{item.yearlySuiqian12}} {{item.yearlyJiangqian12}}</text></view></view>
+    <view class="card report-actions"><text class="section-title">{{year}} 年独立报告</text><text class="report-description">年度总象、事业财运、情感家宅、月令趋势与行事建议。</text><text class="small-note">今日余 {{remaining}} 问 · 已存报告可重复查看，不扣次数</text><button class="primary-button" bindtap="analyze" loading="{{analyzing}}" disabled="{{analyzing}}">{{analyzing ? '正在推演，请稍候…' : report ? '重新生成年度报告' : '生成年度报告'}}</button></view>
+    <view wx:if="{{reportError}}" class="error-card">{{reportError}}</view>
+    <report-view title="{{year}} 年流年运程" text="{{report}}" />
+    <button class="secondary-button chat-link" bindtap="openChat">继续问一问</button>
+  </block>
+  <view wx:if="{{error}}" class="error-card">{{error}}</view>
+  <button wx:if="{{error}}" class="secondary-button retry" bindtap="loadState">重新加载</button>
+  <text class="privacy-note">资料与报告仅存本机，换手机不会同步。</text>
+</view>
